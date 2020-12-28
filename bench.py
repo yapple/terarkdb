@@ -50,7 +50,7 @@ def bench(records, key_size, value_size, engine, db_dir, exist_db):
            {db_bench} \
            --benchmarks={bench_type}
 	   --use_existing_db={exist_db}
-           --sync=1
+           --sync=0
 	   --db={db_dir}
 	   --wal_dir={db_dir}
 	   --bytes_per_sync=65536
@@ -87,7 +87,7 @@ def bench(records, key_size, value_size, engine, db_dir, exist_db):
            --num_low_pri_threads=10
            --mmap_read=true
            --compression_type=none
-           --memtablerep=skip_list
+           --memtablerep=patricia_trie
            {extra_flags}
            """.format(records=records, 
                       key_size=key_size,

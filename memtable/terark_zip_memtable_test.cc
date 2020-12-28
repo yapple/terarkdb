@@ -7,6 +7,7 @@
 
 #include <atomic>
 #include <chrono>
+#include <string>
 #include <memory>
 
 #include "db/dbformat.h"
@@ -66,32 +67,61 @@ TEST_F(TerarkZipMemtableTest, MultiThreadingTest) {
                       /* needs_dup_key_check */ true, &wb, kMaxSequenceNumber,
                       0 /* column_family_id */);
 
-  size_t records = 1 << 20;  // 1M records
+  size_t records = 5 << 20;
+  int thread_cnt = 10;
+
   SequenceNumber seq = 0;
-  // Single Thread QPS
+
+  // Single Thread CSPPTrie
   auto start = std::chrono::system_clock::now();
   for (size_t i = 0; i < records; ++i) {
-    Slice key("key " + std::to_string(i));
-    Slice value("value " + std::to_string(i));
+    std::string key("key " + std::to_string(i));
+    std::string value("value " + std::to_string(i));
     auto ret = mem_->Add(seq, kTypeValue, key, value);
     seq++;
   }
   auto end = std::chrono::system_clock::now();
   auto dur =
-      std::chrono::duration_cast<std::chrono::seconds>(end - start).count();
+      std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 
-  printf("Single-Thread Time Cost: %" PRId64 ", mem_->size = %" PRId64 "\n",
+  printf("[CSPPTrie] Single-Thread Time Cost: %" PRId64 ", mem_->size = %" PRId64 "\n",
          dur, mem_->num_entries());
 
   delete mem_;
 
-  // Multi Thread QPS
-  mem_ = new MemTable(cmp, ioptions, MutableCFOptions(options),
-                      /* needs_dup_key_check */ true, &wb, kMaxSequenceNumber,
-                      0 /* column_family_id */);
+  // Single thread SkipList
+  options.memtable_factory =
+      std::shared_ptr<MemTableRepFactory>(new SkipListFactory());
+  ImmutableCFOptions ioptions2(options);
+  WriteBufferManager wb2(options.db_write_buffer_size);
+  mem_ = new MemTable(cmp, ioptions2, MutableCFOptions(options),true, &wb2, kMaxSequenceNumber, 0);
+  start = std::chrono::system_clock::now();
+  seq = 0;
+  for (size_t i = 0; i < records; ++i) {
+    std::string key("key " + std::to_string(i));
+    std::string value("value " + std::to_string(i));
+    auto ret = mem_->Add(seq, kTypeValue, key, value);
+    seq++;
+  }
+  end = std::chrono::system_clock::now();
+  dur = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+
+  printf("[SkipList] Single-Thread Time Cost: %" PRId64 ", mem_->size = %" PRId64 "\n",
+         dur, mem_->num_entries());
+
+  delete mem_;
+
+  // Multi Thread CSPPTrie
+  options.allow_concurrent_memtable_write = true;
+  options.memtable_factory =
+      std::shared_ptr<MemTableRepFactory>(NewPatriciaTrieRepFactory());
+  ImmutableCFOptions ioptions3(options);
+  WriteBufferManager wb3(options.db_write_buffer_size);
+  mem_ = new MemTable(cmp, ioptions3, MutableCFOptions(options), true, &wb3, kMaxSequenceNumber, 0);
 
   std::vector<std::thread> threads;
-  int thread_cnt = 2;
+  // Each thread should has its own post_process_info 
+  std::vector<MemTablePostProcessInfo> infos(thread_cnt); 
   std::atomic<SequenceNumber> atomic_seq{0};
   start = std::chrono::system_clock::now();
 
@@ -99,12 +129,11 @@ TEST_F(TerarkZipMemtableTest, MultiThreadingTest) {
     threads.emplace_back(std::thread([&, t]() {
       int start = (records / thread_cnt) * t;
       int end = (records / thread_cnt) * (t + 1);
-      printf("thread kv range: [%d, %d)\n", start, end);
+      printf("\tthread kv range: [%d, %d)\n", start, end);
       for (size_t i = start; i < end; ++i) {
-        Slice key("key " + std::to_string(i));
-        Slice value("value " + std::to_string(i));
-        auto ret = mem_->Add(atomic_seq, kTypeValue, key, value);
-        atomic_seq++;
+        std::string key("key " + std::to_string(i));
+        std::string value("value " + std::to_string(i));
+        auto ret = mem_->Add(atomic_seq++, kTypeValue, key, value, true, &infos[t]);
       }
     }));
   }
@@ -114,10 +143,53 @@ TEST_F(TerarkZipMemtableTest, MultiThreadingTest) {
   }
 
   end = std::chrono::system_clock::now();
-  dur = std::chrono::duration_cast<std::chrono::seconds>(end - start).count();
+  dur = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 
-  printf("Multi-Thread Time Cost: %" PRId64 ", mem_->size = %" PRId64 "\n", dur,
-         mem_->num_entries());
+  uint64_t total_size = 0;
+  for(auto info : infos) {
+    total_size += info.num_entries;
+  }
+
+  printf("[CSPPTrie] Multi-Thread Time Cost: %" PRId64 ", mem_->size = %" PRId64 "\n", dur, total_size);
+  delete mem_;
+
+  // Multi Thread SkipList
+  options.allow_concurrent_memtable_write = true;
+  options.memtable_factory =
+      std::shared_ptr<MemTableRepFactory>(new SkipListFactory());
+  ImmutableCFOptions ioptions4(options);
+  WriteBufferManager wb4(options.db_write_buffer_size);
+
+  mem_ = new MemTable(cmp, ioptions4, MutableCFOptions(options), true, &wb4, kMaxSequenceNumber, 0);
+  threads.clear();
+  infos.clear();
+  infos.resize(thread_cnt);
+  atomic_seq = {0};
+  start = std::chrono::system_clock::now();
+
+  for (int t = 0; t < thread_cnt; ++t) {
+    threads.emplace_back(std::thread([&, t]() {
+      int start = (records / thread_cnt) * t;
+      int end = (records / thread_cnt) * (t + 1);
+      printf("\tthread kv range: [%d, %d)\n", start, end);
+      for (size_t i = start; i < end; ++i) {
+        std::string key("key " + std::to_string(i));
+        std::string value("value " + std::to_string(i));
+        auto ret = mem_->Add(atomic_seq++, kTypeValue, key, value, true, &infos[t]);
+      }
+    }));
+  }
+
+  for (auto& thread : threads) {
+    thread.join();
+  }
+  end = std::chrono::system_clock::now();
+  dur = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+  total_size = 0;
+  for(auto info : infos) {
+    total_size += info.num_entries;
+  }
+  printf("[SkipList] Multi-Thread Time Cost: %" PRId64 ", mem_->size = %" PRId64 "\n", dur, total_size);
   delete mem_;
 }
 }  // namespace rocksdb
