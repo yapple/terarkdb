@@ -938,15 +938,6 @@ struct IORequest {
     IO_REQUEST_NONE = 0,
     IO_REQUEST_READ = 1,
     IO_REQUEST_WRITE = 2,
-    IO_REQUEST_UPPER_SEEK = 3,
-    IO_REQUEST_LOWER_SEEK = 4,
-    IO_REQUEST_FETCH_KEYS = 5,
-    IO_REQUEST_RANGE_QUERY = 6,
-    IO_REQUEST_DELETE_KEY = 7,
-    IO_REQUEST_BATCH_READ = 8,
-    IO_REQUEST_BATCH_WRITE = 9,
-    IO_REQUEST_DELETE_RANGES = 10,
-    IO_REQUEST_GET_APPOX_SIZE = 11,
   };
 
   // 不要更改顺序
@@ -960,18 +951,7 @@ struct IORequest {
     NUM_IO_DATA_TYPES
   };
 
-  enum IOPriority {
-    IO_PRIORITY_CRITICAL = 0,
-    IO_PRIORITY_REAL_TIME = 1,
-    IO_PRIORITY_ELASTIC = 2,
-    IO_PRIORITY_BEST_EFFORT = 3,
-    IO_PRIORITY_SCAVENGER = 4,
-    NUM_IO_PRIORITIES,
-  };
-
   IORequestType request_type_;
-  IOPriority priority_;
-
   Status status_;
 
   IORequest(IORequestType request_type = IO_REQUEST_NONE) : request_type_(request_type) {}
@@ -1240,12 +1220,23 @@ TerarkdbStorage::~TerarkdbStorage() {
 //    IO_DATE_MVPAGE = 4,    // multi-version page
 //    IO_DATA_COM = 5,
 //    NUM_IO_DATA_TYPES
+
+//cmake .. -DWITH_EXAMPLES=ON -DWITH_JEMALLOC=OFF -DWITH_TERARK_ZIP=ON
+DEFINE_uint64(default_length, 16 << 10, "default cf value length");
+DEFINE_uint64(log_length,          400, "log_cf value length");
+
+
 int main() {
 
   TerarkdbStorage ts("./");
-  Status s = ts.init_db_options();
   ts.start();
-  ts.write(IORequest::IODataType::IO_DATA_PAGE,"1","1");
+  int i = 0;
+  while(true){
+
+
+    ts.write(IORequest::IODataType::IO_DATA_PAGE,"1","1");
+    i++;
+  }
 
   return 0;
 }
