@@ -931,11 +931,11 @@ void DBImpl::ScheduleGCTTL() {
     return (std::min(ratio_expire_time, scan_gap_expire_time) <= now);
   };
   ROCKS_LOG_INFO(immutable_db_options_.info_log, "Start ScheduleGCTTL");
+  int cnt = 0;
   for (auto cfd : *versions_->GetColumnFamilySet()) {
     if(cfd->GetLatestCFOptions().ttl_extractor_factory == nullptr) continue;
     if (cfd->initialized()) {
       VersionStorageInfo* vsi = cfd->current()->storage_info();
-      int cnt = 0;
       for (int l = 0; l < vsi->num_levels(); l++) {
         for (auto sst : vsi->LevelFiles(l)) {
           cnt++;
@@ -953,7 +953,7 @@ void DBImpl::ScheduleGCTTL() {
     }
   }
   ROCKS_LOG_INFO(immutable_db_options_.info_log, "marked for compact SST: %d,%d,%d",
-                 marked_count,mark_count,count);
+                 marked_count,mark_count,cnt);
   if (mark_count > 0) {
     InstrumentedMutexLock l(&mutex_);
     MaybeScheduleFlushOrCompaction();
