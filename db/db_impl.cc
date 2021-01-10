@@ -935,9 +935,10 @@ void DBImpl::ScheduleGCTTL() {
     if(cfd->GetLatestCFOptions().ttl_extractor_factory == nullptr) continue;
     if (cfd->initialized()) {
       VersionStorageInfo* vsi = cfd->current()->storage_info();
+      int cnt = 0;
       for (int l = 0; l < vsi->num_levels(); l++) {
         for (auto sst : vsi->LevelFiles(l)) {
-
+          cnt++;
           if (sst->marked_for_compaction) marked_count++;
           if (!sst->marked_for_compaction)
             sst->marked_for_compaction = should_marked_for_compacted(
@@ -951,8 +952,8 @@ void DBImpl::ScheduleGCTTL() {
       }
     }
   }
-  ROCKS_LOG_INFO(immutable_db_options_.info_log, "marked for compact SST: %d,%d",
-                 marked_count,mark_count);
+  ROCKS_LOG_INFO(immutable_db_options_.info_log, "marked for compact SST: %d,%d,%d",
+                 marked_count,mark_count,count);
   if (mark_count > 0) {
     InstrumentedMutexLock l(&mutex_);
     MaybeScheduleFlushOrCompaction();
