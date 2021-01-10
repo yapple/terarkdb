@@ -963,12 +963,12 @@ void BlockBasedTableBuilder::WritePropertiesBlock(
           //   rep_->props.scan_gap_expire_time = max_uint64_t;
         }
       }
-      // ROCKS_LOG_INFO(rep_->ioptions.info_log,
-      //                "[%s] ratio_expire_time:%" PRIu64
-      //                ", scan_gap_expire_time:%" PRIu64 ".",
-      //                rep_->column_family_name.c_str(),
-      //                rep_->props.ratio_expire_time,
-      //                rep_->props.scan_gap_expire_time);
+      ROCKS_LOG_INFO(rep_->ioptions.info_log,
+                     "[%s] ratio_row_ttl:%" PRIu64 ", scan_gap_row_ttl:%" PRIu64
+                     ".",
+                     rep_->column_family_name.c_str(),
+                     rep_->props.ratio_expire_time - now_seconds,
+                     rep_->props.scan_gap_expire_time - now_seconds);
       min_ttl_seconds_ = std::numeric_limits<uint64_t>::max();
       ttl_histogram_.reset();
       ttl_extractor_.reset();
