@@ -17,6 +17,7 @@
 #endif
 
 #include <algorithm>
+#include <cinttypes>
 #include <cstdio>
 #include <map>
 #include <set>
@@ -906,7 +907,8 @@ bool DBImpl::FindStatsByTime(uint64_t start_time, uint64_t end_time,
   }
 }
 
-Status DBImpl::GetStatsHistory(uint64_t start_time, uint64_t end_time,
+Status DBImpl::GetStatsHistory(
+    uint64_t start_time, uint64_t end_time,
     std::unique_ptr<StatsHistoryIterator>* stats_iterator) {
   if (!stats_iterator) {
     return Status::InvalidArgument("stats_iterator not preallocated.");
@@ -924,21 +926,19 @@ void DBImpl::ScheduleGCTTL() {
   TEST_SYNC_POINT("DBImpl:ScheduleGCTTL");
   uint64_t mark_count = 0;
   uint64_t marked_count = 0;
-  uint64_t nowSeconds =  env_->NowMicros()/ 1000U / 1000U;
+  uint64_t nowSeconds = env_->NowMicros() / 1000U / 1000U;
   auto should_marked_for_compacted = [&](uint64_t ratio_expire_time,
-                                        uint64_t scan_gap_expire_time,
-                                        uint64_t now) {
+                                         uint64_t scan_gap_expire_time,
+                                         uint64_t now) {
     ROCKS_LOG_INFO(immutable_db_options_.info_log,
-                   "SST Table property info: % PRIu64 "
-                   ",% PRIu64 "
-                   ",% PRIu64 ",
+                   "SST Table property info:%" PRIu64 ",%" PRIu64 ",%" PRIu64,
                    ratio_expire_time, scan_gap_expire_time, now);
     return (std::min(ratio_expire_time, scan_gap_expire_time) <= now);
   };
   ROCKS_LOG_INFO(immutable_db_options_.info_log, "Start ScheduleGCTTL");
   int cnt = 0;
   for (auto cfd : *versions_->GetColumnFamilySet()) {
-    if(cfd->GetLatestCFOptions().ttl_extractor_factory == nullptr) continue;
+    if (cfd->GetLatestCFOptions().ttl_extractor_factory == nullptr) continue;
     if (cfd->initialized()) {
       VersionStorageInfo* vsi = cfd->current()->storage_info();
       for (int l = 0; l < vsi->num_levels(); l++) {
@@ -957,8 +957,9 @@ void DBImpl::ScheduleGCTTL() {
       }
     }
   }
-  ROCKS_LOG_INFO(immutable_db_options_.info_log, "marked for compact SST: %d,%d,%d",
-                 marked_count,mark_count,cnt);
+  ROCKS_LOG_INFO(immutable_db_options_.info_log,
+                 "marked for compact SST: %d,%d,%d", marked_count, mark_count,
+                 cnt);
   if (mark_count > 0) {
     InstrumentedMutexLock l(&mutex_);
     MaybeScheduleFlushOrCompaction();

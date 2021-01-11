@@ -156,8 +156,10 @@ void PropertyBlockBuilder::AddTableProperty(const TableProperties& props) {
   if (!props.compression_name.empty()) {
     Add(TablePropertiesNames::kCompression, props.compression_name);
   }
-  if (true) {
+  if (props.ratio_expire_time < std::numeric_limits<uint64_t>::max()) {
     Add(TablePropertiesNames::kRatioExpireTime, props.ratio_expire_time);
+  }
+  if (props.scan_gap_expire_time < std::numeric_limits<uint64_t>::max()) {
     Add(TablePropertiesNames::kScanGapExpireTime, props.scan_gap_expire_time);
   }
 }
@@ -421,6 +423,20 @@ Status ReadProperties(const Slice& handle_value, RandomAccessFileReader* file,
       }
     } else if (key == TablePropertiesNames::kInheritanceChain) {
       GetUint64Vector(key, &raw_val, new_table_properties->inheritance_chain);
+    } else if (key == TablePropertiesNames::kRatioExpireTime) {
+      uint64_t u64_val;
+      if (!GetVarint64(&raw_val, &u64_val)) {
+        log_error();
+        continue;
+      }
+      new_table_properties->ratio_expire_time = u64_val;
+    } else if (key == TablePropertiesNames::kScanGapExpireTime) {
+      uint64_t u64_val;
+      if (!GetVarint64(&raw_val, &u64_val)) {
+        log_error();
+        continue;
+      }
+      new_table_properties->scan_gap_expire_time = u64_val;
     } else {
       // handle user-collected properties
       new_table_properties->user_collected_properties.insert(
