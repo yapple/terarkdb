@@ -10,7 +10,8 @@
 #include "db/db_impl.h"
 #include "util/timer.h"
 
-namespace rocksdb {
+#include "rocksdb/terark_namespace.h"
+namespace TERARKDB_NAMESPACE {
 
 // PeriodicWorkScheduler is a singleton object, which is scheduling/running
 // DumpStats(), PersistStats(), and FlushInfoLog() for all DB instances. All DB

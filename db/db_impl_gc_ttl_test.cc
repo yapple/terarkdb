@@ -8,7 +8,8 @@
 #include "util/sync_point.h"
 #include "util/testharness.h"
 
-namespace rocksdb {
+#include "rocksdb/terark_namespace.h"
+namespace TERARKDB_NAMESPACE {
 
 class DBImplGCTTL_Test : public DBTestBase {
  public:
@@ -30,7 +31,7 @@ class DBImplGCTTL_Test : public DBTestBase {
   }
 
  protected:
-  std::unique_ptr<rocksdb::MockTimeEnv> mock_env_;
+  std::unique_ptr<TERARKDB_NAMESPACE::MockTimeEnv> mock_env_;
   Options options;
   std::string dbname;
   bool flag = false;
@@ -45,12 +46,12 @@ class DBImplGCTTL_Test : public DBTestBase {
           *periodic_work_scheduler_ptr =
               PeriodicWorkTestScheduler::Default(mock_env_.get());
         });
-    rocksdb::SyncPoint::GetInstance()->SetCallBack("DBImpl:ScheduleGCTTL",
+    TERARKDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack("DBImpl:ScheduleGCTTL",
                                                    [&](void* /*arg*/) {
                                                      mark = 0;
                                                      flag = true;
                                                    });
-    rocksdb::SyncPoint::GetInstance()->SetCallBack(
+    TERARKDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
         "DBImpl:ScheduleGCTTL-mark", [&](void* /*arg*/) { mark++; });
   }
 };

@@ -37,7 +37,8 @@
 
 #define ROCKS_VERSION_BUILDER_DEBUG 0
 
-namespace rocksdb {
+#include "rocksdb/terark_namespace.h"
+namespace TERARKDB_NAMESPACE {
 
 bool NewestFirstBySeqNo(FileMetaData* a, FileMetaData* b) {
   if (a->fd.largest_seqno != b->fd.largest_seqno) {
@@ -961,4 +962,4 @@ void VersionBuilderDebugger::Verify(VersionBuilder::Rep* rep,
 }
 #endif
 
-}  // namespace rocksdb
+}  // namespace TERARKDB_NAMESPACE

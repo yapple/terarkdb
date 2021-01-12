@@ -11,7 +11,8 @@
 #include "db/db_impl.h"
 #include "rocksdb/stats_history.h"
 
-namespace rocksdb {
+#include "rocksdb/terark_namespace.h"
+namespace TERARKDB_NAMESPACE {
 
 extern const std::string kFormatVersionKeyString;
 extern const std::string kCompatibleVersionKeyString;

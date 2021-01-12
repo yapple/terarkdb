@@ -55,7 +55,8 @@
 #include "util/testutil.h"
 #include "utilities/merge_operators.h"
 
-namespace rocksdb {
+#include "rocksdb/terark_namespace.h"
+namespace TERARKDB_NAMESPACE {
 
 namespace anon {
 class AtomicCounter {
@@ -994,4 +995,4 @@ class DBTestBase : public testing::Test {
   bool time_elapse_only_sleep_on_reopen_ = false;
 };
 
-}  // namespace rocksdb
+}  // namespace TERARKDB_NAMESPACE

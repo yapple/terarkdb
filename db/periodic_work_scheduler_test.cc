@@ -8,7 +8,8 @@
 #include "db/db_test_util.h"
 #include "util/cast_util.h"
 
-namespace rocksdb {
+#include "rocksdb/terark_namespace.h"
+namespace TERARKDB_NAMESPACE {
 
 #ifndef ROCKSDB_LITE
 class PeriodicWorkSchedulerTest : public DBTestBase {

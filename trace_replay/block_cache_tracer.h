@@ -13,7 +13,8 @@
 #include "rocksdb/trace_reader_writer.h"
 #include "util/trace_replay.h"
 
-namespace rocksdb {
+#include "rocksdb/terark_namespace.h"
+namespace TERARKDB_NAMESPACE {
 
 extern const uint64_t kMicrosInSecond;
 

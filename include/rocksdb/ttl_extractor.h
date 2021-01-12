@@ -10,7 +10,8 @@
 #include "rocksdb/types.h"
 #include "utilities/util/factory.h"
 
-namespace rocksdb {
+#include "rocksdb/terark_namespace.h"
+namespace TERARKDB_NAMESPACE {
 
 class Slice;
 class Status;

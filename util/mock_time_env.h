@@ -9,7 +9,8 @@
 
 #include "rocksdb/env.h"
 
-namespace rocksdb {
+#include "rocksdb/terark_namespace.h"
+namespace TERARKDB_NAMESPACE {
 
 class MockTimeEnv : public EnvWrapper {
  public:
@@ -68,4 +69,4 @@ class MockTimeEnv : public EnvWrapper {
   static constexpr uint64_t kMicrosInSecond = 1000U * 1000U;
 };
 
-}  // namespace rocksdb
+}  // namespace TERARKDB_NAMESPACE

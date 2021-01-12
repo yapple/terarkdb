@@ -14,7 +14,8 @@
 #include "db/periodic_work_scheduler.h"
 #include "monitoring/thread_status_updater.h"
 
-namespace rocksdb {
+#include "rocksdb/terark_namespace.h"
+namespace TERARKDB_NAMESPACE {
 
 uint64_t DBImpl::TEST_GetLevel0TotalSize() {
   InstrumentedMutexLock l(&mutex_);
@@ -267,5 +268,5 @@ PeriodicWorkTestScheduler* DBImpl::TEST_GetPeriodicWorkScheduler() const {
 size_t DBImpl::TEST_EstimateInMemoryStatsHistorySize() const {
   return EstimateInMemoryStatsHistorySize();
 }
-}  // namespace rocksdb
+}  // namespace TERARKDB_NAMESPACE
 #endif  // NDEBUG

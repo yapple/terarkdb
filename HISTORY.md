@@ -126,8 +126,8 @@
 
 ## 6.7.0 (01/21/2020)
 ### Public API Change
-* Added a rocksdb::FileSystem class in include/rocksdb/file_system.h to encapsulate file creation/read/write operations, and an option DBOptions::file_system to allow a user to pass in an instance of rocksdb::FileSystem. If its a non-null value, this will take precendence over DBOptions::env for file operations. A new API rocksdb::FileSystem::Default() returns a platform default object. The DBOptions::env option and Env::Default() API will continue to be used for threading and other OS related functions, and where DBOptions::file_system is not specified, for file operations. For storage developers who are accustomed to rocksdb::Env, the interface in rocksdb::FileSystem is new and will probably undergo some changes as more storage systems are ported to it from rocksdb::Env. As of now, no env other than Posix has been ported to the new interface.
-* A new rocksdb::NewSstFileManager() API that allows the caller to pass in separate Env and FileSystem objects.
+* Added a TERARKDB_NAMESPACE::FileSystem class in include/rocksdb/file_system.h to encapsulate file creation/read/write operations, and an option DBOptions::file_system to allow a user to pass in an instance of TERARKDB_NAMESPACE::FileSystem. If its a non-null value, this will take precendence over DBOptions::env for file operations. A new API TERARKDB_NAMESPACE::FileSystem::Default() returns a platform default object. The DBOptions::env option and Env::Default() API will continue to be used for threading and other OS related functions, and where DBOptions::file_system is not specified, for file operations. For storage developers who are accustomed to TERARKDB_NAMESPACE::Env, the interface in TERARKDB_NAMESPACE::FileSystem is new and will probably undergo some changes as more storage systems are ported to it from TERARKDB_NAMESPACE::Env. As of now, no env other than Posix has been ported to the new interface.
+* A new TERARKDB_NAMESPACE::NewSstFileManager() API that allows the caller to pass in separate Env and FileSystem objects.
 * Changed Java API for RocksDB.keyMayExist functions to use Holder<byte[]> instead of StringBuilder, so that retrieved values need not decode to Strings.
 * A new `OptimisticTransactionDBOptions` Option that allows users to configure occ validation policy. The default policy changes from kValidateSerial to kValidateParallel to reduce mutex contention.
 
@@ -1038,7 +1038,7 @@ if set to something > 0 user will see 2 changes in iterators behavior 1) only ke
 ## 3.9.0 (12/8/2014)
 
 ### New Features
-* Add rocksdb::GetThreadList(), which in the future will return the current status of all
+* Add TERARKDB_NAMESPACE::GetThreadList(), which in the future will return the current status of all
   rocksdb-related threads.  We will have more code instruments in the following RocksDB
   releases.
 * Change convert function in rocksdb/utilities/convenience.h to return Status instead of boolean.

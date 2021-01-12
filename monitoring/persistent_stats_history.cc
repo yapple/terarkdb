@@ -15,7 +15,8 @@
 #include "port/likely.h"
 #include "util/string_util.h"
 
-namespace rocksdb {
+#include "rocksdb/terark_namespace.h"
+namespace TERARKDB_NAMESPACE {
 // 10 digit seconds timestamp => [Sep 9, 2001 ~ Nov 20, 2286]
 const int kNowSecondsStringLength = 10;
 const std::string kFormatVersionKeyString =

@@ -20,7 +20,8 @@
 #include "util/arena.h"
 #include "util/autovector.h"
 
-namespace rocksdb {
+#include "rocksdb/terark_namespace.h"
+namespace TERARKDB_NAMESPACE {
 
 class VersionSet;
 
@@ -422,4 +423,4 @@ class VersionEdit {
   uint32_t remaining_entries_;
 };
 
-}  // namespace rocksdb
+}  // namespace TERARKDB_NAMESPACE

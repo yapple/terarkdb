@@ -6,7 +6,8 @@
 #include "util/testharness.h"
 #include "util/testutil.h"
 
-namespace rocksdb {
+#include "rocksdb/terark_namespace.h"
+namespace TERARKDB_NAMESPACE {
 
 struct params {
   params(double ratio = 128.0, int scan = std::numeric_limits<int>::max()) {

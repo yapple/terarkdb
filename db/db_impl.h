@@ -61,7 +61,8 @@
 #include "util/trace_replay.h"
 #include "utilities/console/server.h"
 
-namespace rocksdb {
+#include "rocksdb/terark_namespace.h"
+namespace TERARKDB_NAMESPACE {
 
 class Arena;
 class ArenaWrappedDBIter;
@@ -1858,4 +1859,4 @@ static void ClipToRange(T* ptr, V minvalue, V maxvalue) {
   if (static_cast<V>(*ptr) < minvalue) *ptr = minvalue;
 }
 
-}  // namespace rocksdb
+}  // namespace TERARKDB_NAMESPACE
