@@ -22,6 +22,7 @@
 #include "rocksdb/options.h"
 #include "rocksdb/slice.h"
 #include "rocksdb/table.h"
+#include "rocksdb/terark_namespace.h"
 #include "table/block_based_table_builder.h"
 #include "table/block_based_table_factory.h"
 #include "table/internal_iterator.h"
@@ -29,8 +30,6 @@
 #include "util/mutexlock.h"
 #include "util/random.h"
 #include "util/testharness.h"
-
-#include "rocksdb/terark_namespace.h"
 namespace TERARKDB_NAMESPACE {
 class SequentialFile;
 class SequentialFileReader;
@@ -540,7 +539,8 @@ class FilterNumber : public CompactionFilter {
   std::string last_merge_operand_key() { return last_merge_operand_key_; }
 
   bool Filter(int /*level*/, const TERARKDB_NAMESPACE::Slice& /*key*/,
-              const TERARKDB_NAMESPACE::Slice& value, std::string* /*new_value*/,
+              const TERARKDB_NAMESPACE::Slice& value,
+              std::string* /*new_value*/,
               bool* /*value_changed*/) const override {
     if (value.size() == sizeof(uint64_t)) {
       return num_ == DecodeFixed64(value.data());
@@ -548,8 +548,9 @@ class FilterNumber : public CompactionFilter {
     return true;
   }
 
-  bool FilterMergeOperand(int /*level*/, const TERARKDB_NAMESPACE::Slice& key,
-                          const TERARKDB_NAMESPACE::Slice& value) const override {
+  bool FilterMergeOperand(
+      int /*level*/, const TERARKDB_NAMESPACE::Slice& key,
+      const TERARKDB_NAMESPACE::Slice& value) const override {
     last_merge_operand_key_ = key.ToString();
     if (value.size() == sizeof(uint64_t)) {
       return num_ == DecodeFixed64(value.data());
@@ -810,7 +811,11 @@ class ChanglingCompactionFilterFactory : public CompactionFilterFactory {
 };
 
 class TestTtlExtractor : public TtlExtractor {
-  //
+ public:
+  TestTtlExtractor(Env* env) : env_(env) {}
+  TestTtlExtractor() {}
+
+ private:
   Status Extract(EntryType entry_type, const Slice& user_key,
                  const Slice& value_or_meta, bool* has_ttl,
                  std::chrono::seconds* ttl) const {
@@ -818,8 +823,19 @@ class TestTtlExtractor : public TtlExtractor {
         entry_type == EntryType::kEntryMerge) {
       *has_ttl = true;
       assert(value_or_meta.size() > kTtlLength);
-      *ttl = static_cast<std::chrono::seconds>(DecodeFixed64(
-          value_or_meta.data() + value_or_meta.size() - kTtlLength));
+      uint64_t ttl_expect = DecodeFixed64(value_or_meta.data() +
+                                          value_or_meta.size() - kTtlLength);
+      if (env_ != nullptr) {
+        uint64_t now_time = env_->NowMicros() / 1000000;
+        if (now_time >= ttl_expect) {
+          *ttl = static_cast<std::chrono::seconds>(0);
+        } else {
+          *ttl = static_cast<std::chrono::seconds>(ttl_expect - now_time);
+        }
+      } else {
+        *ttl = static_cast<std::chrono::seconds>(ttl_expect);
+      }
+
     } else {
       *has_ttl = false;
     }
@@ -828,14 +844,20 @@ class TestTtlExtractor : public TtlExtractor {
 
  private:
   int kTtlLength = sizeof(uint64_t);
+  Env* env_ = nullptr;
 };
 
 class TestTtlExtractorFactory : public TtlExtractorFactory {
+ public:
+  TestTtlExtractorFactory(Env* env) : env_(env) {}
+  TestTtlExtractorFactory() {}
+
+ private:
   using TtlContext = TtlExtractorContext;
 
   virtual std::unique_ptr<TtlExtractor> CreateTtlExtractor(
       const TtlContext& context) const {
-    return std::make_unique<TestTtlExtractor>();
+    return std::make_unique<TestTtlExtractor>(env_);
   }
 
   virtual const char* Name() const { return "TestTtlExtractorFactor"; }
@@ -843,6 +865,7 @@ class TestTtlExtractorFactory : public TtlExtractorFactory {
   virtual Status Serialize(std::string* /*bytes*/) const {
     return Status::NotSupported();
   }
+  Env* env_ = nullptr;
 };
 
 CompressionType RandomCompressionType(Random* rnd);

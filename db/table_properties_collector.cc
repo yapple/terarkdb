@@ -71,7 +71,6 @@ class TtlIntTblPropCollector : public IntTblPropCollector {
   uint64_t ttl_key_value_size_ = 0;
 
   uint64_t min_scan_cap_ttl_seconds_ = std::numeric_limits<uint64_t>::max();
-  uint64_t min_gc_ratio_ttl_seconds_ = std::numeric_limits<uint64_t>::max();
   void AddTtlToSliceWindow(uint64_t ttl) {
     if (ttl_max_scan_cap_ > 0) {
       if (slice_index_ < ttl_max_scan_cap_) {
@@ -118,22 +117,24 @@ class TtlIntTblPropCollector : public IntTblPropCollector {
   ~TtlIntTblPropCollector() { delete ttl_extractor_; }
   Status Finish(UserCollectedProperties* properties) override {
     uint64_t now_time_seconds = env_->NowMicros() / 1000000;
+    uint64_t earliest_time_begin_compact = std::numeric_limits<uint64_t>::max();
     if (!histogram_.Empty() &&
         ttl_key_value_size_ >= ttl_gc_ratio_ * raw_key_value_size_) {
-      min_gc_ratio_ttl_seconds_ =
+      earliest_time_begin_compact =
           now_time_seconds +
           static_cast<uint64_t>(histogram_.Percentile(ttl_gc_ratio_ * 100.0));
     }
-    if (min_scan_cap_ttl_seconds_ < std::numeric_limits<uint64_t>::max()) {
-      min_scan_cap_ttl_seconds_ += now_time_seconds;
-    }
-    std::string temp_ttl_str[2];
-    PutFixed64(&temp_ttl_str[0], min_gc_ratio_ttl_seconds_);
-    PutFixed64(&temp_ttl_str[1], min_scan_cap_ttl_seconds_);
+    uint64_t latest_time_end_compact =
+        min_scan_cap_ttl_seconds_ < std::numeric_limits<uint64_t>::max()
+            ? min_scan_cap_ttl_seconds_ + now_time_seconds
+            : std::numeric_limits<uint64_t>::max();
+    std::string time_for_compaction[2];
+    PutFixed64(&time_for_compaction[0], earliest_time_begin_compact);
+    PutFixed64(&time_for_compaction[1], latest_time_end_compact);
+    properties->insert({TablePropertiesNames::kEarliestTimeBeginCompact,
+                        time_for_compaction[0]});
     properties->insert(
-        {TablePropertiesNames::kEarliestTimeBeginCompact, temp_ttl_str[0]});
-    properties->insert(
-        {TablePropertiesNames::kLatestTimeEndCompact, temp_ttl_str[1]});
+        {TablePropertiesNames::kLatestTimeEndCompact, time_for_compaction[1]});
     return Status::OK();
   }
 
@@ -187,12 +188,6 @@ class TtlIntTblPropCollector : public IntTblPropCollector {
 
 // Factory for internal table properties collector.
 class TtlIntTblPropCollectorFactory : public IntTblPropCollectorFactory {
-  const TtlExtractorFactory* ttl_extractor_factory_;
-  double ttl_gc_ratio_;
-  size_t ttl_max_scan_cap_;
-  std::string name_;
-  Env* env_;
-
  public:
   TtlIntTblPropCollectorFactory(
       const TtlExtractorFactory* _ttl_extractor_factory, Env* _env,
@@ -217,9 +212,16 @@ class TtlIntTblPropCollectorFactory : public IntTblPropCollectorFactory {
   }
 
   // The name of the properties collector can be used for debugging purpose.
-  const char* Name() const override { name_.c_str(); }
+  const char* Name() const override { return name_.c_str(); }
 
   bool NeedSerialize() const override { return false; }
+
+ private:
+  const TtlExtractorFactory* ttl_extractor_factory_;
+  double ttl_gc_ratio_;
+  size_t ttl_max_scan_cap_;
+  std::string name_;
+  Env* env_;
 };
 
 IntTblPropCollectorFactory* NewTtlIntTblPropCollectorFactory(

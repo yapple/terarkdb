@@ -930,11 +930,13 @@ void DBImpl::ScheduleGCTTL() {
   auto should_marked_for_compacted = [&](uint64_t ratio_expire_time,
                                          uint64_t scan_gap_expire_time,
                                          uint64_t now) {
-    // ROCKS_LOG_INFO(immutable_db_options_.info_log,
-    //                "SST Table property info:%" PRIu64 ",%" PRIu64 ",%"
-    //                PRIu64, ratio_expire_time, scan_gap_expire_time, now);
-     printf("SST Table property info:%" PRIu64 ",%" PRIu64 ",%"
-                    PRIu64 "\n", ratio_expire_time, scan_gap_expire_time, now);
+// ROCKS_LOG_INFO(immutable_db_options_.info_log,
+//                "SST Table property info:%" PRIu64 ",%" PRIu64 ",%"
+//                PRIu64, ratio_expire_time, scan_gap_expire_time, now);
+#ifdef DBGCMESSAGE
+    printf("SST Table property info:%" PRIu64 ",%" PRIu64 ",%" PRIu64 "\n",
+           ratio_expire_time, scan_gap_expire_time, now);
+#endif
     return (std::min(ratio_expire_time, scan_gap_expire_time) <= now);
   };
   ROCKS_LOG_INFO(immutable_db_options_.info_log, "Start ScheduleGCTTL");
@@ -4221,7 +4223,8 @@ Status DBImpl::VerifyChecksum() {
         const auto& fd = vstorage->LevelFiles(i)[j]->fd;
         std::string fname = TableFileName(cfd->ioptions()->cf_paths,
                                           fd.GetNumber(), fd.GetPathId());
-        s = TERARKDB_NAMESPACE::VerifySstFileChecksum(opts, env_options_, fname);
+        s = TERARKDB_NAMESPACE::VerifySstFileChecksum(opts, env_options_,
+                                                      fname);
       }
     }
     if (!s.ok()) {

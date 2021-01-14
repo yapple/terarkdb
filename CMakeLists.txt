@@ -923,8 +923,11 @@ IF(WITH_TESTS OR WITH_TOOLS)
   target_link_libraries(testharness gtest)
 ENDIF()
 if(WITH_TESTS)
+  add_definitions(-DDBGCMESSAGE=1)
   set(TESTS
           db/db_impl_gc_ttl_test.cc
+          table/block_based_table_row_ttl_test.cc
+          table/terark_zip_table_row_ttl_test.cc
           )
 #if(WITH_TESTS)
 #  set(TESTS
