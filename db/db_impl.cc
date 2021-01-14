@@ -933,6 +933,8 @@ void DBImpl::ScheduleGCTTL() {
     // ROCKS_LOG_INFO(immutable_db_options_.info_log,
     //                "SST Table property info:%" PRIu64 ",%" PRIu64 ",%"
     //                PRIu64, ratio_expire_time, scan_gap_expire_time, now);
+     printf("SST Table property info:%" PRIu64 ",%" PRIu64 ",%"
+                    PRIu64 "\n", ratio_expire_time, scan_gap_expire_time, now);
     return (std::min(ratio_expire_time, scan_gap_expire_time) <= now);
   };
   ROCKS_LOG_INFO(immutable_db_options_.info_log, "Start ScheduleGCTTL");
@@ -943,6 +945,7 @@ void DBImpl::ScheduleGCTTL() {
       VersionStorageInfo* vsi = cfd->current()->storage_info();
       for (int l = 0; l < vsi->num_levels(); l++) {
         for (auto sst : vsi->LevelFiles(l)) {
+          TEST_SYNC_POINT("DBImpl:Exist-SST");
           cnt++;
           if (sst->marked_for_compaction) {
             marked_count++;
