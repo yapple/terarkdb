@@ -23,7 +23,7 @@ class DBImplGCTTL_Test : public DBTestBase {
     dbname = test::PerThreadDBPath("ttl_gc_test");
     DestroyDB(dbname, options);
     options.create_if_missing = true;
-    options.ttl_garbage_collection_percentage = 50.0;
+    options.ttl_garbage_collection_percentage = 0.50;
     options.ttl_scan_gap = 10;
     options.ttl_extractor_factory.reset(new test::TestTtlExtractorFactory());
     options.level0_file_num_compaction_trigger = 8;
@@ -34,7 +34,6 @@ class DBImplGCTTL_Test : public DBTestBase {
 
   void run(){
     int L0FilesNums = 4;
-    uint64_t ttl = 200;
     options.env = mock_env_.get();
     SetUp();
     Reopen(options);
@@ -52,10 +51,17 @@ class DBImplGCTTL_Test : public DBTestBase {
       }
       dbfull()->Flush(FlushOptions());
     }
-    //  dbfull()->StartPeriodicWorkScheduler();
     dbfull()->TEST_WaitForStatsDumpRun([&] { mock_env_->set_current_time(ttl); });
     ASSERT_TRUE(flag);
     ASSERT_EQ(L0FilesNums, mark);
+    dbfull()->CompactRange(CompactRangeOptions(), nullptr, nullptr);
+    dbfull()->TEST_WaitForCompact();
+  }
+  void read(){
+    mark = 0;
+    cnt = 0;
+    dbfull()->TEST_WaitForStatsDumpRun([&] { mock_env_->set_current_time(ttl + ttl); });
+    ASSERT_EQ(mark,cnt);
   }
 
  protected:
@@ -64,6 +70,8 @@ class DBImplGCTTL_Test : public DBTestBase {
   std::string dbname;
   bool flag = false;
   int mark = 0;
+  int cnt = 0;
+  uint64_t ttl = 200;
 
   void SetUp() override {
     mock_env_->InstallTimedWaitFixCallback();
@@ -81,15 +89,16 @@ class DBImplGCTTL_Test : public DBTestBase {
                                                    });
     TERARKDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
         "DBImpl:ScheduleGCTTL-mark", [&](void* /*arg*/) { mark++; });
+    TERARKDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+        "DBImpl:Exist-SST", [&](void* /*arg*/) { cnt++; });
+
   }
 };
 
 TEST_F(DBImplGCTTL_Test, BlockBasedTableTest) {
   init();
   run();
-  dbfull()->CompactRange(CompactRangeOptions(), nullptr, nullptr);
-  dbfull()->TEST_WaitForCompact();
-  dbfull()->ScheduleGCTTL();
+  read();
 }
 TEST_F(DBImplGCTTL_Test, TerarkTableTest) {
   init();
@@ -97,6 +106,7 @@ TEST_F(DBImplGCTTL_Test, TerarkTableTest) {
   options.table_factory.reset(TERARKDB_NAMESPACE::NewTerarkZipTableFactory(
     terarkziptableoptions, options.table_factory));
   run();
+  read();
 }
 
 
