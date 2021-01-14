@@ -2134,14 +2134,14 @@ Status CompactionJob::FinishCompactionOutputFile(
 
     if (compact_->compaction->immutable_cf_options()->ttl_extractor_factory !=
         nullptr) {
-      meta->prop.ratio_expire_time =
-          DecodeFixed64(tp.user_collected_properties
-                            [TablePropertiesNames::kEarliestTimeBeginCompact]
-                                .c_str());
+      meta->prop.ratio_expire_time = DecodeFixed64(
+          tp.user_collected_properties
+              .find(TablePropertiesNames::kEarliestTimeBeginCompact)
+              ->second.c_str());
       meta->prop.scan_gap_expire_time =
           DecodeFixed64(tp.user_collected_properties
-                            [TablePropertiesNames::kLatestTimeEndCompact]
-                                .c_str());
+                            .find(TablePropertiesNames::kLatestTimeEndCompact)
+                            ->second.c_str());
       ROCKS_LOG_INFO(db_options_.info_log, "ratio:%" PRIu64 ", scan:%" PRIu64,
                      meta->prop.ratio_expire_time,
                      meta->prop.scan_gap_expire_time);

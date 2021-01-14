@@ -6,9 +6,8 @@
 #include "db/periodic_work_scheduler.h"
 
 #include "db/db_test_util.h"
-#include "util/cast_util.h"
-
 #include "rocksdb/terark_namespace.h"
+#include "util/cast_util.h"
 namespace TERARKDB_NAMESPACE {
 
 #ifndef ROCKSDB_LITE
@@ -68,7 +67,7 @@ TEST_F(PeriodicWorkSchedulerTest, Basic) {
 
   auto scheduler = dbfull()->TEST_GetPeriodicWorkScheduler();
   ASSERT_NE(nullptr, scheduler);
-  ASSERT_EQ(3, scheduler->TEST_GetValidTaskNum());
+  ASSERT_EQ(4, scheduler->TEST_GetValidTaskNum());
 
   ASSERT_EQ(1, dump_st_counter);
   ASSERT_EQ(1, pst_st_counter);
@@ -221,7 +220,7 @@ TEST_F(PeriodicWorkSchedulerTest, MultiEnv) {
   Close();
 }
 #endif  // !ROCKSDB_LITE
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace TERARKDB_NAMESPACE
 
 int main(int argc, char** argv) {
   ::testing::InitGoogleTest(&argc, argv);

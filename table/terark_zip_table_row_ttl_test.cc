@@ -123,7 +123,7 @@ TEST_F(TerarkZipTableBuilderTest, FunctionTest) {
           new test::StringSource(ss->contents(), 72242, true)));
   TableProperties* props = nullptr;
   s = ReadTableProperties(file_reader.get(), ss->contents().size(),
-                          kBlockBasedTableMagicNumber, ioptions, &props,
+                          kTerarkZipTableMagicNumber, ioptions, &props,
                           true /* compression_type_missing */);
   std::unique_ptr<TableProperties> props_guard(props);
 
@@ -132,7 +132,7 @@ TEST_F(TerarkZipTableBuilderTest, FunctionTest) {
   ASSERT_EQ(16ul * 26, props->raw_key_size);
   ASSERT_EQ(28ul * 26, props->raw_value_size);
   ASSERT_EQ(26ul, props->num_entries);
-  ASSERT_EQ(1ul, props->num_data_blocks);
+  ASSERT_EQ(26ul, props->num_data_blocks);
   ASSERT_TRUE(props->user_collected_properties.find(
                   TablePropertiesNames::kEarliestTimeBeginCompact) ==
               props->user_collected_properties.end());
@@ -225,7 +225,7 @@ TEST_P(TerarkZipTableBuilderTest, BoundaryTest) {
 
   TableProperties* props = nullptr;
   s = ReadTableProperties(file_reader.get(), ss->contents().size(),
-                          kBlockBasedTableMagicNumber, ioptions, &props,
+                          kTerarkZipTableMagicNumber, ioptions, &props,
                           true /* compression_type_missing */);
   std::unique_ptr<TableProperties> props_guard(props);
 
@@ -234,7 +234,7 @@ TEST_P(TerarkZipTableBuilderTest, BoundaryTest) {
   ASSERT_EQ(16ul * 26, props->raw_key_size);
   ASSERT_EQ(36ul * 26, props->raw_value_size);
   ASSERT_EQ(26ul, props->num_entries);
-  ASSERT_EQ(1ul, props->num_data_blocks);
+  ASSERT_EQ(26ul, props->num_data_blocks);
   auto answer1 = props->user_collected_properties.find(
       TablePropertiesNames::kEarliestTimeBeginCompact);
   auto answer2 = props->user_collected_properties.find(

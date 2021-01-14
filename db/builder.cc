@@ -417,14 +417,14 @@ Status BuildTable(
         sst_meta()->prop.ratio_expire_time = DecodeFixed64(
             builder->GetTableProperties()
                 .user_collected_properties
-                    [TablePropertiesNames::kEarliestTimeBeginCompact]
-                .c_str());
+                .find(TablePropertiesNames::kEarliestTimeBeginCompact)
+                ->second.c_str());
 
         sst_meta()->prop.scan_gap_expire_time =
             DecodeFixed64(builder->GetTableProperties()
                               .user_collected_properties
-                                  [TablePropertiesNames::kLatestTimeEndCompact]
-                              .c_str());
+                              .find(TablePropertiesNames::kLatestTimeEndCompact)
+                              ->second.c_str());
       }
     }
 

@@ -779,6 +779,7 @@ class VersionBuilder::Rep {
           file_meta->prop.raw_value_size = properties->raw_value_size;
           auto its = properties->user_collected_properties.find(
               TablePropertiesNames::kEarliestTimeBeginCompact);
+          // It's difficult to get ioption
           if (its != properties->user_collected_properties.end()) {
             file_meta->prop.ratio_expire_time =
                 DecodeFixed64(its->second.c_str());
