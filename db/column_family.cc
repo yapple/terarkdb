@@ -33,13 +33,13 @@
 #include "memtable/hash_skiplist_rep.h"
 #include "monitoring/thread_status_util.h"
 #include "options/options_helper.h"
+#include "rocksdb/terark_namespace.h"
 #include "table/block_based_table_factory.h"
 #include "table/merging_iterator.h"
 #include "util/autovector.h"
 #include "util/compression.h"
 #include "util/sst_file_manager_impl.h"
-
-namespace rocksdb {
+namespace TERARKDB_NAMESPACE {
 
 ColumnFamilyHandleImpl::ColumnFamilyHandleImpl(
     ColumnFamilyData* column_family_data, DBImpl* db, InstrumentedMutex* mutex)
@@ -105,7 +105,7 @@ const Comparator* ColumnFamilyHandleImpl::GetComparator() const {
 }
 
 void GetIntTblPropCollectorFactory(
-    const ImmutableCFOptions& ioptions,
+    const ImmutableCFOptions& ioptions, const MutableCFOptions& moptions,
     std::vector<std::unique_ptr<IntTblPropCollectorFactory>>*
         int_tbl_prop_collector_factories) {
   auto& collector_factories = ioptions.table_properties_collector_factories;
@@ -114,6 +114,12 @@ void GetIntTblPropCollectorFactory(
     assert(collector_factories[i]);
     int_tbl_prop_collector_factories->emplace_back(
         new UserKeyTablePropertiesCollectorFactory(collector_factories[i]));
+  }
+  if (ioptions.ttl_extractor_factory != nullptr) {
+    int_tbl_prop_collector_factories->emplace_back(
+        NewTtlIntTblPropCollectorFactory(
+            ioptions.ttl_extractor_factory, ioptions.env,
+            moptions.ttl_garbage_collection_percentage, moptions.ttl_scan_gap));
   }
 }
 
@@ -464,7 +470,8 @@ ColumnFamilyData::ColumnFamilyData(
   Ref();
 
   // Convert user defined table properties collector factories to internal ones.
-  GetIntTblPropCollectorFactory(ioptions_, &int_tbl_prop_collector_factories_);
+  GetIntTblPropCollectorFactory(ioptions_, mutable_cf_options_,
+                                &int_tbl_prop_collector_factories_);
 
   // if _dummy_versions is nullptr, then this is a dummy column family.
   if (_dummy_versions != nullptr) {
@@ -1494,4 +1501,4 @@ const Comparator* GetColumnFamilyUserComparator(
   return nullptr;
 }
 
-}  // namespace rocksdb
+}  // namespace TERARKDB_NAMESPACE

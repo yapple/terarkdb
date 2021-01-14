@@ -7,7 +7,8 @@
 
 #include "util/sync_point.h"
 
-namespace rocksdb {
+#include "rocksdb/terark_namespace.h"
+namespace TERARKDB_NAMESPACE {
 
 // TODO: this is a workaround for the different behavior on different platform
 // for timedwait timeout. Ideally timedwait API should be moved to env.

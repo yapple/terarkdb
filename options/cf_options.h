@@ -11,9 +11,9 @@
 #include "db/dbformat.h"
 #include "options/db_options.h"
 #include "rocksdb/options.h"
+#include "rocksdb/terark_namespace.h"
 #include "util/compression.h"
-
-namespace rocksdb {
+namespace TERARKDB_NAMESPACE {
 
 // ImmutableCFOptions is a data struct used by RocksDB internal. It contains a
 // subset of Options that should not be changed during the entire lifetime
@@ -214,7 +214,7 @@ struct MutableCFOptions {
         report_bg_io_stats(false),
         compression(Snappy_Supported() ? kSnappyCompression : kNoCompression),
         ttl_garbage_collection_percentage(2.000),
-        ttl_scan_gap(std::numeric_limits<size_t>::max()) {}
+        ttl_scan_gap(0) {}
 
   explicit MutableCFOptions(const Options& options);
 
@@ -292,4 +292,4 @@ uint64_t MaxFileSizeForLevel(const MutableCFOptions& cf_options, int level,
                              CompactionStyle compaction_style,
                              int base_level = 1,
                              bool level_compaction_dynamic_level_bytes = false);
-}  // namespace rocksdb
+}  // namespace TERARKDB_NAMESPACE

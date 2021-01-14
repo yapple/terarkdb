@@ -8,7 +8,8 @@
 #include "rocksdb/utilities/sim_cache.h"
 #include "trace_replay/block_cache_tracer.h"
 
-namespace rocksdb {
+#include "rocksdb/terark_namespace.h"
+namespace TERARKDB_NAMESPACE {
 
 // A cache configuration provided by user.
 struct CacheConfiguration {

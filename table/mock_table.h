@@ -17,6 +17,7 @@
 #include "port/port.h"
 #include "rocksdb/comparator.h"
 #include "rocksdb/table.h"
+#include "rocksdb/terark_namespace.h"
 #include "table/internal_iterator.h"
 #include "table/table_builder.h"
 #include "table/table_reader.h"
@@ -24,8 +25,7 @@
 #include "util/mutexlock.h"
 #include "util/testharness.h"
 #include "util/testutil.h"
-
-namespace rocksdb {
+namespace TERARKDB_NAMESPACE {
 namespace mock {
 
 stl_wrappers::KVMap MakeMockFile(
@@ -166,8 +166,8 @@ class MockTableBuilder : public TableBuilder {
       prop_.read_amp = prop->read_amp;
       prop_.dependence = prop->dependence;
       prop_.inheritance_chain = prop->inheritance_chain;
-      prop_.ratio_expire_time = prop->ratio_expire_time;
-      prop_.scan_gap_expire_time = prop->scan_gap_expire_time;
+      // prop_.ratio_expire_time = prop->ratio_expire_time;
+      // prop_.scan_gap_expire_time = prop->scan_gap_expire_time;
     }
     file_data_.prop = std::make_shared<const TableProperties>(prop_);
     MutexLock lock_guard(&file_system_->mutex);
@@ -238,4 +238,4 @@ class MockTableFactory : public TableFactory {
 };
 
 }  // namespace mock
-}  // namespace rocksdb
+}  // namespace TERARKDB_NAMESPACE

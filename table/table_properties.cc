@@ -8,12 +8,12 @@
 #include "port/port.h"
 #include "rocksdb/env.h"
 #include "rocksdb/iterator.h"
+#include "rocksdb/terark_namespace.h"
 #include "table/block.h"
 #include "table/internal_iterator.h"
 #include "table/table_properties_internal.h"
 #include "util/string_util.h"
-
-namespace rocksdb {
+namespace TERARKDB_NAMESPACE {
 
 const uint32_t TablePropertiesCollectorFactory::Context::kUnknownColumnFamily =
     port::kMaxInt32;
@@ -116,10 +116,11 @@ std::string TablePropertiesBase::ToString(const std::string& prop_delim,
                  prop_delim, kv_delim);
 
   AppendProperty(result, "column family ID",
-                 column_family_id == rocksdb::TablePropertiesCollectorFactory::
-                                         Context::kUnknownColumnFamily
+                 column_family_id ==
+                         TERARKDB_NAMESPACE::TablePropertiesCollectorFactory::
+                             Context::kUnknownColumnFamily
                      ? std::string("N/A")
-                     : rocksdb::ToString(column_family_id),
+                     : TERARKDB_NAMESPACE::ToString(column_family_id),
                  prop_delim, kv_delim);
   AppendProperty(
       result, "column family name",
@@ -156,11 +157,12 @@ std::string TablePropertiesBase::ToString(const std::string& prop_delim,
                  prop_delim, kv_delim);
 
   // Add for ttl feature property
-  AppendProperty(result, "expire time of fixed ratio", ratio_expire_time,
-                 prop_delim, kv_delim);
+  // AppendProperty(result, "expire time of fixed ratio", ratio_expire_time,
+  //                prop_delim, kv_delim);
 
-  AppendProperty(result, "expire time of fixed scan gap", scan_gap_expire_time,
-                 prop_delim, kv_delim);
+  // AppendProperty(result, "expire time of fixed scan gap",
+  // scan_gap_expire_time,
+  //                prop_delim, kv_delim);
 
   return result;
 }
@@ -180,17 +182,20 @@ void TableProperties::Add(const TableProperties& tp) {
   num_deletions += tp.num_deletions;
   num_merge_operands += tp.num_merge_operands;
   num_range_deletions += tp.num_range_deletions;
-  uint64_t max_uint64_t = std::numeric_limits<uint64_t>::max();
-  if (max_uint64_t - ratio_expire_time > tp.ratio_expire_time) {
-    ratio_expire_time += tp.ratio_expire_time;
-  } else {
-    ratio_expire_time = max_uint64_t;
-  }
-  if (max_uint64_t - scan_gap_expire_time > tp.scan_gap_expire_time) {
-    scan_gap_expire_time += tp.scan_gap_expire_time;
-  } else {
-    scan_gap_expire_time = max_uint64_t;
-  }
+  // ratio_expire_time = std::min(ratio_expire_time, tp.ratio_expire_time);
+  // scan_gap_expire_time =
+  //     std::min(scan_gap_expire_time, tp.scan_gap_expire_time);
+  // uint64_t max_uint64_t = std::numeric_limits<uint64_t>::max();
+  // if (max_uint64_t - ratio_expire_time > tp.ratio_expire_time) {
+  //   ratio_expire_time += tp.ratio_expire_time;
+  // } else {
+  //   ratio_expire_time = max_uint64_t;
+  // }
+  // if (max_uint64_t - scan_gap_expire_time > tp.scan_gap_expire_time) {
+  //   scan_gap_expire_time += tp.scan_gap_expire_time;
+  // } else {
+  //   scan_gap_expire_time = max_uint64_t;
+  // }
 }
 
 const std::string TablePropertiesNames::kDataSize = "rocksdb.data.size";
@@ -282,4 +287,4 @@ Status SeekToRangeDelBlock(InternalIteratorBase<Slice>* meta_iter,
   return SeekToMetaBlock(meta_iter, kRangeDelBlock, is_found, block_handle);
 }
 
-}  // namespace rocksdb
+}  // namespace TERARKDB_NAMESPACE

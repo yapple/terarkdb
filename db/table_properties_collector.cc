@@ -7,14 +7,15 @@
 
 #include "db/dbformat.h"
 #include "monitoring/histogram.h"
+#include "rocksdb/terark_namespace.h"
 #include "rocksdb/ttl_extractor.h"
 #include "util/coding.h"
 #include "util/string_util.h"
 #include "utilities/util/factory.h"
 
-namespace rocksdb {
-
+namespace TERARKDB_NAMESPACE {
 const uint64_t kFiftyYearSecondsNumber = 1576800000;
+
 namespace {
 
 uint64_t GetUint64Property(const UserCollectedProperties& props,
@@ -58,6 +59,7 @@ UserCollectedProperties UserKeyTablePropertiesCollector::GetReadableProperties()
 class TtlIntTblPropCollector : public IntTblPropCollector {
  private:
   TtlExtractor* ttl_extractor_;
+  Env* env_;
   double ttl_gc_ratio_;
   size_t ttl_max_scan_cap_;
   HistogramImpl histogram_;
@@ -71,58 +73,68 @@ class TtlIntTblPropCollector : public IntTblPropCollector {
   uint64_t min_scan_cap_ttl_seconds_ = std::numeric_limits<uint64_t>::max();
   uint64_t min_gc_ratio_ttl_seconds_ = std::numeric_limits<uint64_t>::max();
   void AddTtlToSliceWindow(uint64_t ttl) {
-    if (slice_index_ < ttl_max_scan_cap_) {
-      while (!slice_window_ttl_index_.empty() &&
-             ttl >= ttl_seconds_slice_window_[slice_window_ttl_index_.back()]) {
-        slice_window_ttl_index_.pop_back();
+    if (ttl_max_scan_cap_ > 0) {
+      if (slice_index_ < ttl_max_scan_cap_) {
+        while (!slice_window_ttl_index_.empty() &&
+               ttl >=
+                   ttl_seconds_slice_window_[slice_window_ttl_index_.back()]) {
+          slice_window_ttl_index_.pop_back();
+        }
+        ttl_seconds_slice_window_.emplace_back(ttl);
+      } else {
+        assert(ttl_seconds_slice_window_.size() == ttl_max_scan_cap_);
+        while (!slice_window_ttl_index_.empty() &&
+               slice_window_ttl_index_.front() <=
+                   slice_index_ - ttl_max_scan_cap_) {
+          slice_window_ttl_index_.pop_front();
+        }
+        while (!slice_window_ttl_index_.empty() &&
+               ttl >= ttl_seconds_slice_window_[slice_window_ttl_index_.back() %
+                                                ttl_max_scan_cap_]) {
+          slice_window_ttl_index_.pop_back();
+        }
+        ttl_seconds_slice_window_[slice_index_ % ttl_max_scan_cap_] = ttl;
       }
-      ttl_seconds_slice_window_.emplace_back(ttl);
-    } else {
-      assert(ttl_seconds_slice_window_.size() == ttl_max_scan_cap_);
-      while (!slice_window_ttl_index_.empty() &&
-             slice_window_ttl_index_.front() <=
-                 slice_index_ - ttl_max_scan_cap_) {
-        slice_window_ttl_index_.pop_front();
+      slice_window_ttl_index_.push_back(slice_index_);
+      slice_index_++;
+      if (slice_index_ >= ttl_max_scan_cap_) {
+        min_scan_cap_ttl_seconds_ =
+            std::min(min_scan_cap_ttl_seconds_,
+                     ttl_seconds_slice_window_[slice_window_ttl_index_.front() %
+                                               ttl_max_scan_cap_]);
       }
-      while (!slice_window_ttl_index_.empty() &&
-             ttl >= ttl_seconds_slice_window_[slice_window_ttl_index_.back() %
-                                              ttl_max_scan_cap_]) {
-        slice_window_ttl_index_.pop_back();
-      }
-      ttl_seconds_slice_window_[slice_index_ % ttl_max_scan_cap_] = ttl;
-    }
-    slice_window_ttl_index_.push_back(slice_index_);
-    slice_index_++;
-    if (slice_index_ >= ttl_max_scan_cap_) {
-      min_scan_cap_ttl_seconds_ =
-          std::min(min_scan_cap_ttl_seconds_,
-                   ttl_seconds_slice_window_[slice_window_ttl_index_.front() %
-                                             ttl_max_scan_cap_]);
     }
   }
 
  public:
-  TtlIntTblPropCollector(TtlExtractor* _ttl_extractor, double _ttl_gc_ratio,
-                         size_t _ttl_max_scan_cap, const std::string& _name)
+  TtlIntTblPropCollector(TtlExtractor* _ttl_extractor, Env* _env,
+                         double _ttl_gc_ratio, size_t _ttl_max_scan_cap,
+                         const std::string& _name)
       : ttl_extractor_(_ttl_extractor),
+        env_(_env),
         ttl_gc_ratio_(_ttl_gc_ratio),
         ttl_max_scan_cap_(_ttl_max_scan_cap),
         name_(_name) {}
   ~TtlIntTblPropCollector() { delete ttl_extractor_; }
   Status Finish(UserCollectedProperties* properties) override {
-    // uint64_t max_uint64_t = std::numeric_limits<uint64_t>::max();
+    uint64_t now_time_seconds = env_->NowMicros() / 1000000;
     if (!histogram_.Empty() &&
         ttl_key_value_size_ >= ttl_gc_ratio_ * raw_key_value_size_) {
       min_gc_ratio_ttl_seconds_ =
+          now_time_seconds +
           static_cast<uint64_t>(histogram_.Percentile(ttl_gc_ratio_ * 100.0));
+    }
+    if (min_scan_cap_ttl_seconds_ < std::numeric_limits<uint64_t>::max()) {
+      min_scan_cap_ttl_seconds_ += now_time_seconds;
     }
     std::string temp_ttl_str[2];
     PutFixed64(&temp_ttl_str[0], min_gc_ratio_ttl_seconds_);
-    PutFixed64(&temp_ttl_str[1], min_gc_ratio_ttl_seconds_);
+    PutFixed64(&temp_ttl_str[1], min_scan_cap_ttl_seconds_);
     properties->insert(
         {TablePropertiesNames::kEarliestTimeBeginCompact, temp_ttl_str[0]});
     properties->insert(
         {TablePropertiesNames::kLatestTimeEndCompact, temp_ttl_str[1]});
+    return Status::OK();
   }
 
   const char* Name() const override { return name_.c_str(); }
@@ -175,15 +187,18 @@ class TtlIntTblPropCollector : public IntTblPropCollector {
 
 // Factory for internal table properties collector.
 class TtlIntTblPropCollectorFactory : public IntTblPropCollectorFactory {
-  TtlExtractorFactory* ttl_extractor_factory_;
+  const TtlExtractorFactory* ttl_extractor_factory_;
   double ttl_gc_ratio_;
   size_t ttl_max_scan_cap_;
   std::string name_;
+  Env* env_;
 
  public:
-  TtlIntTblPropCollectorFactory(TtlExtractorFactory* _ttl_extractor_factory,
-                                double _ttl_gc_ratio, size_t _ttl_max_scan_cap)
+  TtlIntTblPropCollectorFactory(
+      const TtlExtractorFactory* _ttl_extractor_factory, Env* _env,
+      double _ttl_gc_ratio, size_t _ttl_max_scan_cap)
       : ttl_extractor_factory_(_ttl_extractor_factory),
+        env_(_env),
         ttl_gc_ratio_(_ttl_gc_ratio),
         ttl_max_scan_cap_(_ttl_max_scan_cap) {
     name_ =
@@ -197,7 +212,7 @@ class TtlIntTblPropCollectorFactory : public IntTblPropCollectorFactory {
     auto ttl_extractor =
         ttl_extractor_factory_->CreateTtlExtractor(ttl_context);
     return new TtlIntTblPropCollector(
-        ttl_extractor.release(), ttl_gc_ratio_, ttl_max_scan_cap_,
+        ttl_extractor.release(), env_, ttl_gc_ratio_, ttl_max_scan_cap_,
         std::string("TtlCollector.") + ttl_extractor_factory_->Name());
   }
 
@@ -208,9 +223,11 @@ class TtlIntTblPropCollectorFactory : public IntTblPropCollectorFactory {
 };
 
 IntTblPropCollectorFactory* NewTtlIntTblPropCollectorFactory(
-    TtlExtractorFactory* ttl_extractor_factory,
-    const TtlExtractorContext& context, double ttl_gc_ratio,
-    size_t ttl_max_scan_cap) {}
+    const TtlExtractorFactory* ttl_extractor_factory, Env* env,
+    double ttl_gc_ratio, size_t ttl_max_scan_cap) {
+  return new TtlIntTblPropCollectorFactory(ttl_extractor_factory, env,
+                                           ttl_gc_ratio, ttl_max_scan_cap);
+}
 
 uint64_t GetDeletedKeys(const UserCollectedProperties& props) {
   bool property_present_ignored;
@@ -224,6 +241,7 @@ uint64_t GetMergeOperands(const UserCollectedProperties& props,
                            property_present);
 }
 
-}  // namespace rocksdb
+}  // namespace TERARKDB_NAMESPACE
 
-TERARK_FACTORY_INSTANTIATE_GNS(rocksdb::TablePropertiesCollectorFactory*);
+TERARK_FACTORY_INSTANTIATE_GNS(
+    TERARKDB_NAMESPACE::TablePropertiesCollectorFactory*);

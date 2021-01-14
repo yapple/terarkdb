@@ -7,7 +7,8 @@
 
 #include "db/db_test_util.h"
 
-namespace rocksdb {
+#include "rocksdb/terark_namespace.h"
+namespace TERARKDB_NAMESPACE {
 
 class TimerTest : public testing::Test {
  public:

@@ -80,6 +80,7 @@
 #include "rocksdb/db.h"
 #include "rocksdb/env.h"
 #include "rocksdb/options.h"
+#include "rocksdb/terark_namespace.h"
 #include "rocksdb/write_buffer_manager.h"
 #include "table/scoped_arena_iterator.h"
 #include "util/c_style_callback.h"
@@ -87,8 +88,7 @@
 #include "util/filename.h"
 #include "util/string_util.h"
 #include "utilities/util/function.hpp"
-
-namespace rocksdb {
+namespace TERARKDB_NAMESPACE {
 
 namespace {
 
@@ -672,8 +672,8 @@ class Repairer {
       t->meta.prop.read_amp = props->read_amp;
       t->meta.prop.dependence = props->dependence;
       t->meta.prop.inheritance_chain = props->inheritance_chain;
-      t->meta.prop.ratio_expire_time = props->ratio_expire_time;
-      t->meta.prop.scan_gap_expire_time = props->scan_gap_expire_time;
+      // t->meta.prop.ratio_expire_time = props->ratio_expire_time;
+      // t->meta.prop.scan_gap_expire_time = props->scan_gap_expire_time;
     }
     return status;
   }
@@ -807,6 +807,6 @@ Status RepairDB(const std::string& dbname, const Options& options) {
   return repairer.Run();
 }
 
-}  // namespace rocksdb
+}  // namespace TERARKDB_NAMESPACE
 
 #endif  // ROCKSDB_LITE

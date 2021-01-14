@@ -17,6 +17,7 @@
 #endif
 
 #include <algorithm>
+#include <cinttypes>
 #include <cstdio>
 #include <map>
 #include <set>
@@ -129,7 +130,8 @@
 #endif
 #include <iostream>
 
-namespace rocksdb {
+#include "rocksdb/terark_namespace.h"
+namespace TERARKDB_NAMESPACE {
 const std::string kDefaultColumnFamilyName("default");
 const uint64_t kDumpStatsWaitMicroseconds = 10000;
 const std::string kPersistentStatsColumnFamilyName(
@@ -780,7 +782,6 @@ void DBImpl::StartPeriodicWorkScheduler() {
     TEST_SYNC_POINT_CALLBACK("DBImpl::StartPeriodicWorkScheduler:Init",
                              &periodic_work_scheduler_);
   }
-
   periodic_work_scheduler_->Register(
       this, mutable_db_options_.stats_dump_period_sec,
       mutable_db_options_.stats_persist_period_sec);
@@ -906,7 +907,8 @@ bool DBImpl::FindStatsByTime(uint64_t start_time, uint64_t end_time,
   }
 }
 
-Status DBImpl::GetStatsHistory(uint64_t start_time, uint64_t end_time,
+Status DBImpl::GetStatsHistory(
+    uint64_t start_time, uint64_t end_time,
     std::unique_ptr<StatsHistoryIterator>* stats_iterator) {
   if (!stats_iterator) {
     return Status::InvalidArgument("stats_iterator not preallocated.");
@@ -924,38 +926,52 @@ void DBImpl::ScheduleGCTTL() {
   TEST_SYNC_POINT("DBImpl:ScheduleGCTTL");
   uint64_t mark_count = 0;
   uint64_t marked_count = 0;
-  uint64_t nowSeconds =  env_->NowMicros()/ 1000U / 1000U;
-  auto should_marked_for_compacted = [](uint64_t ratio_expire_time,
-                                        uint64_t scan_gap_expire_time,
-                                        uint64_t now) {
+  uint64_t nowSeconds = env_->NowMicros() / 1000U / 1000U;
+  auto should_marked_for_compacted = [&](uint64_t ratio_expire_time,
+                                         uint64_t scan_gap_expire_time,
+                                         uint64_t now) {
+    // ROCKS_LOG_INFO(immutable_db_options_.info_log,
+    //                "SST Table property info:%" PRIu64 ",%" PRIu64 ",%"
+    //                PRIu64, ratio_expire_time, scan_gap_expire_time, now);
     return (std::min(ratio_expire_time, scan_gap_expire_time) <= now);
   };
   ROCKS_LOG_INFO(immutable_db_options_.info_log, "Start ScheduleGCTTL");
+  int cnt = 0;
   for (auto cfd : *versions_->GetColumnFamilySet()) {
-    if(cfd->GetLatestCFOptions().ttl_extractor_factory == nullptr) continue;
+    if (cfd->GetLatestCFOptions().ttl_extractor_factory == nullptr) continue;
     if (cfd->initialized()) {
       VersionStorageInfo* vsi = cfd->current()->storage_info();
       for (int l = 0; l < vsi->num_levels(); l++) {
         for (auto sst : vsi->LevelFiles(l)) {
-
-          if (sst->marked_for_compaction) marked_count++;
-          if (!sst->marked_for_compaction)
-            sst->marked_for_compaction = should_marked_for_compacted(
-                sst->prop.ratio_expire_time, sst->prop.scan_gap_expire_time,
-                nowSeconds);
+          cnt++;
+          if (sst->marked_for_compaction) {
+            marked_count++;
+          } else if (should_marked_for_compacted(sst->prop.ratio_expire_time,
+                                                 sst->prop.scan_gap_expire_time,
+                                                 nowSeconds)) {
+            sst->marked_for_compaction = true;
+          }
           if (sst->marked_for_compaction) {
             TEST_SYNC_POINT("DBImpl:ScheduleGCTTL-mark");
             mark_count++;
           }
         }
       }
+      if (mark_count > 0) {
+        vsi->ComputeCompactionScore(*cfd->ioptions(),
+                                    *cfd->GetLatestMutableCFOptions());
+        InstrumentedMutexLock l(&mutex_);
+        AddToCompactionQueue(cfd);
+        unscheduled_compactions_++;
+        MaybeScheduleFlushOrCompaction();
+      }
+      ROCKS_LOG_INFO(immutable_db_options_.info_log,
+                     "[%s] marked for compact SST: %d, %d, %d",
+                     cfd->GetName().c_str(), marked_count, mark_count, cnt);
+      marked_count = 0;
+      mark_count = 0;
+      cnt = 0;
     }
-  }
-  ROCKS_LOG_INFO(immutable_db_options_.info_log, "marked for compact SST: %d,%d",
-                 marked_count,mark_count);
-  if (mark_count > 0) {
-    InstrumentedMutexLock l(&mutex_);
-    MaybeScheduleFlushOrCompaction();
   }
 }
 void DBImpl::DumpStats() {
@@ -1991,7 +2007,7 @@ std::vector<Status> DBImpl::MultiGet(
   PERF_TIMER_STOP(get_post_process_time);
 
   return stat_list;
-}  // namespace rocksdb
+}  // namespace TERARKDB_NAMESPACE
 
 Status DBImpl::CreateColumnFamily(const ColumnFamilyOptions& cf_options,
                                   const std::string& column_family,
@@ -4202,7 +4218,7 @@ Status DBImpl::VerifyChecksum() {
         const auto& fd = vstorage->LevelFiles(i)[j]->fd;
         std::string fname = TableFileName(cfd->ioptions()->cf_paths,
                                           fd.GetNumber(), fd.GetPathId());
-        s = rocksdb::VerifySstFileChecksum(opts, env_options_, fname);
+        s = TERARKDB_NAMESPACE::VerifySstFileChecksum(opts, env_options_, fname);
       }
     }
     if (!s.ok()) {
@@ -4293,4 +4309,4 @@ Status DBImpl::TraceIteratorSeekForPrev(const uint32_t& cf_id,
 
 #endif  // ROCKSDB_LITE
 
-}  // namespace rocksdb
+}  // namespace TERARKDB_NAMESPACE

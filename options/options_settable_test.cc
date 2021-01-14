@@ -25,7 +25,8 @@ using GFLAGS_NAMESPACE::ParseCommandLineFlags;
 DEFINE_bool(enable_print, false, "Print options generated to console.");
 #endif  // GFLAGS
 
-namespace rocksdb {
+#include "rocksdb/terark_namespace.h"
+namespace TERARKDB_NAMESPACE {
 
 // Verify options are settable from options strings.
 // We take the approach that depends on compiler behavior that copy constructor
@@ -470,8 +471,8 @@ TEST_F(OptionsSettableTest, ColumnFamilyOptionsAllFieldsSettable) {
       "blob_gc_ratio=0.05;"
       "report_bg_io_stats=true;"
       "ttl=60;"
-      "ttl_garbage_collection_percentage=2.000;"
-      "ttl_scan_gap=2147483647;"
+      "ttl_garbage_collection_percentage=3.000;"
+      "ttl_scan_gap=1;"
       "compaction_options_fifo={max_table_files_size=3;ttl=100;allow_"
       "compaction=false;};",
       new_options));
@@ -479,8 +480,8 @@ TEST_F(OptionsSettableTest, ColumnFamilyOptionsAllFieldsSettable) {
   ASSERT_EQ(unset_bytes_base,
             NumUnsetBytes(new_options_ptr, sizeof(ColumnFamilyOptions),
                           kColumnFamilyOptionsBlacklist));
-  EXPECT_EQ(new_options->ttl_garbage_collection_percentage, 2.000);
-  EXPECT_EQ(new_options->ttl_scan_gap, 2147483647);
+  EXPECT_EQ(new_options->ttl_garbage_collection_percentage, 3.000);
+  EXPECT_EQ(new_options->ttl_scan_gap, 1);
   options->~ColumnFamilyOptions();
   new_options->~ColumnFamilyOptions();
 
@@ -491,7 +492,7 @@ TEST_F(OptionsSettableTest, ColumnFamilyOptionsAllFieldsSettable) {
 #endif  // OS_LINUX || OS_WIN
 #endif  // !ROCKSDB_LITE
 
-}  // namespace rocksdb
+}  // namespace TERARKDB_NAMESPACE
 
 int main(int argc, char** argv) {
   ::testing::InitGoogleTest(&argc, argv);

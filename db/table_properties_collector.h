@@ -11,9 +11,10 @@
 #include <string>
 #include <vector>
 
+#include "rocksdb/env.h"
 #include "rocksdb/table_properties.h"
-
-namespace rocksdb {
+#include "rocksdb/terark_namespace.h"
+namespace TERARKDB_NAMESPACE {
 
 class TtlExtractorFactory;
 
@@ -152,7 +153,7 @@ class UserKeyTablePropertiesCollectorFactory
 };
 
 IntTblPropCollectorFactory* NewTtlIntTblPropCollectorFactory(
-    TtlExtractorFactory* ttl_extractor_factory, double ttl_gc_ratio,
-    size_t ttl_max_scan_cap);
+    const TtlExtractorFactory* ttl_extractor_factory, Env* env,
+    double ttl_gc_ratio, size_t ttl_max_scan_cap);
 
-}  // namespace rocksdb
+}  // namespace TERARKDB_NAMESPACE

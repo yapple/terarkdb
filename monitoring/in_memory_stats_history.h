@@ -10,7 +10,8 @@
 
 #include "rocksdb/stats_history.h"
 
-namespace rocksdb {
+#include "rocksdb/terark_namespace.h"
+namespace TERARKDB_NAMESPACE {
 
 class InMemoryStatsHistoryIterator final : public StatsHistoryIterator {
  public:

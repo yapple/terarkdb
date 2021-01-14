@@ -37,7 +37,8 @@
 
 #define ROCKS_VERSION_BUILDER_DEBUG 0
 
-namespace rocksdb {
+#include "rocksdb/terark_namespace.h"
+namespace TERARKDB_NAMESPACE {
 
 bool NewestFirstBySeqNo(FileMetaData* a, FileMetaData* b) {
   if (a->fd.largest_seqno != b->fd.largest_seqno) {
@@ -776,9 +777,16 @@ class VersionBuilder::Rep {
           file_meta->prop.num_deletions = properties->num_deletions;
           file_meta->prop.raw_key_size = properties->raw_key_size;
           file_meta->prop.raw_value_size = properties->raw_value_size;
-          file_meta->prop.ratio_expire_time = properties->ratio_expire_time;
-          file_meta->prop.scan_gap_expire_time =
-              properties->scan_gap_expire_time;
+          auto its = properties->user_collected_properties.find(
+              TablePropertiesNames::kEarliestTimeBeginCompact);
+          if (its != properties->user_collected_properties.end()) {
+            file_meta->prop.ratio_expire_time =
+                DecodeFixed64(its->second.c_str());
+            file_meta->prop.scan_gap_expire_time = DecodeFixed64(
+                properties->user_collected_properties
+                    .find(TablePropertiesNames::kLatestTimeEndCompact)
+                    ->second.c_str());
+          }
         }
       }
     });
@@ -961,4 +969,4 @@ void VersionBuilderDebugger::Verify(VersionBuilder::Rep* rep,
 }
 #endif
 
-}  // namespace rocksdb
+}  // namespace TERARKDB_NAMESPACE

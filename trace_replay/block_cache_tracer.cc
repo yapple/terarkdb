@@ -11,7 +11,8 @@
 #include "util/hash.h"
 #include "util/string_util.h"
 
-namespace rocksdb {
+#include "rocksdb/terark_namespace.h"
+namespace TERARKDB_NAMESPACE {
 
 namespace {
 const unsigned int kCharSize = 1;

@@ -9,7 +9,8 @@
 #include "db/db_impl.h"
 #include "monitoring/in_memory_stats_history.h"
 
-namespace rocksdb {
+#include "rocksdb/terark_namespace.h"
+namespace TERARKDB_NAMESPACE {
 
 InMemoryStatsHistoryIterator::~InMemoryStatsHistoryIterator() {}
 

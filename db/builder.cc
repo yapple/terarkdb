@@ -29,6 +29,7 @@
 #include "rocksdb/merge_operator.h"
 #include "rocksdb/options.h"
 #include "rocksdb/table.h"
+#include "rocksdb/terark_namespace.h"
 #include "table/block_based_table_builder.h"
 #include "table/format.h"
 #include "table/internal_iterator.h"
@@ -37,8 +38,7 @@
 #include "util/filename.h"
 #include "util/stop_watch.h"
 #include "util/sync_point.h"
-
-namespace rocksdb {
+namespace TERARKDB_NAMESPACE {
 
 class TableFactory;
 
@@ -413,8 +413,19 @@ Status BuildTable(
                                     : TablePropertyCache::kNoRangeDeletions;
       sst_meta()->prop.flags |=
           tp.snapshots.empty() ? 0 : TablePropertyCache::kHasSnapshots;
-      sst_meta()->prop.ratio_expire_time = builder->GetTableProperties().ratio_expire_time;
-      sst_meta()->prop.scan_gap_expire_time = builder->GetTableProperties().scan_gap_expire_time;
+      if (ioptions.ttl_extractor_factory != nullptr) {
+        sst_meta()->prop.ratio_expire_time = DecodeFixed64(
+            builder->GetTableProperties()
+                .user_collected_properties
+                    [TablePropertiesNames::kEarliestTimeBeginCompact]
+                .c_str());
+
+        sst_meta()->prop.scan_gap_expire_time =
+            DecodeFixed64(builder->GetTableProperties()
+                              .user_collected_properties
+                                  [TablePropertiesNames::kLatestTimeEndCompact]
+                              .c_str());
+      }
     }
 
     if (s.ok() && !empty) {
@@ -485,4 +496,4 @@ Status BuildTable(
   return s;
 }
 
-}  // namespace rocksdb
+}  // namespace TERARKDB_NAMESPACE

@@ -16,7 +16,8 @@
 #include "util/string_util.h"
 #include "util/sync_point.h"
 
-namespace rocksdb {
+#include "rocksdb/terark_namespace.h"
+namespace TERARKDB_NAMESPACE {
 
 // Tag numbers for serialized VersionEdit.  These numbers are written to
 // disk and should not be changed.
@@ -768,4 +769,4 @@ std::string VersionEdit::DebugJSON(int edit_num, bool hex_key) const {
   return jw.Get();
 }
 
-}  // namespace rocksdb
+}  // namespace TERARKDB_NAMESPACE

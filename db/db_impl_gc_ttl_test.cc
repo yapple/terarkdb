@@ -8,12 +8,13 @@
 #include "util/sync_point.h"
 #include "util/testharness.h"
 
-namespace rocksdb {
+#include "rocksdb/terark_namespace.h"
+namespace TERARKDB_NAMESPACE {
 
 class DBImplGCTTL_Test : public DBTestBase {
  public:
   DBImplGCTTL_Test()
-      : DBTestBase("/db_GC_ttl_test"),
+      : DBTestBase("./db_GC_ttl_test"),
         mock_env_(new MockTimeEnv(Env::Default())) {}
 
   void init() {
@@ -24,12 +25,13 @@ class DBImplGCTTL_Test : public DBTestBase {
     options.ttl_scan_gap = 10;
     options.ttl_extractor_factory.reset(new test::TestTtlExtractorFactory());
     options.level0_file_num_compaction_trigger = 8;
+    options.enable_lazy_compaction = false;
     options.table_factory.reset(
         new BlockBasedTableFactory(BlockBasedTableOptions()));
   }
 
  protected:
-  std::unique_ptr<rocksdb::MockTimeEnv> mock_env_;
+  std::unique_ptr<TERARKDB_NAMESPACE::MockTimeEnv> mock_env_;
   Options options;
   std::string dbname;
   bool flag = false;
@@ -44,15 +46,13 @@ class DBImplGCTTL_Test : public DBTestBase {
           *periodic_work_scheduler_ptr =
               PeriodicWorkTestScheduler::Default(mock_env_.get());
         });
-    rocksdb::SyncPoint::GetInstance()->SetCallBack("DBImpl:ScheduleGCTTL",
+    TERARKDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack("DBImpl:ScheduleGCTTL",
                                                    [&](void* /*arg*/) {
                                                      mark = 0;
                                                      flag = true;
                                                    });
-    rocksdb::SyncPoint::GetInstance()->SetCallBack(
-        "DBImpl:ScheduleGCTTL-mark", [&](void* /*arg*/) {
-          mark++;
-        });
+    TERARKDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+        "DBImpl:ScheduleGCTTL-mark", [&](void* /*arg*/) { mark++; });
   }
 };
 
@@ -81,9 +81,13 @@ TEST_F(DBImplGCTTL_Test, L0FileExpiredTest) {
   dbfull()->TEST_WaitForStatsDumpRun([&] { mock_env_->set_current_time(ttl); });
   ASSERT_TRUE(flag);
   ASSERT_EQ(L0FilesNums, mark);
+  dbfull()->CompactRange(CompactRangeOptions(), nullptr, nullptr);
   dbfull()->TEST_WaitForCompact();
+  dbfull()->ScheduleGCTTL();
+
   Close();
 }
+
 }  // namespace rocksdb
 int main(int argc, char** argv) {
   ::testing::InitGoogleTest(&argc, argv);

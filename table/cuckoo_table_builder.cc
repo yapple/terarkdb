@@ -17,6 +17,7 @@
 #include "db/version_edit.h"
 #include "rocksdb/env.h"
 #include "rocksdb/table.h"
+#include "rocksdb/terark_namespace.h"
 #include "table/block_builder.h"
 #include "table/cuckoo_table_factory.h"
 #include "table/format.h"
@@ -25,8 +26,7 @@
 #include "util/file_reader_writer.h"
 #include "util/random.h"
 #include "util/string_util.h"
-
-namespace rocksdb {
+namespace TERARKDB_NAMESPACE {
 const std::string CuckooTablePropertyNames::kEmptyKey =
     "rocksdb.cuckoo.bucket.empty.key";
 const std::string CuckooTablePropertyNames::kNumHashFunc =
@@ -266,8 +266,8 @@ Status CuckooTableBuilder::Finish(
     properties_.dependence = prop->dependence;
     properties_.inheritance_chain = prop->inheritance_chain;
     // may be not need
-    properties_.ratio_expire_time = prop->ratio_expire_time;
-    properties_.scan_gap_expire_time = prop->scan_gap_expire_time;
+    // properties_.ratio_expire_time = prop->ratio_expire_time;
+    // properties_.scan_gap_expire_time = prop->scan_gap_expire_time;
   }
   if (snapshots != nullptr) {
     properties_.snapshots = *snapshots;
@@ -538,5 +538,5 @@ bool CuckooTableBuilder::MakeSpaceForKey(
   return null_found;
 }
 
-}  // namespace rocksdb
+}  // namespace TERARKDB_NAMESPACE
 #endif  // ROCKSDB_LITE

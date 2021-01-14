@@ -9,7 +9,8 @@
 #include "util/cast_util.h"
 
 #ifndef ROCKSDB_LITE
-namespace rocksdb {
+#include "rocksdb/terark_namespace.h"
+namespace TERARKDB_NAMESPACE {
 
 PeriodicWorkScheduler::PeriodicWorkScheduler(Env* env) {
   timer = std::unique_ptr<Timer>(new Timer(env));

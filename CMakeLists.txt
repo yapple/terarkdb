@@ -35,12 +35,17 @@ CMAKE_DEPENDENT_OPTION(WITH_TESTS "build with tests" ON "CMAKE_BUILD_TYPE STREQU
 option(WITH_TOOLS "build with tools" OFF)
 option(WITH_TERARK_ZIP "build with TerarkZipTable support" ON)
 option(WITH_BOOSTLIB "build with boost, if WITH_TERARK_ZIP is ON, this will also set to ON" OFF)
+option(WITH_TERARKDB_NAMESPACE "namespace" "terark")
 
 option(BUILD_SUFFIX "library sufix" "d")
 option(FORCE_TERARKDB_RELEASE_BUILD "ignore outside cmake_build_type" OFF)
 
 SET(CMAKE_THREAD_PREFER_PTHREAD TRUE)
 Find_Package(Threads REQUIRED)
+#----------------------- namespace
+if(WITH_TERARKDB_NAMESPACE)
+  add_definitions(-DTERARKDB_NAMESPACE=WITH_TERARKDB_NAMESPACE)
+endif()
 
 #----------------------- Global Options
 if (WITH_WINDOWS_UTF8_FILENAMES)
@@ -217,6 +222,7 @@ else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-format")
   endif()
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -DBUILD_BY_CMAKE -fPIC")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
   if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-omit-frame-pointer")
     include(CheckCXXCompilerFlag)
@@ -899,7 +905,7 @@ if(NOT WIN32 OR ROCKSDB_INSTALL_ON_WINDOWS)
   #  EXPORT RocksDBTargets
   #  COMPONENT devel
   #  DESTINATION ${package_config_destination}
-  #  NAMESPACE RocksDB::
+  #  NAMESPACE TERARKDB_NAMESPACE::
   #)
 
   install(
@@ -916,10 +922,14 @@ IF(WITH_TESTS OR WITH_TOOLS)
   add_library(testharness OBJECT util/testharness.cc util/mock_time_env.cc)
   target_link_libraries(testharness gtest)
 ENDIF()
-
+#if(WITH_TESTS)
+#  set(TESTS
+#          db/db_impl_gc_ttl_test.cc
+#          )
 if(WITH_TESTS)
   set(TESTS
         table/block_based_table_row_ttl_test.cc
+        table/terark_zip_table_row_ttl_test.cc
         db/db_impl_gc_ttl_test.cc
         db/periodic_work_scheduler_test.cc
         db/db_options_test.cc
@@ -1136,7 +1146,6 @@ if(WITH_TESTS)
       add_dependencies(check ${exename}${ARTIFACT_SUFFIX})
   endforeach(sourcefile ${C_TEST_EXES})
 endif()
-
 if(WITH_TOOLS)
   set(BENCHMARKS
     cache/cache_bench.cc

@@ -19,7 +19,8 @@
 #include "util/mutexlock.h"
 #include "util/sync_point_impl.h"
 
-namespace rocksdb {
+#include "rocksdb/terark_namespace.h"
+namespace TERARKDB_NAMESPACE {
 
 // A Timer class to handle repeated work.
 //

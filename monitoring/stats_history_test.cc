@@ -26,7 +26,8 @@
 #include "util/testutil.h"
 #include "util/random.h"
 
-namespace rocksdb {
+#include "rocksdb/terark_namespace.h"
+namespace TERARKDB_NAMESPACE {
 
 #ifndef ROCKSDB_LITE
 class StatsHistoryTest : public DBTestBase {

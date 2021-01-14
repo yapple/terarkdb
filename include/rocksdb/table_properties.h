@@ -11,10 +11,10 @@
 #include <vector>
 
 #include "rocksdb/status.h"
+#include "rocksdb/terark_namespace.h"
 #include "rocksdb/types.h"
 #include "utilities/util/factory.h"
-
-namespace rocksdb {
+namespace TERARKDB_NAMESPACE {
 
 // -- Table Properties
 // Other than basic table properties, each table may also have the user
@@ -194,8 +194,8 @@ struct TablePropertiesBase {
   uint64_t fixed_key_len = 0;
   // ID of column family for this SST file, corresponding to the CF identified
   // by column_family_name.
-  uint64_t column_family_id =
-      rocksdb::TablePropertiesCollectorFactory::Context::kUnknownColumnFamily;
+  uint64_t column_family_id = TERARKDB_NAMESPACE::
+      TablePropertiesCollectorFactory::Context::kUnknownColumnFamily;
   // The time when the SST file was created.
   // Since SST files are immutable, this is equivalent to last modified time.
   uint64_t creation_time = 0;
@@ -258,10 +258,10 @@ struct TablePropertiesBase {
   std::vector<uint64_t> inheritance_chain;
 
   // Expire time of fixed ratio
-  uint64_t ratio_expire_time = std::numeric_limits<uint64_t>::max();
+  // uint64_t ratio_expire_time = std::numeric_limits<uint64_t>::max();
 
   // Expire time of fixed scan gap
-  uint64_t scan_gap_expire_time = std::numeric_limits<uint64_t>::max();
+  // uint64_t scan_gap_expire_time = std::numeric_limits<uint64_t>::max();
 
   // convert this object to a human readable form
   //   @prop_delim: delimiter for each property.
@@ -291,4 +291,4 @@ extern uint64_t GetDeletedKeys(const UserCollectedProperties& props);
 extern uint64_t GetMergeOperands(const UserCollectedProperties& props,
                                  bool* property_present);
 
-}  // namespace rocksdb
+}  // namespace TERARKDB_NAMESPACE

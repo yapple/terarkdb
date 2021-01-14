@@ -18,6 +18,7 @@
 #include <vector>
 
 #include "db/version_edit.h"
+#include "rocksdb/terark_namespace.h"
 #include "table/merging_iterator.h"
 #include "table/scoped_arena_iterator.h"
 #include "table/sst_file_writer_collectors.h"
@@ -27,8 +28,7 @@
 #include "util/stop_watch.h"
 #include "util/sync_point.h"
 #include "utilities/util/function.hpp"
-
-namespace rocksdb {
+namespace TERARKDB_NAMESPACE {
 
 Status ExternalSstFileIngestionJob::Prepare(
     const std::vector<std::string>& external_files_paths,
@@ -206,8 +206,9 @@ Status ExternalSstFileIngestionJob::Run() {
     prop.flags |= f.table_properties.num_range_deletions > 0
                       ? 0
                       : TablePropertyCache::kNoRangeDeletions;
-    prop.ratio_expire_time = f.table_properties.ratio_expire_time;
-    prop.scan_gap_expire_time = f.table_properties.scan_gap_expire_time;
+    // not supported now
+    // prop.ratio_expire_time = f.table_properties.ratio_expire_time;
+    // prop.scan_gap_expire_time = f.table_properties.scan_gap_expire_time;
     edit_.AddFile(f.picked_level, f.fd.GetNumber(), f.fd.GetPathId(),
                   f.fd.GetFileSize(), f.smallest_internal_key(),
                   f.largest_internal_key(), f.assigned_seqno, f.assigned_seqno,
@@ -586,6 +587,6 @@ bool ExternalSstFileIngestionJob::IngestedFileFitInLevel(
   return true;
 }
 
-}  // namespace rocksdb
+}  // namespace TERARKDB_NAMESPACE
 
 #endif  // !ROCKSDB_LITE

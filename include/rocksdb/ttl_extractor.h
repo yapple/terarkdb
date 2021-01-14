@@ -7,10 +7,10 @@
 #include <string>
 
 #include "rocksdb/status.h"
+#include "rocksdb/terark_namespace.h"
 #include "rocksdb/types.h"
 #include "utilities/util/factory.h"
-
-namespace rocksdb {
+namespace TERARKDB_NAMESPACE {
 
 class Slice;
 class Status;
@@ -18,7 +18,7 @@ class Status;
 struct TtlExtractorContext {
   // Which column family this compaction is for.
   uint32_t column_family_id;
-  Env* env;
+  // Env* env;
 };
 
 class TtlExtractor {
@@ -49,4 +49,4 @@ class TtlExtractorFactory
   }
 };
 
-}  // namespace rocksdb
+}  // namespace TERARKDB_NAMESPACE

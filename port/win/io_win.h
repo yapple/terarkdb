@@ -18,7 +18,11 @@
 #include "rocksdb/status.h"
 #include "util/aligned_buffer.h"
 
-namespace rocksdb {
+#include <windows.h>
+
+
+#include "rocksdb/terark_namespace.h"
+namespace TERARKDB_NAMESPACE {
 namespace port {
 
 std::string GetWindowsErrSz(DWORD err);

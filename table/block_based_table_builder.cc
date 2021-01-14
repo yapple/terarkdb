@@ -29,6 +29,7 @@
 #include "rocksdb/flush_block_policy.h"
 #include "rocksdb/merge_operator.h"
 #include "rocksdb/table.h"
+#include "rocksdb/terark_namespace.h"
 #include "table/block.h"
 #include "table/block_based_filter_block.h"
 #include "table/block_based_table_factory.h"
@@ -47,8 +48,7 @@
 #include "util/stop_watch.h"
 #include "util/string_util.h"
 #include "util/xxhash.h"
-
-namespace rocksdb {
+namespace TERARKDB_NAMESPACE {
 
 extern const std::string kHashIndexPrefixesBlock;
 extern const std::string kHashIndexPrefixesMetadataBlock;
@@ -893,8 +893,8 @@ Status BlockBasedTableBuilder::Finish(
     r->props.read_amp = prop->read_amp;
     r->props.dependence = prop->dependence;
     r->props.inheritance_chain = prop->inheritance_chain;
-    r->props.ratio_expire_time = prop->ratio_expire_time;
-    r->props.scan_gap_expire_time = prop->scan_gap_expire_time;
+    // r->props.ratio_expire_time = prop->ratio_expire_time;
+    // r->props.scan_gap_expire_time = prop->scan_gap_expire_time;
   }
   if (snapshots != nullptr) {
     r->props.snapshots = *snapshots;
@@ -994,4 +994,4 @@ const std::string BlockBasedTable::kFilterBlockPrefix = "filter.";
 const std::string BlockBasedTable::kFullFilterBlockPrefix = "fullfilter.";
 const std::string BlockBasedTable::kPartitionedFilterBlockPrefix =
     "partitionedfilter.";
-}  // namespace rocksdb
+}  // namespace TERARKDB_NAMESPACE
