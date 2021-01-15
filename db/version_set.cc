@@ -40,6 +40,7 @@
 #include "monitoring/persistent_stats_history.h"
 #include "rocksdb/env.h"
 #include "rocksdb/merge_operator.h"
+#include "rocksdb/terark_namespace.h"
 #include "rocksdb/write_buffer_manager.h"
 #include "table/format.h"
 #include "table/get_context.h"
@@ -58,8 +59,6 @@
 #include "util/string_util.h"
 #include "util/sync_point.h"
 #include "utilities/util/valvec.hpp"
-
-#include "rocksdb/terark_namespace.h"
 namespace TERARKDB_NAMESPACE {
 
 namespace {
@@ -1812,6 +1811,11 @@ void VersionStorageInfo::ComputeFilesMarkedForCompaction() {
   }
 }
 
+void VersionStorageInfo::AddFilesMarkedForCompaction(int level,
+                                                     FileMetaData* meta) {
+  files_marked_for_compaction_.emplace_back(level, meta);
+}
+
 void VersionStorageInfo::ComputeExpiredTtlFiles(
     const ImmutableCFOptions& ioptions, const uint64_t ttl) {
   assert(ttl > 0);
@@ -2166,22 +2170,18 @@ void VersionStorageInfo::ComputeBottommostFilesMarkedForCompaction() {
   bottommost_files_marked_for_compaction_.clear();
   bottommost_files_mark_threshold_ = kMaxSequenceNumber;
   for (auto& level_and_file : bottommost_files_) {
-    if (!level_and_file.second->being_compacted) {
-      if (level_and_file.second->fd.largest_seqno != 0 &&
-          level_and_file.second->prop.num_deletions > 1) {
-        // largest_seqno might be nonzero due to containing the final key in an
-        // earlier compaction, whose seqnum we didn't zero out. Multiple
-        // deletions ensures the file really contains deleted or overwritten
-        // keys.
-        if (level_and_file.second->fd.largest_seqno < oldest_snapshot_seqnum_) {
-          bottommost_files_marked_for_compaction_.push_back(level_and_file);
-        } else {
-          bottommost_files_mark_threshold_ =
-              std::min(bottommost_files_mark_threshold_,
-                       level_and_file.second->fd.largest_seqno);
-        }
-      } else if (level_and_file.second->marked_for_compaction) {
+    if (!level_and_file.second->being_compacted &&
+        level_and_file.second->fd.largest_seqno != 0 &&
+        level_and_file.second->prop.num_deletions > 1) {
+      // largest_seqno might be nonzero due to containing the final key in an
+      // earlier compaction, whose seqnum we didn't zero out. Multiple deletions
+      // ensures the file really contains deleted or overwritten keys.
+      if (level_and_file.second->fd.largest_seqno < oldest_snapshot_seqnum_) {
         bottommost_files_marked_for_compaction_.push_back(level_and_file);
+      } else {
+        bottommost_files_mark_threshold_ =
+            std::min(bottommost_files_mark_threshold_,
+                     level_and_file.second->fd.largest_seqno);
       }
     }
   }

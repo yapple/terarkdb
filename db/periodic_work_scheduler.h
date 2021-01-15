@@ -8,9 +8,8 @@
 #ifndef ROCKSDB_LITE
 
 #include "db/db_impl.h"
-#include "util/timer.h"
-
 #include "rocksdb/terark_namespace.h"
+#include "util/timer.h"
 namespace TERARKDB_NAMESPACE {
 
 // PeriodicWorkScheduler is a singleton object, which is scheduling/running
@@ -48,7 +47,7 @@ class PeriodicWorkScheduler {
   explicit PeriodicWorkScheduler(Env* env);
 
  private:
-  std::string GetTaskName(DBImpl* dbi, const std::string& func_name);
+  static std::string GetTaskName(DBImpl* dbi, const std::string& func_name);
 };
 
 #ifndef NDEBUG
@@ -67,6 +66,6 @@ class PeriodicWorkTestScheduler : public PeriodicWorkScheduler {
 };
 #endif  // !NDEBUG
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace TERARKDB_NAMESPACE
 
 #endif  // ROCKSDB_LITE

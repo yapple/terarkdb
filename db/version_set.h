@@ -45,7 +45,6 @@
 #include "options/db_options.h"
 #include "port/port.h"
 #include "rocksdb/env.h"
-
 #include "rocksdb/terark_namespace.h"
 namespace TERARKDB_NAMESPACE {
 
@@ -139,6 +138,10 @@ class VersionStorageInfo {
   // This computes files_marked_for_compaction_ and is called by
   // ComputeCompactionScore()
   void ComputeFilesMarkedForCompaction();
+
+  // This computes files_marked_for_compaction_ and is called by
+  // AddFilesMarkedForCompaction()
+  void AddFilesMarkedForCompaction(int level, FileMetaData* meta);
 
   // This computes ttl_expired_files_ and is called by
   // ComputeCompactionScore()
