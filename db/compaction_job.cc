@@ -897,9 +897,10 @@ Status CompactionJob::Run() {
                 tp->user_collected_properties
                     .find(TablePropertiesNames::kLatestTimeEndCompact)
                     ->second.c_str());
-            // ROCKS_LOG_INFO(db_options_.info_log,
-            //                "ratio:%" PRIu64 ", scan:%" PRIu64,
-            //                tp->ratio_expire_time, tp->scan_gap_expire_time);
+            ROCKS_LOG_INFO(db_options_.info_log,
+                           "compaction_run ratio:%" PRIu64 ", scan:%" PRIu64,
+                           output.meta.prop.ratio_expire_time,
+                           output.meta.prop.scan_gap_expire_time);
             output.finished = true;
             c->AddOutputTableFileNumber(file_number);
           }
@@ -2142,9 +2143,9 @@ Status CompactionJob::FinishCompactionOutputFile(
           DecodeFixed64(tp.user_collected_properties
                             .find(TablePropertiesNames::kLatestTimeEndCompact)
                             ->second.c_str());
-      ROCKS_LOG_INFO(db_options_.info_log, "ratio:%" PRIu64 ", scan:%" PRIu64,
-                     meta->prop.ratio_expire_time,
-                     meta->prop.scan_gap_expire_time);
+      ROCKS_LOG_INFO(
+          db_options_.info_log, "fcof: ratio:%" PRIu64 ", scan:%" PRIu64,
+          meta->prop.ratio_expire_time, meta->prop.scan_gap_expire_time);
     }
   }
 

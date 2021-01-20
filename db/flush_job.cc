@@ -38,6 +38,7 @@
 #include "rocksdb/statistics.h"
 #include "rocksdb/status.h"
 #include "rocksdb/table.h"
+#include "rocksdb/terark_namespace.h"
 #include "table/block.h"
 #include "table/block_based_table_factory.h"
 #include "table/merging_iterator.h"
@@ -53,8 +54,6 @@
 #include "util/mutexlock.h"
 #include "util/stop_watch.h"
 #include "util/sync_point.h"
-
-#include "rocksdb/terark_namespace.h"
 namespace TERARKDB_NAMESPACE {
 
 const char* GetFlushReasonString(FlushReason flush_reason) {
@@ -384,6 +383,13 @@ Status FlushJob::WriteLevel0Table() {
           TableFileCreationReason::kFlush, event_logger_, job_context_->job_id,
           Env::IO_HIGH, &table_properties_, 0 /* level */, flush_load_,
           current_time, oldest_key_time, write_hint);
+      if (cfd_->ioptions()->ttl_extractor_factory != nullptr) {
+        ROCKS_LOG_INFO(db_options_.info_log,
+                       "Flush: ratio:%" PRIu64 ", scan:%" PRIu64,
+                       meta_[0].prop.ratio_expire_time,
+                       meta_[0].prop.scan_gap_expire_time);
+      }
+
       LogFlush(db_options_.info_log);
     }
     ROCKS_LOG_INFO(db_options_.info_log,

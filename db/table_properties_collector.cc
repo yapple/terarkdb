@@ -14,8 +14,7 @@
 #include "utilities/util/factory.h"
 
 namespace TERARKDB_NAMESPACE {
-const uint64_t kFiftyYearSecondsNumber = 1576800000;
-
+extern const uint64_t kFiftyYearSecondsNumber = 1576800000;
 namespace {
 
 uint64_t GetUint64Property(const UserCollectedProperties& props,

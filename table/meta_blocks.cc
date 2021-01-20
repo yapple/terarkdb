@@ -194,8 +194,10 @@ bool NotifyCollectTableCollectorsOnAdd(
     Status s = collector->InternalAdd(key, value, file_size);
     all_succeeded = all_succeeded && s.ok();
     if (!s.ok()) {
-      LogPropertiesCollectionError(info_log, "Add" /* method */,
-                                   collector->Name());
+      ROCKS_LOG_ERROR(info_log, "Add error: %s; name: %s", s.ToString().c_str(),
+                      collector->Name());
+      // LogPropertiesCollectionError(info_log, "Add" /* method */,
+      //  collector->Name());
     }
   }
   return all_succeeded;
