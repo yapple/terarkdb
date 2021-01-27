@@ -213,7 +213,7 @@ struct MutableCFOptions {
         paranoid_file_checks(false),
         report_bg_io_stats(false),
         compression(Snappy_Supported() ? kSnappyCompression : kNoCompression),
-        ttl_garbage_collection_percentage(2.000),
+        ttl_garbage_collection_percentage(1.000),
         ttl_scan_gap(0) {}
 
   explicit MutableCFOptions(const Options& options);
