@@ -48,6 +48,7 @@
 #include "rocksdb/memtablerep.h"
 #include "rocksdb/metrics_reporter.h"
 #include "rocksdb/status.h"
+#include "rocksdb/terark_namespace.h"
 #include "rocksdb/trace_reader_writer.h"
 #include "rocksdb/transaction_log.h"
 #include "rocksdb/write_buffer_manager.h"
@@ -61,7 +62,6 @@
 #include "util/trace_replay.h"
 #include "utilities/console/server.h"
 
-#include "rocksdb/terark_namespace.h"
 namespace TERARKDB_NAMESPACE {
 
 class Arena;
@@ -762,8 +762,7 @@ class DBImpl : public DB {
   // Print information of all tombstones of all iterators to the std::string
   // This is only used by ldb. The output might be capped. Tombstones
   // printed out are not guaranteed to be in any order.
-  Status TablesRangeTombstoneSummary(ColumnFamilyHandle* column_family,
-                                     int  ,
+  Status TablesRangeTombstoneSummary(ColumnFamilyHandle* column_family, int,
                                      std::string* out_str);
 
 #ifndef NDEBUG
@@ -797,6 +796,7 @@ class DBImpl : public DB {
   void FlushInfoLog();
 
   void ScheduleTtlGC();
+
  protected:
   Env* const env_;
   const std::string dbname_;
@@ -927,6 +927,7 @@ class DBImpl : public DB {
   // SetDbSessionId() should be called in the constuctor DBImpl()
   // to ensure that db_session_id_ gets updated every time the DB is opened
   void SetDbSessionId();
+
  private:
   friend class DB;
   friend class ErrorHandler;

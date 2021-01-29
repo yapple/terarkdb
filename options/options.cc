@@ -31,11 +31,11 @@
 #include "rocksdb/sst_file_manager.h"
 #include "rocksdb/table.h"
 #include "rocksdb/table_properties.h"
+#include "rocksdb/terark_namespace.h"
 #include "rocksdb/wal_filter.h"
 #include "table/block_based_table_factory.h"
 #include "util/compression.h"
 
-#include "rocksdb/terark_namespace.h"
 namespace TERARKDB_NAMESPACE {
 
 AdvancedColumnFamilyOptions::AdvancedColumnFamilyOptions() {
@@ -125,7 +125,7 @@ void ColumnFamilyOptions::Dump(Logger* log) const {
                        ? value_meta_extractor_factory->Name()
                        : "None");
   ROCKS_LOG_HEADER(
-      log, "    Options.ttl_extractor_factory: %s",
+      log, "   Options.ttl_extractor_factory: %s",
       ttl_extractor_factory ? ttl_extractor_factory->Name() : "None");
   ROCKS_LOG_HEADER(log, "       Options.compaction_filter: %s",
                    compaction_filter ? compaction_filter->Name() : "None");
@@ -148,20 +148,20 @@ void ColumnFamilyOptions::Dump(Logger* log) const {
   if (!compression_per_level.empty()) {
     for (unsigned int i = 0; i < compression_per_level.size(); i++) {
       ROCKS_LOG_HEADER(
-          log, "       Options.compression[%d]: %s", i,
+          log, "         Options.compression[%d]: %s", i,
           CompressionTypeToString(compression_per_level[i]).c_str());
     }
   } else {
-    ROCKS_LOG_HEADER(log, "         Options.compression: %s",
+    ROCKS_LOG_HEADER(log, "             Options.compression: %s",
                      CompressionTypeToString(compression).c_str());
   }
   ROCKS_LOG_HEADER(
-      log, "                 Options.bottommost_compression: %s",
+      log, "  Options.bottommost_compression: %s",
       bottommost_compression == kDisableCompressionOption
           ? "Disabled"
           : CompressionTypeToString(bottommost_compression).c_str());
   ROCKS_LOG_HEADER(
-      log, "      Options.prefix_extractor: %s",
+      log, "        Options.prefix_extractor: %s",
       prefix_extractor == nullptr ? "nullptr" : prefix_extractor->Name());
   ROCKS_LOG_HEADER(log,
                    "  Options.memtable_insert_with_hint_prefix_extractor: %s",

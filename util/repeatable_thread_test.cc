@@ -3,18 +3,20 @@
 //  COPYING file in the root directory) and Apache 2.0 License
 //  (found in the LICENSE.Apache file in the root directory).
 
+#include "util/repeatable_thread.h"
+
 #include <atomic>
 #include <memory>
 
 #include "db/db_test_util.h"
-#include "util/repeatable_thread.h"
 #include "util/sync_point.h"
 #include "util/testharness.h"
 
 class RepeatableThreadTest : public testing::Test {
  public:
   RepeatableThreadTest()
-      : mock_env_(new TERARKDB_NAMESPACE::MockTimeEnv(TERARKDB_NAMESPACE::Env::Default())) {}
+      : mock_env_(new TERARKDB_NAMESPACE::MockTimeEnv(
+            TERARKDB_NAMESPACE::Env::Default())) {}
 
  protected:
   std::unique_ptr<TERARKDB_NAMESPACE::MockTimeEnv> mock_env_;
@@ -57,8 +59,8 @@ TEST_F(RepeatableThreadTest, MockEnvTest) {
   constexpr int kIteration = 3;
   mock_env_->set_current_time(0);  // in seconds
   std::atomic<int> count{0};
-  TERARKDB_NAMESPACE::RepeatableThread thread([&] { count++; }, "rt_test", mock_env_.get(),
-                                   1 * kSecond, 1 * kSecond);
+  TERARKDB_NAMESPACE::RepeatableThread thread(
+      [&] { count++; }, "rt_test", mock_env_.get(), 1 * kSecond, 1 * kSecond);
   for (int i = 1; i <= kIteration; i++) {
     // Bump current time
     thread.TEST_WaitForRun([&] { mock_env_->set_current_time(i); });

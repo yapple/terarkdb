@@ -19,6 +19,7 @@
 #include "table/table_properties_internal.h"
 #include "util/coding.h"
 #include "util/file_reader_writer.h"
+
 namespace TERARKDB_NAMESPACE {
 
 MetaIndexBuilder::MetaIndexBuilder()
@@ -156,15 +157,6 @@ void PropertyBlockBuilder::AddTableProperty(const TableProperties& props) {
   if (!props.compression_name.empty()) {
     Add(TablePropertiesNames::kCompression, props.compression_name);
   }
-
-  // if (props.ratio_expire_time < std::numeric_limits<uint64_t>::max()) {
-  //   Add(TablePropertiesNames::kEarliestTimeBeginCompact,
-  //       props.ratio_expire_time);
-  // }
-  // if (props.scan_gap_expire_time < std::numeric_limits<uint64_t>::max()) {
-  //   Add(TablePropertiesNames::kLatestTimeEndCompact,
-  //       props.scan_gap_expire_time);
-  // }
 }
 
 Slice PropertyBlockBuilder::Finish() {
@@ -196,8 +188,6 @@ bool NotifyCollectTableCollectorsOnAdd(
     if (!s.ok()) {
       ROCKS_LOG_ERROR(info_log, "Add error: %s; name: %s", s.ToString().c_str(),
                       collector->Name());
-      // LogPropertiesCollectionError(info_log, "Add" /* method */,
-      //  collector->Name());
     }
   }
   return all_succeeded;
@@ -298,10 +288,6 @@ Status ReadProperties(const Slice& handle_value, RandomAccessFileReader* file,
        &new_table_properties->creation_time},
       {TablePropertiesNames::kOldestKeyTime,
        &new_table_properties->oldest_key_time},
-      // {TablePropertiesNames::kEarliestTimeBeginCompact,
-      //  &new_table_properties->ratio_expire_time},
-      // {TablePropertiesNames::kLatestTimeEndCompact,
-      //  &new_table_properties->scan_gap_expire_time},
   };
 
   auto GetUint64Vector = [&](const std::string& key, Slice* raw_val,

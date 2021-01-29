@@ -10,8 +10,8 @@
 
 #include "db/db_impl.h"
 #include "rocksdb/stats_history.h"
-
 #include "rocksdb/terark_namespace.h"
+
 namespace TERARKDB_NAMESPACE {
 
 extern const std::string kFormatVersionKeyString;
@@ -81,4 +81,4 @@ class PersistentStatsHistoryIterator final : public StatsHistoryIterator {
   DBImpl* db_impl_;
 };
 
-}  // namespace rocksdb
+}  // namespace TERARKDB_NAMESPACE

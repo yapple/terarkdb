@@ -17,17 +17,13 @@
 #include <stdio.h>
 
 #include <algorithm>
-#include <array>
-#include <cinttypes>
 #include <list>
 #include <map>
-#include <set>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
 #include "db/compaction.h"
-#include "db/internal_stats.h"
 #include "db/log_reader.h"
 #include "db/log_writer.h"
 #include "db/memtable.h"
@@ -59,6 +55,7 @@
 #include "util/string_util.h"
 #include "util/sync_point.h"
 #include "utilities/util/valvec.hpp"
+
 namespace TERARKDB_NAMESPACE {
 
 namespace {
@@ -2177,8 +2174,8 @@ void VersionStorageInfo::ComputeBottommostFilesMarkedForCompaction() {
     if (!level_and_file.second->being_compacted) {
       if (level_and_file.second->fd.largest_seqno != 0 &&
           level_and_file.second->prop.num_deletions > 1) {
-        // largest_seqno might be nonzero due to containing the final key in
-        // an earlier compaction, whose seqnum we didn't zero out. Multiple
+        // largest_seqno might be nonzero due to containing the final key in an
+        // earlier compaction, whose seqnum we didn't zero out. Multiple
         // deletions ensures the file really contains deleted or overwritten
         // keys.
         if (level_and_file.second->fd.largest_seqno < oldest_snapshot_seqnum_) {
@@ -2694,7 +2691,7 @@ void VersionStorageInfo::CalculateBaseBytes(const ImmutableCFOptions& ioptions,
 
     // Prefill every level's max bytes to disallow compaction from there.
     for (int i = 0; i < num_levels_; i++) {
-      level_max_bytes_[i] = std::numeric_limits<uint64_t>::max();
+      level_max_bytes_[i] = port::kMaxUint64;
     }
 
     if (max_level_size == 0) {
@@ -2778,8 +2775,8 @@ void VersionStorageInfo::CalculateBaseBytes(const ImmutableCFOptions& ioptions,
         }
         // Don't set any level below base_bytes_max. Otherwise, the LSM can
         // assume an hourglass shape where L1+ sizes are smaller than L0. This
-        // causes compaction scoring, which depends on level sizes, to favor
-        // L1+ at the expense of L0, which may fill up and stall.
+        // causes compaction scoring, which depends on level sizes, to favor L1+
+        // at the expense of L0, which may fill up and stall.
         level_max_bytes_[i] = std::max(level_size, base_bytes_max);
       }
     }
@@ -2803,10 +2800,10 @@ bool VersionStorageInfo::RangeMightExistAfterSortedRun(
     const Slice& smallest_user_key, const Slice& largest_user_key,
     int last_level, int last_l0_idx) {
   assert((last_l0_idx != -1) == (last_level == 0));
-  // TODO(ajkr): this preserves earlier behavior where we considered an L0
-  // file bottommost only if it's the oldest L0 file and there are no files on
-  // older levels. It'd be better to consider it bottommost if there's no
-  // overlap in older levels/files.
+  // TODO(ajkr): this preserves earlier behavior where we considered an L0 file
+  // bottommost only if it's the oldest L0 file and there are no files on older
+  // levels. It'd be better to consider it bottommost if there's no overlap in
+  // older levels/files.
   if (last_level == 0 &&
       last_l0_idx != static_cast<int>(LevelFiles(0).size() - 1)) {
     return true;
@@ -2815,8 +2812,8 @@ bool VersionStorageInfo::RangeMightExistAfterSortedRun(
   // Checks whether there are files living beyond the `last_level`. If lower
   // levels have files, it checks for overlap between [`smallest_key`,
   // `largest_key`] and those files. Bottomlevel optimizations can be made if
-  // there are no files in lower levels or if there is no overlap with the
-  // files in the lower levels.
+  // there are no files in lower levels or if there is no overlap with the files
+  // in the lower levels.
   for (int level = last_level + 1; level < num_levels(); level++) {
     // The range is not in the bottommost level if there are files in lower
     // levels when the `last_level` is 0 or if there are files in lower levels
@@ -2993,7 +2990,7 @@ Status VersionSet::ProcessManifestWrites(
     batch_edits.push_back(first_writer.edit_list.front());
   } else {
     auto it = manifest_writers_.cbegin();
-    size_t group_start = std::numeric_limits<size_t>::max();
+    size_t group_start = port::kMaxUint64;
     while (it != manifest_writers_.cend()) {
       if ((*it)->edit_list.front()->IsColumnFamilyManipulation()) {
         // no group commits for column family add or drop
@@ -3008,8 +3005,8 @@ Status VersionSet::ProcessManifestWrites(
         // the preceding version edits in the same atomic group, and update
         // their `remaining_entries_` member variable because we are NOT going
         // to write the version edits' of dropped CF to the MANIFEST. If we
-        // don't update, then Recover can report corrupted atomic group
-        // because the `remaining_entries_` do not match.
+        // don't update, then Recover can report corrupted atomic group because
+        // the `remaining_entries_` do not match.
         if (!batch_edits.empty()) {
           if (batch_edits.back()->is_in_atomic_group_ &&
               batch_edits.back()->remaining_entries_ > 0) {
@@ -3066,8 +3063,8 @@ Status VersionSet::ProcessManifestWrites(
                batch_edits.back()->remaining_entries_ == 0)) {
             group_start = batch_edits.size();
           }
-        } else if (group_start != std::numeric_limits<size_t>::max()) {
-          group_start = std::numeric_limits<size_t>::max();
+        } else if (group_start != port::kMaxUint64) {
+          group_start = port::kMaxUint64;
         }
         builder->PushEdit(e, this, mu);
         batch_edits.push_back(e);
@@ -3360,8 +3357,8 @@ Status VersionSet::ProcessManifestWrites(
   return s;
 }
 
-// 'datas' is gramatically incorrect. We still use this notation is to
-// indicate that this variable represents a collection of column_family_data.
+// 'datas' is gramatically incorrect. We still use this notation is to indicate
+// that this variable represents a collection of column_family_data.
 Status VersionSet::LogAndApply(
     const autovector<ColumnFamilyData*>& column_family_datas,
     const autovector<const MutableCFOptions*>& mutable_cf_options_list,
@@ -3445,16 +3442,16 @@ Status VersionSet::LogAndApply(
 void VersionSet::LogAndApplyCFHelper(VersionEdit* edit) {
   assert(edit->IsColumnFamilyManipulation());
   edit->SetNextFile(next_file_number_.load());
-  // The log might have data that is not visible to memtbale and hence have
-  // not updated the last_sequence_ yet. It is also possible that the log has
-  // is expecting some new data that is not written yet. Since LastSequence is
-  // an upper bound on the sequence, it is ok to record
+  // The log might have data that is not visible to memtbale and hence have not
+  // updated the last_sequence_ yet. It is also possible that the log has is
+  // expecting some new data that is not written yet. Since LastSequence is an
+  // upper bound on the sequence, it is ok to record
   // last_allocated_sequence_ as the last sequence.
   edit->SetLastSequence(db_options_->two_write_queues ? last_allocated_sequence_
                                                       : last_sequence_);
   if (edit->is_column_family_drop_) {
-    // if we drop column family, we have to make sure to save max column
-    // family, so that we don't reuse existing ID
+    // if we drop column family, we have to make sure to save max column family,
+    // so that we don't reuse existing ID
     edit->SetMaxColumnFamily(column_family_set_->GetMaxColumnFamily());
   }
 }
@@ -3478,10 +3475,10 @@ void VersionSet::LogAndApplyHelper(ColumnFamilyData* cfd,
     edit->SetPrevLogNumber(prev_log_number_);
   }
   edit->SetNextFile(next_file_number_.load());
-  // The log might have data that is not visible to memtbale and hence have
-  // not updated the last_sequence_ yet. It is also possible that the log has
-  // is expecting some new data that is not written yet. Since LastSequence is
-  // an upper bound on the sequence, it is ok to record
+  // The log might have data that is not visible to memtbale and hence have not
+  // updated the last_sequence_ yet. It is also possible that the log has is
+  // expecting some new data that is not written yet. Since LastSequence is an
+  // upper bound on the sequence, it is ok to record
   // last_allocated_sequence_ as the last sequence.
   edit->SetLastSequence(db_options_->two_write_queues ? last_allocated_sequence_
                                                       : last_sequence_);
@@ -3642,8 +3639,7 @@ Status VersionSet::Recover(
   // by subsequent manifest records, Recover() will return failure status
   std::unordered_map<int, std::string> column_families_not_found;
 
-  // Read "CURRENT" file, which contains a pointer to the current manifest
-  // file
+  // Read "CURRENT" file, which contains a pointer to the current manifest file
   std::string manifest_filename;
   Status s =
       ReadFileToString(env_, CurrentFileName(dbname_), &manifest_filename);
@@ -3912,8 +3908,7 @@ Status VersionSet::ListColumnFamilies(std::vector<std::string>* column_families,
   // these are just for performance reasons, not correcntes,
   // so we're fine using the defaults
   EnvOptions soptions;
-  // Read "CURRENT" file, which contains a pointer to the current manifest
-  // file
+  // Read "CURRENT" file, which contains a pointer to the current manifest file
   std::string current;
   Status s = ReadFileToString(env, CurrentFileName(dbname), &current);
   if (!s.ok()) {
@@ -4263,8 +4258,7 @@ Status VersionSet::DumpManifest(Options& options, std::string& dscname,
 
     printf(
         "next_file_number %lu last_sequence "
-        "%lu  prev_log_number %lu max_column_family %u "
-        "min_log_number_to_keep "
+        "%lu  prev_log_number %lu max_column_family %u min_log_number_to_keep "
         "%" PRIu64 "\n",
         (unsigned long)next_file_number_.load(), (unsigned long)last_sequence,
         (unsigned long)previous_log_number,
@@ -4297,8 +4291,8 @@ Status VersionSet::WriteSnapshot(log::Writer* log) {
   // WARNING: This method doesn't hold a mutex!!
 
   // This is done without DB mutex lock held, but only within single-threaded
-  // LogAndApply. Column family manipulations can only happen within
-  // LogAndApply (the same single thread), so we're safe to iterate.
+  // LogAndApply. Column family manipulations can only happen within LogAndApply
+  // (the same single thread), so we're safe to iterate.
   for (auto cfd : *column_family_set_) {
     if (cfd->IsDropped()) {
       continue;
@@ -4359,9 +4353,9 @@ Status VersionSet::WriteSnapshot(log::Writer* log) {
 // TODO(aekmekji): in CompactionJob::GenSubcompactionBoundaries(), this
 // function is called repeatedly with consecutive pairs of slices. For example
 // if the slice list is [a, b, c, d] this function is called with arguments
-// (a,b) then (b,c) then (c,d). Knowing this, an optimization is possible
-// where we avoid doing binary search for the keys b and c twice and instead
-// somehow maintain state of where they first appear in the files.
+// (a,b) then (b,c) then (c,d). Knowing this, an optimization is possible where
+// we avoid doing binary search for the keys b and c twice and instead somehow
+// maintain state of where they first appear in the files.
 uint64_t VersionSet::ApproximateSize(Version* v, const Slice& start,
                                      const Slice& end, int start_level,
                                      int end_level) {
@@ -4618,8 +4612,7 @@ bool VersionSet::VerifyCompactionFileConsistency(Compaction* c) {
   if (c->input_version() != version) {
     ROCKS_LOG_INFO(db_options_->info_log,
                    "[%s] compaction output being applied to a different base "
-                   "version from"
-                   " input version",
+                   "version from input version",
                    c->column_family_data()->GetName().c_str());
 
     if (vstorage->compaction_style_ == kCompactionStyleLevel &&

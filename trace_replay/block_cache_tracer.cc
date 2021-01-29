@@ -7,11 +7,11 @@
 
 #include "db/db_impl/db_impl.h"
 #include "rocksdb/slice.h"
+#include "rocksdb/terark_namespace.h"
 #include "util/coding.h"
 #include "util/hash.h"
 #include "util/string_util.h"
 
-#include "rocksdb/terark_namespace.h"
 namespace TERARKDB_NAMESPACE {
 
 namespace {
@@ -267,4 +267,4 @@ Status BlockCacheTracer::WriteBlockAccess(const BlockCacheTraceRecord& record,
                                           referenced_key);
 }
 
-}  // namespace rocksdb
+}  // namespace TERARKDB_NAMESPACE

@@ -201,7 +201,7 @@ class KeyGenerator {
         return values_[next_++];
     }
     assert(false);
-    return std::numeric_limits<uint64_t>::max();
+    return port::kMaxUint64;
   }
 
  private:
@@ -353,9 +353,7 @@ class SeqReadBenchmarkThread : public BenchmarkThread {
 
   void operator()() override {
     for (unsigned int i = 0; i < num_ops_; ++i) {
-      {
-        ReadOneSeq();
-      }
+      { ReadOneSeq(); }
     }
   }
 };

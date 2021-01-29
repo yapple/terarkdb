@@ -5,9 +5,9 @@
 
 #include "util/mock_time_env.h"
 
+#include "rocksdb/terark_namespace.h"
 #include "util/sync_point.h"
 
-#include "rocksdb/terark_namespace.h"
 namespace TERARKDB_NAMESPACE {
 
 // TODO: this is a workaround for the different behavior on different platform
@@ -36,4 +36,4 @@ void MockTimeEnv::InstallTimedWaitFixCallback() {
 #endif  // !NDEBUG
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace TERARKDB_NAMESPACE

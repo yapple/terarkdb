@@ -20,13 +20,13 @@ int main() {
 
 #include "rocksdb/env.h"
 #include "rocksdb/status.h"
+#include "rocksdb/terark_namespace.h"
 #include "rocksdb/trace_reader_writer.h"
 #include "test_util/testharness.h"
 #include "test_util/testutil.h"
 #include "tools/block_cache_trace_analyzer.h"
 #include "trace_replay/block_cache_tracer.h"
 
-#include "rocksdb/terark_namespace.h"
 namespace TERARKDB_NAMESPACE {
 
 namespace {
@@ -177,7 +177,8 @@ class BlockCacheTracerTest : public testing::Test {
       argv[argc++] = arg_buffer + cursor;
       cursor += static_cast<int>(arg.size()) + 1;
     }
-    ASSERT_EQ(0, TERARKDB_NAMESPACE::block_cache_trace_analyzer_tool(argc, argv));
+    ASSERT_EQ(0,
+              TERARKDB_NAMESPACE::block_cache_trace_analyzer_tool(argc, argv));
   }
 
   Env* env_;
@@ -236,9 +237,9 @@ TEST_F(BlockCacheTracerTest, BlockCacheAnalyzer) {
       ASSERT_EQ("lru", result_strs[0]);  // cache_name
       ASSERT_EQ("1", result_strs[1]);    // num_shard_bits
       ASSERT_EQ(std::to_string(expected_capacities[config_index]),
-                result_strs[2]);         // cache_capacity
+                result_strs[2]);              // cache_capacity
       ASSERT_EQ("100.0000", result_strs[3]);  // miss_ratio
-      ASSERT_EQ("50", result_strs[4]);   // number of accesses.
+      ASSERT_EQ("50", result_strs[4]);        // number of accesses.
       config_index++;
     }
     ASSERT_EQ(expected_capacities.size(), config_index);
@@ -424,7 +425,7 @@ TEST_F(BlockCacheTracerTest, MixedBlocks) {
   }
 }
 
-}  // namespace rocksdb
+}  // namespace TERARKDB_NAMESPACE
 
 int main(int argc, char** argv) {
   ::testing::InitGoogleTest(&argc, argv);

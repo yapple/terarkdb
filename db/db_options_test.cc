@@ -19,11 +19,11 @@
 #include "rocksdb/convenience.h"
 #include "rocksdb/rate_limiter.h"
 #include "rocksdb/stats_history.h"
+#include "rocksdb/terark_namespace.h"
 #include "util/random.h"
 #include "util/sync_point.h"
 #include "util/testutil.h"
 
-#include "rocksdb/terark_namespace.h"
 namespace TERARKDB_NAMESPACE {
 
 const int kMicrosInSec = 1000000;
@@ -140,9 +140,7 @@ TEST_F(DBOptionsTest, SetBytesPerSync) {
   const std::string kValue(kValueSize, 'v');
   ASSERT_EQ(options.bytes_per_sync, dbfull()->GetDBOptions().bytes_per_sync);
   TERARKDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
-      "WritableFileWriter::RangeSync:0", [&](void* /*arg*/) {
-        counter++;
-      });
+      "WritableFileWriter::RangeSync:0", [&](void* /*arg*/) { counter++; });
 
   WriteOptions write_opts;
   // should sync approximately 40MB/1MB ~= 40 times.
@@ -192,9 +190,7 @@ TEST_F(DBOptionsTest, SetWalBytesPerSync) {
   int counter = 0;
   int low_bytes_per_sync = 0;
   TERARKDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
-      "WritableFileWriter::RangeSync:0", [&](void* /*arg*/) {
-        counter++;
-      });
+      "WritableFileWriter::RangeSync:0", [&](void* /*arg*/) { counter++; });
   TERARKDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
   const std::string kValue(kValueSize, 'v');
   int i = 0;
@@ -294,10 +290,8 @@ TEST_F(DBOptionsTest, EnableAutoCompactionAndTriggerStall) {
       options.level0_file_num_compaction_trigger = 1;
       options.level0_stop_writes_trigger = std::numeric_limits<int>::max();
       options.level0_slowdown_writes_trigger = std::numeric_limits<int>::max();
-      options.hard_pending_compaction_bytes_limit =
-          std::numeric_limits<uint64_t>::max();
-      options.soft_pending_compaction_bytes_limit =
-          std::numeric_limits<uint64_t>::max();
+      options.hard_pending_compaction_bytes_limit = port::kMaxUint64;
+      options.soft_pending_compaction_bytes_limit = port::kMaxUint64;
       options.env = env_;
       options.enable_lazy_compaction = false;
       options.blob_size = -1;

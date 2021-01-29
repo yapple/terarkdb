@@ -32,11 +32,8 @@
 #pragma GCC diagnostic pop
 #endif
 
-#include <deque>
 #include <functional>
-#include <list>
 #include <memory>
-#include <random>
 #include <set>
 #include <thread>
 #include <utility>
@@ -48,17 +45,12 @@
 #include "db/dbformat.h"
 #include "db/error_handler.h"
 #include "db/event_helpers.h"
-#include "db/log_reader.h"
-#include "db/log_writer.h"
 #include "db/map_builder.h"
-#include "db/memtable.h"
-#include "db/memtable_list.h"
 #include "db/merge_context.h"
 #include "db/merge_helper.h"
 #include "db/range_del_aggregator.h"
 #include "db/version_set.h"
 #include "monitoring/iostats_context_imp.h"
-#include "monitoring/perf_context_imp.h"
 #include "monitoring/thread_status_util.h"
 #include "port/port.h"
 #include "rocksdb/db.h"
@@ -67,8 +59,8 @@
 #include "rocksdb/statistics.h"
 #include "rocksdb/status.h"
 #include "rocksdb/table.h"
+#include "rocksdb/table_properties.h"
 #include "rocksdb/terark_namespace.h"
-#include "table/block.h"
 #include "table/block_based_table_factory.h"
 #include "table/get_context.h"
 #include "table/merging_iterator.h"
@@ -81,7 +73,6 @@
 #include "util/filename.h"
 #include "util/log_buffer.h"
 #include "util/logging.h"
-#include "util/mutexlock.h"
 #include "util/random.h"
 #include "util/sst_file_manager_impl.h"
 #include "util/stop_watch.h"
@@ -89,6 +80,7 @@
 #include "util/sync_point.h"
 #include "utilities/util/function.hpp"
 #include "utilities/util/valvec.hpp"
+
 namespace TERARKDB_NAMESPACE {
 
 const char* GetCompactionReasonString(CompactionReason compaction_reason) {
@@ -889,21 +881,19 @@ Status CompactionJob::Run() {
           output.meta.prop.dependence = tp->dependence;
           output.meta.prop.inheritance_chain = tp->inheritance_chain;
           if (iopt->ttl_extractor_factory != nullptr) {
-            output.meta.prop.ratio_expire_time = DecodeFixed64(
-                tp->user_collected_properties
-                    .find(TablePropertiesNames::kEarliestTimeBeginCompact)
-                    ->second.c_str());
-            output.meta.prop.scan_gap_expire_time = DecodeFixed64(
-                tp->user_collected_properties
-                    .find(TablePropertiesNames::kLatestTimeEndCompact)
-                    ->second.c_str());
-            ROCKS_LOG_INFO(db_options_.info_log,
-                           "compaction_run ratio:%" PRIu64 ", scan:%" PRIu64,
-                           output.meta.prop.ratio_expire_time,
-                           output.meta.prop.scan_gap_expire_time);
-            output.finished = true;
-            c->AddOutputTableFileNumber(file_number);
+            GetCompactionTimePoint(
+                tp->user_collected_properties,
+                &output.meta.prop.earliest_time_begin_compact,
+                &output.meta.prop.latest_time_end_compact);
+            ROCKS_LOG_INFO(
+                db_options_.info_log,
+                "CompactionOutput earliest_time_begin_compact = %" PRIu64
+                ", latest_time_end_compact = %" PRIu64,
+                output.meta.prop.earliest_time_begin_compact,
+                output.meta.prop.latest_time_end_compact);
           }
+          output.finished = true;
+          c->AddOutputTableFileNumber(file_number);
         }
         if (s.ok()) {
           sub_compact.actual_start = std::move(result.actual_start);
@@ -1034,12 +1024,11 @@ Status CompactionJob::VerifyFiles() {
       // depend files will build in InstallCompactionResults
       DependenceMap empty_dependence_map;
       // Verify that the table is usable
-      // We set for_compaction to false and don't
-      // OptimizeForCompactionTableRead here because this is a special case
-      // after we finish the table building No matter whether
-      // use_direct_io_for_flush_and_compaction is true, we will regard this
-      // verification as user reads since the goal is to cache it here for
-      // further user reads
+      // We set for_compaction to false and don't OptimizeForCompactionTableRead
+      // here because this is a special case after we finish the table building
+      // No matter whether use_direct_io_for_flush_and_compaction is true, we
+      // will regard this verification as user reads since the goal is to cache
+      // it here for further user reads
       auto output_level = compact_->compaction->output_level();
       InternalIterator* iter = cfd->table_cache()->NewIterator(
           ReadOptions(), env_options_, cfd->internal_comparator(),
@@ -1238,11 +1227,10 @@ void CompactionJob::ProcessKeyValueCompaction(SubcompactionState* sub_compact) {
   const MutableCFOptions* mutable_cf_options =
       sub_compact->compaction->mutable_cf_options();
 
-  // To build compression dictionary, we sample the first output file,
-  // assuming it'll reach the maximum length. We optionally pass these samples
-  // through zstd's dictionary trainer, or just use them directly. Then, the
-  // dictionary is used for compressing subsequent output files in the same
-  // subcompaction.
+  // To build compression dictionary, we sample the first output file, assuming
+  // it'll reach the maximum length. We optionally pass these samples through
+  // zstd's dictionary trainer, or just use them directly. Then, the dictionary
+  // is used for compressing subsequent output files in the same subcompaction.
   const bool kUseZstdTrainer =
       sub_compact->compaction->output_compression_opts().zstd_max_train_bytes >
       0;
@@ -1439,8 +1427,8 @@ void CompactionJob::ProcessKeyValueCompaction(SubcompactionState* sub_compact) {
                             &make_compaction_iterator, start));
   if (c_iter->Valid() && sub_compact->compaction->output_level() != 0) {
     // ShouldStopBefore() maintains state based on keys processed so far. The
-    // compaction loop always calls it on the "next" key, thus won't tell it
-    // the first key. So we do that here.
+    // compaction loop always calls it on the "next" key, thus won't tell it the
+    // first key. So we do that here.
     sub_compact->ShouldStopBefore(c_iter->key(),
                                   sub_compact->current_output_file_size);
   }
@@ -1519,19 +1507,19 @@ void CompactionJob::ProcessKeyValueCompaction(SubcompactionState* sub_compact) {
                *sample_begin_offset_iter < data_end_offset) {
           size_t sample_end_offset =
               *sample_begin_offset_iter + (1 << kSampleLenShift);
-          // Invariant: Because we advance sample iterator while processing
-          // the data_elmt containing the sample's last byte, the current
-          // sample cannot end before the current data_elmt.
+          // Invariant: Because we advance sample iterator while processing the
+          // data_elmt containing the sample's last byte, the current sample
+          // cannot end before the current data_elmt.
           assert(data_begin_offset < sample_end_offset);
 
           size_t data_elmt_copy_offset, data_elmt_copy_len;
           if (*sample_begin_offset_iter <= data_begin_offset) {
-            // The sample starts before data_elmt starts, so take bytes
-            // starting at the beginning of data_elmt.
+            // The sample starts before data_elmt starts, so take bytes starting
+            // at the beginning of data_elmt.
             data_elmt_copy_offset = 0;
           } else {
-            // data_elmt starts before the sample starts, so take bytes
-            // starting at the below offset into data_elmt.
+            // data_elmt starts before the sample starts, so take bytes starting
+            // at the below offset into data_elmt.
             data_elmt_copy_offset =
                 *sample_begin_offset_iter - data_begin_offset;
           }
@@ -1560,8 +1548,8 @@ void CompactionJob::ProcessKeyValueCompaction(SubcompactionState* sub_compact) {
     }
 
     // Close output file if it is big enough. Two possibilities determine it's
-    // time to close it: (1) the current key should be this file's last key,
-    // (2) the next key should not be in this file.
+    // time to close it: (1) the current key should be this file's last key, (2)
+    // the next key should not be in this file.
     //
     // TODO(aekmekji): determine if file should be closed earlier than this
     // during subcompactions (i.e. if output size, estimated by input size, is
@@ -1572,9 +1560,8 @@ void CompactionJob::ProcessKeyValueCompaction(SubcompactionState* sub_compact) {
     if (sub_compact->compaction->max_output_file_size() != 0 &&
         sub_compact->current_output_file_size >=
             sub_compact->compaction->max_output_file_size()) {
-      // (1) this key terminates the file. For historical reasons, the
-      // iterator status before advancing will be given to
-      // FinishCompactionOutputFile().
+      // (1) this key terminates the file. For historical reasons, the iterator
+      // status before advancing will be given to FinishCompactionOutputFile().
       input_status = input->status();
       output_file_ended = true;
     }
@@ -2003,8 +1990,8 @@ Status CompactionJob::FinishCompactionOutputFile(
     std::string smallest_user_key;
     const Slice *lower_bound, *upper_bound;
     if (sub_compact->outputs.size() == 1) {
-      // For the first output table, include range tombstones before the min
-      // key but after the subcompaction boundary.
+      // For the first output table, include range tombstones before the min key
+      // but after the subcompaction boundary.
       lower_bound = sub_compact->start;
     } else if (meta->smallest.size() > 0) {
       smallest_user_key = meta->smallest.user_key().ToString(false /*hex*/);
@@ -2044,8 +2031,7 @@ Status CompactionJob::FinishCompactionOutputFile(
       }
       if (bottommost_level_ && tombstone.seq_ <= earliest_snapshot) {
         // TODO(andrewkr): tombstones that span multiple output files are
-        // counted for each compaction output file, so lots of double
-        // counting.
+        // counted for each compaction output file, so lots of double counting.
         range_del_out_stats->num_range_del_drop_obsolete++;
         range_del_out_stats->num_record_drop_obsolete++;
         continue;
@@ -2135,17 +2121,14 @@ Status CompactionJob::FinishCompactionOutputFile(
 
     if (compact_->compaction->immutable_cf_options()->ttl_extractor_factory !=
         nullptr) {
-      meta->prop.ratio_expire_time = DecodeFixed64(
-          tp.user_collected_properties
-              .find(TablePropertiesNames::kEarliestTimeBeginCompact)
-              ->second.c_str());
-      meta->prop.scan_gap_expire_time =
-          DecodeFixed64(tp.user_collected_properties
-                            .find(TablePropertiesNames::kLatestTimeEndCompact)
-                            ->second.c_str());
-      ROCKS_LOG_INFO(
-          db_options_.info_log, "fcof: ratio:%" PRIu64 ", scan:%" PRIu64,
-          meta->prop.ratio_expire_time, meta->prop.scan_gap_expire_time);
+      GetCompactionTimePoint(tp.user_collected_properties,
+                             &meta->prop.earliest_time_begin_compact,
+                             &meta->prop.latest_time_end_compact);
+      ROCKS_LOG_INFO(db_options_.info_log,
+                     "CompactionOutput earliest_time_begin_compact = %" PRIu64
+                     ", latest_time_end_compact = %" PRIu64,
+                     meta->prop.earliest_time_begin_compact,
+                     meta->prop.latest_time_end_compact);
     }
   }
 
@@ -2201,9 +2184,8 @@ Status CompactionJob::FinishCompactionOutputFile(
                       meta->fd.GetNumber(), meta->fd.GetPathId());
     sfm->OnAddFile(fn);
     if (sfm->IsMaxAllowedSpaceReached()) {
-      // TODO(ajkr): should we return OK() if max space was reached by the
-      // final compaction output file (similarly to how flush works when
-      // full)?
+      // TODO(ajkr): should we return OK() if max space was reached by the final
+      // compaction output file (similarly to how flush works when full)?
       s = Status::SpaceLimit("Max allowed space was reached");
       TEST_SYNC_POINT(
           "CompactionJob::FinishCompactionOutputFile:"
@@ -2308,9 +2290,8 @@ Status CompactionJob::FinishCompactionOutputBlob(
                       meta->fd.GetNumber(), meta->fd.GetPathId());
     sfm->OnAddFile(fn);
     if (sfm->IsMaxAllowedSpaceReached()) {
-      // TODO(ajkr): should we return OK() if max space was reached by the
-      // final compaction output file (similarly to how flush works when
-      // full)?
+      // TODO(ajkr): should we return OK() if max space was reached by the final
+      // compaction output file (similarly to how flush works when full)?
       s = Status::SpaceLimit("Max allowed space was reached");
       TEST_SYNC_POINT(
           "CompactionJob::FinishCompactionOutputBlob:"
@@ -2726,8 +2707,8 @@ Status CompactionJob::OpenCompactionOutputBlob(
   // skip_filters always false, Blob all hits
   sub_compact->blob_builder.reset(NewTableBuilder(
       *cfd->ioptions(), *c->mutable_cf_options(), cfd->internal_comparator(),
-      cfd->int_tbl_prop_collector_factories(), cfd->GetID(), cfd->GetName(),
-      sub_compact->blob_outfile.get(),
+      cfd->int_tbl_prop_collector_factories_for_blob(), cfd->GetID(),
+      cfd->GetName(), sub_compact->blob_outfile.get(),
       sub_compact->compaction->output_compression(),
       sub_compact->compaction->output_compression_opts(), -1 /* level */,
       c->compaction_load(), nullptr, true /* skip_filters */,

@@ -28,6 +28,7 @@
 #include "util/stop_watch.h"
 #include "util/sync_point.h"
 #include "utilities/util/function.hpp"
+
 namespace TERARKDB_NAMESPACE {
 
 Status ExternalSstFileIngestionJob::Prepare(
@@ -206,9 +207,6 @@ Status ExternalSstFileIngestionJob::Run() {
     prop.flags |= f.table_properties.num_range_deletions > 0
                       ? 0
                       : TablePropertyCache::kNoRangeDeletions;
-    // not supported now
-    // prop.ratio_expire_time = f.table_properties.ratio_expire_time;
-    // prop.scan_gap_expire_time = f.table_properties.scan_gap_expire_time;
     edit_.AddFile(f.picked_level, f.fd.GetNumber(), f.fd.GetPathId(),
                   f.fd.GetFileSize(), f.smallest_internal_key(),
                   f.largest_internal_key(), f.assigned_seqno, f.assigned_seqno,

@@ -5,10 +5,10 @@
 
 #pragma once
 
+#include "rocksdb/terark_namespace.h"
 #include "rocksdb/utilities/sim_cache.h"
 #include "trace_replay/block_cache_tracer.h"
 
-#include "rocksdb/terark_namespace.h"
 namespace TERARKDB_NAMESPACE {
 
 // A cache configuration provided by user.
@@ -94,4 +94,4 @@ class BlockCacheTraceSimulator {
   uint64_t trace_start_time_ = 0;
 };
 
-}  // namespace rocksdb
+}  // namespace TERARKDB_NAMESPACE

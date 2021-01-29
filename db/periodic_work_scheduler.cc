@@ -6,10 +6,10 @@
 #include "db/periodic_work_scheduler.h"
 
 #include "db/db_impl.h"
-#include "util/cast_util.h"
+#include "rocksdb/terark_namespace.h"
 
 #ifndef ROCKSDB_LITE
-#include "rocksdb/terark_namespace.h"
+
 namespace TERARKDB_NAMESPACE {
 
 PeriodicWorkScheduler::PeriodicWorkScheduler(Env* env) {

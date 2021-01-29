@@ -14,6 +14,7 @@
 #include "rocksdb/env.h"
 #include "rocksdb/table_properties.h"
 #include "rocksdb/terark_namespace.h"
+
 namespace TERARKDB_NAMESPACE {
 
 class TtlExtractorFactory;

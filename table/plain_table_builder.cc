@@ -10,7 +10,6 @@
 
 #include <limits>
 #include <map>
-#include <string>
 
 #include "db/dbformat.h"
 #include "db/version_edit.h"
@@ -20,16 +19,13 @@
 #include "rocksdb/options.h"
 #include "rocksdb/table.h"
 #include "rocksdb/terark_namespace.h"
-#include "table/block_builder.h"
 #include "table/bloom_block.h"
 #include "table/format.h"
 #include "table/meta_blocks.h"
-#include "table/plain_table_factory.h"
 #include "table/plain_table_index.h"
 #include "util/coding.h"
-#include "util/crc32c.h"
 #include "util/file_reader_writer.h"
-#include "util/stop_watch.h"
+
 namespace TERARKDB_NAMESPACE {
 
 namespace {
@@ -192,8 +188,6 @@ Status PlainTableBuilder::Finish(const TablePropertyCache* prop,
     properties_.read_amp = prop->read_amp;
     properties_.dependence = prop->dependence;
     properties_.inheritance_chain = prop->inheritance_chain;
-    // properties_.ratio_expire_time = prop->ratio_expire_time;
-    // properties_.scan_gap_expire_time = prop->scan_gap_expire_time;
   }
   if (snapshots != nullptr) {
     properties_.snapshots = *snapshots;

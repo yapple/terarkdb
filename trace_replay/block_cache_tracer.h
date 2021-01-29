@@ -10,10 +10,10 @@
 #include "monitoring/instrumented_mutex.h"
 #include "rocksdb/env.h"
 #include "rocksdb/options.h"
+#include "rocksdb/terark_namespace.h"
 #include "rocksdb/trace_reader_writer.h"
 #include "util/trace_replay.h"
 
-#include "rocksdb/terark_namespace.h"
 namespace TERARKDB_NAMESPACE {
 
 extern const uint64_t kMicrosInSecond;
@@ -23,23 +23,23 @@ extern const uint64_t kMicrosInSecond;
 // 1. BlockBasedTable::GetFilter
 // 2. BlockBasedTable::GetUncompressedDict.
 // 3. BlockBasedTable::MaybeReadAndLoadToCache. (To trace access on data, index,
-// and range deletion block.)
+//    and range deletion block.)
 // 4. BlockBasedTable::Get. (To trace the referenced key and whether the
-// referenced key exists in a fetched data block.)
+//    referenced key exists in a fetched data block.)
 // 5. BlockBasedTable::MultiGet. (To trace the referenced key and whether the
-// referenced key exists in a fetched data block.)
+//    referenced key exists in a fetched data block.)
 // The context is created at:
 // 1. BlockBasedTable::Get. (kUserGet)
 // 2. BlockBasedTable::MultiGet. (kUserMGet)
 // 3. BlockBasedTable::NewIterator. (either kUserIterator, kCompaction, or
-// external SST ingestion calls this function.)
+//    external SST ingestion calls this function.)
 // 4. BlockBasedTable::Open. (kPrefetch)
 // 5. Index/Filter::CacheDependencies. (kPrefetch)
 // 6. BlockBasedTable::ApproximateOffsetOf. (kCompaction or
 // kUserApproximateSize).
 struct BlockCacheLookupContext {
-BlockCacheLookupContext(const TableReaderCaller& _caller) : caller(_caller) {}
-const TableReaderCaller caller;
+  BlockCacheLookupContext(const TableReaderCaller& _caller) : caller(_caller) {}
+  const TableReaderCaller caller;
   // These are populated when we perform lookup/insert on block cache. The block
   // cache tracer uses these inforation when logging the block access at
   // BlockBasedTable::GET and BlockBasedTable::MultiGet.
@@ -214,4 +214,4 @@ class BlockCacheTracer {
   std::atomic<BlockCacheTraceWriter*> writer_;
 };
 
-}  // namespace rocksdb
+}  // namespace TERARKDB_NAMESPACE

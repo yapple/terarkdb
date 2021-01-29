@@ -44,29 +44,19 @@
 #include "db/malloc_stats.h"
 #include "db/map_builder.h"
 #include "db/memtable.h"
-#include "db/memtable_list.h"
 #include "db/merge_context.h"
-#include "db/merge_helper.h"
 #include "db/periodic_work_scheduler.h"
 #include "db/range_tombstone_fragmenter.h"
 #include "db/table_cache.h"
-#include "db/table_properties_collector.h"
-#include "db/transaction_log_impl.h"
 #include "db/version_set.h"
 #include "db/write_batch_internal.h"
-#include "db/write_callback.h"
-#include "memtable/hash_linklist_rep.h"
-#include "memtable/hash_skiplist_rep.h"
 #include "monitoring/in_memory_stats_history.h"
-#include "monitoring/iostats_context_imp.h"
 #include "monitoring/perf_context_imp.h"
 #include "monitoring/persistent_stats_history.h"
-#include "monitoring/thread_status_updater.h"
 #include "monitoring/thread_status_util.h"
 #include "options/cf_options.h"
 #include "options/options_helper.h"
 #include "options/options_parser.h"
-#include "port/port.h"
 #include "rocksdb/cache.h"
 #include "rocksdb/compaction_filter.h"
 #include "rocksdb/convenience.h"
@@ -77,14 +67,8 @@
 #include "rocksdb/stats_history.h"
 #include "rocksdb/status.h"
 #include "rocksdb/table.h"
-#include "rocksdb/write_buffer_manager.h"
-#include "table/block.h"
-#include "table/block_based_table_factory.h"
 #include "table/merging_iterator.h"
-#include "table/table_builder.h"
 #include "table/two_level_iterator.h"
-#include "tools/sst_dump_tool_imp.h"
-#include "util/auto_roll_logger.h"
 #include "util/autovector.h"
 #include "util/build_version.h"
 #include "util/c_style_callback.h"
@@ -96,17 +80,16 @@
 #include "util/filename.h"
 #include "util/log_buffer.h"
 #include "util/logging.h"
-#include "util/mutexlock.h"
 #include "util/sst_file_manager_impl.h"
 #include "util/stop_watch.h"
 #include "util/string_util.h"
 #include "util/sync_point.h"
 #include "utilities/trace/bytedance_metrics_reporter.h"
+#include "utilities/util/valvec.hpp"
 #if !defined(_MSC_VER) && !defined(__APPLE__)
 #include <sys/unistd.h>
 
 #endif
-#include "utilities/util/valvec.hpp"
 
 #ifdef __GNUC__
 #pragma GCC diagnostic push
@@ -123,12 +106,10 @@
 #ifdef BOOSTLIB
 #include <boost/fiber/all.hpp>
 #endif
-//#include <boost/context/pooled_fixedsize_stack.hpp>
 
 #ifdef __GNUC__
 #pragma GCC diagnostic pop
 #endif
-#include <iostream>
 
 #include "rocksdb/terark_namespace.h"
 namespace TERARKDB_NAMESPACE {
@@ -922,6 +903,7 @@ Status DBImpl::GetStatsHistory(
   }
   return (*stats_iterator)->status();
 }
+
 void DBImpl::ScheduleTtlGC() {
   TEST_SYNC_POINT("DBImpl:ScheduleTtlGC");
   uint64_t nowSeconds = env_->NowMicros() / 1000U / 1000U;
@@ -931,16 +913,17 @@ void DBImpl::ScheduleTtlGC() {
                              immutable_db_options_.info_log.get());
 
   auto should_marked_for_compacted = [&](int level, uint64_t file_number,
-                                         uint64_t ratio_expire_time,
-                                         uint64_t scan_gap_expire_time,
+                                         uint64_t earliest_time_begin_compact,
+                                         uint64_t latest_time_end_compact,
                                          uint64_t now) {
-    bool should_mark = std::min(ratio_expire_time, scan_gap_expire_time) <= now;
+    bool should_mark =
+        std::min(earliest_time_begin_compact, latest_time_end_compact) <= now;
     if (should_mark) {
       ROCKS_LOG_BUFFER(&log_buffer_info,
                        "SST Table property level=%d file-id = %" PRIu64
                        ", info : (%" PRIu64 " , %" PRIu64 ") now = %" PRIu64,
-                       level, file_number, ratio_expire_time,
-                       scan_gap_expire_time, now);
+                       level, file_number, earliest_time_begin_compact,
+                       latest_time_end_compact, now);
     }
     return should_mark;
   };
@@ -965,8 +948,8 @@ void DBImpl::ScheduleTtlGC() {
         TEST_SYNC_POINT("DBImpl:Exist-SST");
         if (!meta->marked_for_compaction &&
             should_marked_for_compacted(
-                l, meta->fd.GetNumber(), meta->prop.ratio_expire_time,
-                meta->prop.scan_gap_expire_time, nowSeconds)) {
+                l, meta->fd.GetNumber(), meta->prop.earliest_time_begin_compact,
+                meta->prop.latest_time_end_compact, nowSeconds)) {
           meta->marked_for_compaction = true;
           vstorage->AddFilesMarkedForCompaction(l, meta);
         }
@@ -1482,9 +1465,9 @@ void DBImpl::SchedulePurge() {
 void DBImpl::BackgroundCallPurge() {
   mutex_.Lock();
 
-  // We use one single loop to clear both queues so that after existing the
-  // loop both queues are empty. This is stricter than what is needed, but can
-  // make it easier for us to reason the correctness.
+  // We use one single loop to clear both queues so that after existing the loop
+  // both queues are empty. This is stricter than what is needed, but can make
+  // it easier for us to reason the correctness.
   while (!purge_queue_.empty() | !superversion_to_free_queue_.empty() |
          !logs_to_free_queue_.empty()) {
     if (!superversion_to_free_queue_.empty()) {
@@ -2476,8 +2459,8 @@ Status DBImpl::NewIterators(
 #endif
   } else {
     // Note: no need to consider the special case of
-    // last_seq_same_as_publish_seq_==false since NewIterators is overridden
-    // in WritePreparedTxnDB
+    // last_seq_same_as_publish_seq_==false since NewIterators is overridden in
+    // WritePreparedTxnDB
     auto snapshot = read_options.snapshot != nullptr
                         ? read_options.snapshot->GetSequenceNumber()
                         : versions_->LastSequence();
@@ -3854,8 +3837,7 @@ Status DBImpl::DeleteObsoleteOptionsFiles() {
     FileType type;
     if (ParseFileName(filename, &file_number, &type) && type == kOptionsFile) {
       options_filenames.insert(
-          {std::numeric_limits<uint64_t>::max() - file_number,
-           GetName() + "/" + filename});
+          {port::kMaxUint64 - file_number, GetName() + "/" + filename});
     }
   }
 

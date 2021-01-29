@@ -14,8 +14,8 @@
 // #include "db/db_impl.h"
 #include "rocksdb/statistics.h"
 #include "rocksdb/status.h"
-
 #include "rocksdb/terark_namespace.h"
+
 namespace TERARKDB_NAMESPACE {
 
 class DBImpl;
@@ -49,4 +49,4 @@ class StatsHistoryIterator {
   virtual Status status() const = 0;
 };
 
-}  // namespace rocksdb
+}  // namespace TERARKDB_NAMESPACE

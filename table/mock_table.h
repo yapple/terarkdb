@@ -25,6 +25,7 @@
 #include "util/mutexlock.h"
 #include "util/testharness.h"
 #include "util/testutil.h"
+
 namespace TERARKDB_NAMESPACE {
 namespace mock {
 
@@ -166,8 +167,6 @@ class MockTableBuilder : public TableBuilder {
       prop_.read_amp = prop->read_amp;
       prop_.dependence = prop->dependence;
       prop_.inheritance_chain = prop->inheritance_chain;
-      // prop_.ratio_expire_time = prop->ratio_expire_time;
-      // prop_.scan_gap_expire_time = prop->scan_gap_expire_time;
     }
     file_data_.prop = std::make_shared<const TableProperties>(prop_);
     MutexLock lock_guard(&file_system_->mutex);

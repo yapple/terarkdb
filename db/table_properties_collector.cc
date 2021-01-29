@@ -27,8 +27,13 @@ uint64_t GetUint64Property(const UserCollectedProperties& props,
   }
   Slice raw = pos->second;
   uint64_t val = 0;
-  *property_present = true;
-  return GetVarint64(&raw, &val) ? val : 0;
+  if (GetVarint64(&raw, &val)) {
+    *property_present = true;
+    return val;
+  } else {
+    *property_present = false;
+    return 0;
+  }
 }
 
 }  // namespace
@@ -66,10 +71,11 @@ class TtlIntTblPropCollector : public IntTblPropCollector {
   std::deque<size_t> slice_window_ttl_index_;
   size_t slice_index_ = 0;
   std::string name_;
-  uint64_t raw_key_value_size_ = 0;
-  uint64_t ttl_key_value_size_ = 0;
+  uint64_t total_entries_ = 0;
+  uint64_t ttl_entries_ = 0;
 
-  uint64_t min_scan_cap_ttl_seconds_ = std::numeric_limits<uint64_t>::max();
+  uint64_t min_scan_cap_ttl_seconds_ = port::kMaxUint64;
+
   void AddTtlToSliceWindow(uint64_t ttl) {
     if (ttl_max_scan_cap_ > 0) {
       if (slice_index_ < ttl_max_scan_cap_) {
@@ -113,23 +119,24 @@ class TtlIntTblPropCollector : public IntTblPropCollector {
         ttl_gc_ratio_(_ttl_gc_ratio),
         ttl_max_scan_cap_(_ttl_max_scan_cap),
         name_(_name) {}
+
   ~TtlIntTblPropCollector() { delete ttl_extractor_; }
+
   Status Finish(UserCollectedProperties* properties) override {
     uint64_t now_time_seconds = env_->NowMicros() / 1000000;
-    uint64_t earliest_time_begin_compact = std::numeric_limits<uint64_t>::max();
-    if (!histogram_.Empty() &&
-        ttl_key_value_size_ >= ttl_gc_ratio_ * raw_key_value_size_) {
+    uint64_t earliest_time_begin_compact = port::kMaxUint64;
+    if (!histogram_.Empty() && ttl_entries_ >= ttl_gc_ratio_ * total_entries_) {
       earliest_time_begin_compact =
           now_time_seconds +
           static_cast<uint64_t>(histogram_.Percentile(ttl_gc_ratio_ * 100.0));
     }
     uint64_t latest_time_end_compact =
-        min_scan_cap_ttl_seconds_ < std::numeric_limits<uint64_t>::max()
+        min_scan_cap_ttl_seconds_ < port::kMaxUint64
             ? min_scan_cap_ttl_seconds_ + now_time_seconds
-            : std::numeric_limits<uint64_t>::max();
+            : port::kMaxUint64;
     std::string time_for_compaction[2];
-    PutFixed64(&time_for_compaction[0], earliest_time_begin_compact);
-    PutFixed64(&time_for_compaction[1], latest_time_end_compact);
+    PutVarint64(&time_for_compaction[0], earliest_time_begin_compact);
+    PutVarint64(&time_for_compaction[1], latest_time_end_compact);
     properties->insert({TablePropertiesNames::kEarliestTimeBeginCompact,
                         time_for_compaction[0]});
     properties->insert(
@@ -143,7 +150,7 @@ class TtlIntTblPropCollector : public IntTblPropCollector {
   // @params value  the value that is inserted into the table.
   Status InternalAdd(const Slice& key, const Slice& value,
                      uint64_t file_size) override {
-    raw_key_value_size_ += key.size() + value.size();
+    ++total_entries_;
     EntryType entry_type = GetEntryType(ExtractValueType(key));
     if (entry_type == kEntryMerge || entry_type == kEntryPut ||
         entry_type == kEntryMergeIndex || entry_type == kEntryValueIndex) {
@@ -162,7 +169,7 @@ class TtlIntTblPropCollector : public IntTblPropCollector {
         return s;
       }
       if (has_ttl) {
-        ttl_key_value_size_ += key.size() + value.size();
+        ++ttl_entries_;
         uint64_t key_ttl =
             std::min(static_cast<uint64_t>(ttl.count()),
                      kFiftyYearSecondsNumber);  // ttl is limited to 50 years.
@@ -240,6 +247,29 @@ uint64_t GetMergeOperands(const UserCollectedProperties& props,
                           bool* property_present) {
   return GetUint64Property(props, TablePropertiesNames::kMergeOperands,
                            property_present);
+}
+
+void GetCompactionTimePoint(const UserCollectedProperties& props,
+                            uint64_t* earliest_time_begin_compact,
+                            uint64_t* latest_time_end_compact) {
+  assert(earliest_time_begin_compact != nullptr);
+  assert(latest_time_end_compact != nullptr);
+
+  bool property_present_ignored;
+
+  *earliest_time_begin_compact =
+      GetUint64Property(props, TablePropertiesNames::kEarliestTimeBeginCompact,
+                        &property_present_ignored);
+  if (property_present_ignored) {
+    *earliest_time_begin_compact = port::kMaxUint64;
+  }
+
+  *latest_time_end_compact =
+      GetUint64Property(props, TablePropertiesNames::kLatestTimeEndCompact,
+                        &property_present_ignored);
+  if (property_present_ignored) {
+    *latest_time_end_compact = port::kMaxUint64;
+  }
 }
 
 }  // namespace TERARKDB_NAMESPACE

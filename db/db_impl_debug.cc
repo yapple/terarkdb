@@ -13,8 +13,8 @@
 #include "db/error_handler.h"
 #include "db/periodic_work_scheduler.h"
 #include "monitoring/thread_status_updater.h"
-
 #include "rocksdb/terark_namespace.h"
+
 namespace TERARKDB_NAMESPACE {
 
 uint64_t DBImpl::TEST_GetLevel0TotalSize() {

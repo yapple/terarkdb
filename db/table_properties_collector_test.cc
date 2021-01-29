@@ -24,6 +24,7 @@
 #include "util/file_reader_writer.h"
 #include "util/testharness.h"
 #include "util/testutil.h"
+
 namespace TERARKDB_NAMESPACE {
 
 class TablePropertiesTest : public testing::Test,
@@ -261,7 +262,7 @@ void TestCustomizedTablePropertiesCollector(
         new RegularKeysStartWithAFactory(backward_mode));
   } else {
     GetIntTblPropCollectorFactory(ioptions, moptions,
-                                  &int_tbl_prop_collector_factories);
+                                  &int_tbl_prop_collector_factories, false);
   }
   MakeBuilder(options, ioptions, moptions, internal_comparator,
               &int_tbl_prop_collector_factories, &writer, &builder);
@@ -400,7 +401,7 @@ void TestInternalKeyPropertiesCollector(
     ImmutableCFOptions ioptions(options);
     MutableCFOptions moptions(options);
     GetIntTblPropCollectorFactory(ioptions, moptions,
-                                  &int_tbl_prop_collector_factories);
+                                  &int_tbl_prop_collector_factories, false);
     options.comparator = comparator;
   }
   const ImmutableCFOptions ioptions(options);
