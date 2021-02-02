@@ -224,10 +224,10 @@ class TtlIntTblPropCollectorFactory : public IntTblPropCollectorFactory {
 
  private:
   const TtlExtractorFactory* ttl_extractor_factory_;
+  Env* env_;
   double ttl_gc_ratio_;
   size_t ttl_max_scan_cap_;
   std::string name_;
-  Env* env_;
 };
 
 IntTblPropCollectorFactory* NewTtlIntTblPropCollectorFactory(
