@@ -11,6 +11,7 @@
 #include <string>
 #include <vector>
 
+#include "options/cf_options.h"
 #include "rocksdb/env.h"
 #include "rocksdb/table_properties.h"
 #include "rocksdb/terark_namespace.h"
@@ -18,6 +19,20 @@
 namespace TERARKDB_NAMESPACE {
 
 class TtlExtractorFactory;
+struct TtlOptions {
+  double ttl_gc_ratio;
+  size_t ttl_max_scan_cap;
+  size_t ttl_mandatory_compaction;
+  TtlOptions(double _ttl_gc_ratio = 1.0, size_t _ttl_max_scan_cap = 0,
+             size_t _ttl_mandatory_compaction = 0)
+      : ttl_gc_ratio(_ttl_gc_ratio),
+        ttl_max_scan_cap(_ttl_max_scan_cap),
+        ttl_mandatory_compaction(_ttl_mandatory_compaction) {}
+  TtlOptions(const MutableCFOptions& options)
+      : ttl_gc_ratio(options.ttl_gc_ratio),
+        ttl_max_scan_cap(options.ttl_max_scan_gap),
+        ttl_mandatory_compaction(options.ttl_mandatory_compaction) {}
+};
 
 // Base class for internal table properties collector.
 class IntTblPropCollector {
@@ -155,6 +170,6 @@ class UserKeyTablePropertiesCollectorFactory
 
 IntTblPropCollectorFactory* NewTtlIntTblPropCollectorFactory(
     const TtlExtractorFactory* ttl_extractor_factory, Env* env,
-    double ttl_gc_ratio, size_t ttl_max_scan_cap);
+    const TtlOptions& ttl_options);
 
 }  // namespace TERARKDB_NAMESPACE

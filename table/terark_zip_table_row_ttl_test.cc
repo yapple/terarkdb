@@ -175,11 +175,10 @@ TEST_P(TerarkZipTableBuilderTest, BoundaryTest) {
   InternalKeyComparator ikc(options.comparator);
   std::vector<std::unique_ptr<IntTblPropCollectorFactory>>
       int_tbl_prop_collector_factories;
-
+  TtlOptions ttloptions(moptions);
   int_tbl_prop_collector_factories.emplace_back(
-      NewTtlIntTblPropCollectorFactory(
-          options.ttl_extractor_factory.get(), env,
-          moptions.ttl_gc_ratio, moptions.ttl_max_scan_gap));
+      NewTtlIntTblPropCollectorFactory(options.ttl_extractor_factory.get(), env,
+                                       ttloptions));
   std::string column_family_name;
   int unknown_level = -1;
   std::unique_ptr<TableBuilder> builder(options.table_factory->NewTableBuilder(
@@ -243,9 +242,7 @@ TEST_P(TerarkZipTableBuilderTest, BoundaryTest) {
   auto get_varint64 = [](const std::string& v) {
     Slice s(v);
     uint64_t r;
-    auto assert_true = [](bool b) {
-      ASSERT_TRUE(b);
-    };
+    auto assert_true = [](bool b) { ASSERT_TRUE(b); };
     assert_true(GetVarint64(&s, &r));
     return r;
   };

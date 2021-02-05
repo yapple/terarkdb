@@ -507,11 +507,10 @@ std::string RemoteCompactionDispatcher::Worker::DoCompaction(Slice data) {
   }
   if (immutable_cf_options.ttl_extractor_factory != nullptr) {
     // What this extractor will do is still unknown
+    TtlOptions toptions(mutable_cf_options);
     int_tbl_prop_collector_factories.data.emplace_back(
         NewTtlIntTblPropCollectorFactory(
-            immutable_cf_options.ttl_extractor_factory, rep_->env,
-            mutable_cf_options.ttl_gc_ratio,
-            mutable_cf_options.ttl_max_scan_gap));
+            immutable_cf_options.ttl_extractor_factory, rep_->env, toptions));
   }
   const Slice* start = nullptr;
   const Slice* end = nullptr;

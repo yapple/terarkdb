@@ -118,10 +118,10 @@ void GetIntTblPropCollectorFactory(
         new UserKeyTablePropertiesCollectorFactory(collector_factories[i]));
   }
   if (with_ttl_extractor && ioptions.ttl_extractor_factory != nullptr) {
+    TtlOptions toptions(moptions);
     int_tbl_prop_collector_factories->emplace_back(
         NewTtlIntTblPropCollectorFactory(ioptions.ttl_extractor_factory,
-                                         ioptions.env, moptions.ttl_gc_ratio,
-                                         moptions.ttl_max_scan_gap));
+                                         ioptions.env, toptions));
   }
 }
 

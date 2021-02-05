@@ -190,6 +190,8 @@ void MutableCFOptions::Dump(Logger* log) const {
                  ttl_gc_ratio);
   ROCKS_LOG_INFO(log, "                         ttl_max_scan_gap: %zd",
                  ttl_max_scan_gap);
+  ROCKS_LOG_INFO(log, "                 ttl_mandatory_compaction: %zd",
+                 ttl_mandatory_compaction);
   std::string result;
   char buf[10];
   for (const auto m : max_bytes_for_level_multiplier_additional) {

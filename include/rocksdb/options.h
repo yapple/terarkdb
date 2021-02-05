@@ -348,6 +348,12 @@ struct ColumnFamilyOptions : public AdvancedColumnFamilyOptions {
   // Default: 0
   size_t ttl_max_scan_gap = 0;
 
+  // The ttl to mark a SST to be compacted.
+  // If the value not set, it use 0 default and we do not enable
+  // mandatory_compaction.
+  // Default : 0
+  size_t ttl_mandatory_compaction = 0;
+
   // Create ColumnFamilyOptions with default values for all fields
   ColumnFamilyOptions();
   // Create ColumnFamilyOptions from Options

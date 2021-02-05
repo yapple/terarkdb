@@ -179,7 +179,8 @@ struct MutableCFOptions {
         report_bg_io_stats(options.report_bg_io_stats),
         compression(options.compression),
         ttl_gc_ratio(options.ttl_gc_ratio),
-        ttl_max_scan_gap(options.ttl_max_scan_gap) {
+        ttl_max_scan_gap(options.ttl_max_scan_gap),
+        ttl_mandatory_compaction(options.ttl_mandatory_compaction) {
     RefreshDerivedOptions(options.num_levels);
   }
 
@@ -214,7 +215,8 @@ struct MutableCFOptions {
         report_bg_io_stats(false),
         compression(Snappy_Supported() ? kSnappyCompression : kNoCompression),
         ttl_gc_ratio(1.000),
-        ttl_max_scan_gap(0) {}
+        ttl_max_scan_gap(0),
+        ttl_mandatory_compaction(0) {}
 
   explicit MutableCFOptions(const Options& options);
 
@@ -283,6 +285,7 @@ struct MutableCFOptions {
 
   double ttl_gc_ratio;
   size_t ttl_max_scan_gap;
+  size_t ttl_mandatory_compaction;
 };
 
 uint64_t MultiplyCheckOverflow(uint64_t op1, double op2);

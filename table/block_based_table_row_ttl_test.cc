@@ -4,21 +4,21 @@
 #include "db/table_properties_collector.h"
 #include "rocksdb/terark_namespace.h"
 #include "table/block_based_table_builder.h"
-#include "util/string_util.h"
 #include "util/coding.h"
+#include "util/string_util.h"
 #include "util/testharness.h"
 #include "util/testutil.h"
 
 namespace TERARKDB_NAMESPACE {
 
-struct params {
-  params(double ratio = 1.000, size_t scan = port::kMaxUint64) {
-    ttl_ratio = ratio;
-    ttl_scan = scan;
-  }
-  double ttl_ratio;
-  size_t ttl_scan;
-};
+// struct params {
+//   params(double ratio = 1.000, size_t scan = port::kMaxUint64) {
+//     ttl_ratio = ratio;
+//     ttl_scan = scan;
+//   }
+//   double ttl_ratio;
+//   size_t ttl_scan;
+// };
 class TestEnv : public EnvWrapper {
  public:
   explicit TestEnv() : EnvWrapper(Env::Default()), close_count(0) {}
@@ -60,10 +60,12 @@ class TestEnv : public EnvWrapper {
   int close_count;
 };
 
-class BlockBasedTableBuilderTest : public ::testing::TestWithParam<params> {};
+class BlockBasedTableBuilderTest : public ::testing::TestWithParam<TtlOptions> {
+};
 
-params ttl_param[] = {{0.50, 2},     {1.280, 5}, {0.800, 0}, {1.280, 0},
-                      {1.000, 1000}, {0.000, 1}, {-10, 0}};
+TtlOptions ttl_param[] = {{0.50, 2},  {1.280, 5},    {0.800, 0},
+                          {1.280, 0}, {1.000, 1000}, {0.000, 1},
+                          {-10, 0},   {1.0, 0, 100}, {1.0, 0, 10}};
 // INSTANTIATE_TEST_CASE_P(TrueReturn, BlockBasedTableBuilderTest,
 //                         testing::Values(ttl_param[0], ttl_param[1],
 //                                         ttl_param[2], ttl_param[3],
@@ -72,7 +74,6 @@ INSTANTIATE_TEST_CASE_P(CorrectnessTest, BlockBasedTableBuilderTest,
                         testing::ValuesIn(ttl_param));
 
 TEST_F(BlockBasedTableBuilderTest, FunctionTest) {
-
   BlockBasedTableOptions blockbasedtableoptions;
   BlockBasedTableFactory factory(blockbasedtableoptions);
   test::StringSink sink;
@@ -160,9 +161,9 @@ TEST_P(BlockBasedTableBuilderTest, BoundaryTest) {
   options.info_log.reset(new TestEnv::TestLogger(env));
   options.create_if_missing = true;
   options.env = env;
-  auto n = GetParam();
-  options.ttl_gc_ratio = n.ttl_ratio;
-  options.ttl_max_scan_gap = n.ttl_scan;
+  auto toptions = GetParam();
+  // options.ttl_gc_ratio = n.ttl_gc_ratio;
+  // options.ttl_max_scan_gap = n.ttl_max_scan_cap;
   options.ttl_extractor_factory.reset(new test::TestTtlExtractorFactory());
   Status s = DB::Open(options, dbname, &db);
   ASSERT_OK(s);
@@ -177,9 +178,8 @@ TEST_P(BlockBasedTableBuilderTest, BoundaryTest) {
       int_tbl_prop_collector_factories;
 
   int_tbl_prop_collector_factories.emplace_back(
-      NewTtlIntTblPropCollectorFactory(
-          options.ttl_extractor_factory.get(), env,
-          moptions.ttl_gc_ratio, moptions.ttl_max_scan_gap));
+      NewTtlIntTblPropCollectorFactory(options.ttl_extractor_factory.get(), env,
+                                       toptions));
   std::string column_family_name;
   int unknown_level = -1;
   std::unique_ptr<TableBuilder> builder(factory.NewTableBuilder(
@@ -243,31 +243,32 @@ TEST_P(BlockBasedTableBuilderTest, BoundaryTest) {
   auto get_varint64 = [](const std::string& v) {
     Slice s(v);
     uint64_t r;
-    auto assert_true = [](bool b) {
-      ASSERT_TRUE(b);
-    };
+    auto assert_true = [](bool b) { ASSERT_TRUE(b); };
     assert_true(GetVarint64(&s, &r));
     return r;
   };
   uint64_t act_answer1 = get_varint64(answer1->second);
   uint64_t act_answer2 = get_varint64(answer2->second);
-  if (n.ttl_ratio > 1.000) {
+  if (toptions.ttl_gc_ratio > 1.000) {
     // ASSERT_EQ(std::numeric_limits<uint64_t>::max(),
     // props->ratio_expire_time);
     ASSERT_EQ(act_answer1, std::numeric_limits<uint64_t>::max());
   } else {
     // ASSERT_NE(answer1, answer3);
 
-    if (n.ttl_ratio <= 0.0) {
+    if (toptions.ttl_gc_ratio <= 0.0) {
       // EXPECT_EQ(nowseconds + min_ttl, props->ratio_expire_time);
       ASSERT_EQ(act_answer1, nowseconds + min_ttl);
+    } else if (toptions.ttl_gc_ratio == 1.0 && toptions.ttl_max_scan_cap == 0 &&
+               toptions.ttl_mandatory_compaction < 26) {
+      ASSERT_EQ(act_answer1, nowseconds + toptions.ttl_mandatory_compaction);
     } else {
       std::cout << "[==========]  ratio_ttl:";
       // std::cout << props->ratio_expire_time - nowseconds << "s" << std::endl;
       std::cout << act_answer1 - nowseconds << "s" << std::endl;
     }
   }
-  if (n.ttl_scan == 0) {
+  if (toptions.ttl_max_scan_cap == 0) {
     ASSERT_EQ(act_answer2, std::numeric_limits<uint64_t>::max());
     // ASSERT_EQ(std::numeric_limits<uint64_t>::max(),
     //           props->scan_gap_expire_time);
