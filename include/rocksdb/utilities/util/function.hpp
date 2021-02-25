@@ -1,10 +1,14 @@
 ﻿#pragma once
 
 #include <functional>
+
+#include "rocksdb/terark_namespace.h"
 #include "rocksdb/utilities/util/config.hpp"
 #include "rocksdb/utilities/util/preproc.hpp"
 #include "rocksdb/utilities/util/terark_boost.hpp"
-namespace terark {
+
+namespace TERARKDB_NAMESPACE {
+namespace tools {
 
 using std::bind;
 using std::cref;
@@ -39,7 +43,7 @@ class OnScopeExit {
 };
 #define TERARK_SCOPE_EXIT(...)                                           \
   auto TERARK_PP_CAT2(func_on_exit_, __LINE__) = [&]() { __VA_ARGS__; }; \
-  terark::OnScopeExit<decltype(TERARK_PP_CAT2(func_on_exit_, __LINE__))> \
+  tools::OnScopeExit<decltype(TERARK_PP_CAT2(func_on_exit_, __LINE__))>  \
       TERARK_PP_CAT2(call_on_exit_,                                      \
                      __LINE__)(TERARK_PP_CAT2(func_on_exit_, __LINE__))
 
@@ -80,7 +84,7 @@ struct mf_callback_t {
 
 ///@param lambda lambda obj
 ///@note  this yield two args
-#define TERARK_C_CALLBACK(lambda) terark::c_callback(lambda), &lambda
+#define TERARK_C_CALLBACK(lambda) tools::c_callback(lambda), &lambda
 
 //--------------------------------------------------------------------
 // User/Application defined MemPool
@@ -295,8 +299,8 @@ CombinableExtractorT<Extractor1> CombinableExtractor(Extractor1&& ex1) {
 ///                       or '->template some_member_func<1,2,3>()'
 ///@note '.' or '->' before field is required
 ///@note TERARK_GET() is identity operator
-#define TERARK_GET(...)                  \
-  terark::CombinableExtractor( \
+#define TERARK_GET(...)       \
+  tools::CombinableExtractor( \
       [](const auto& x) -> decltype(auto) { return (x __VA_ARGS__); })
 
 #define TERARK_FIELD_O_0() x
@@ -435,6 +439,6 @@ CombinableExtractorT<Extractor1> CombinableExtractor(Extractor1&& ex1) {
 #define TERARK_EQUAL_P(...) \
   TERARK_EQUAL_IMP(TERARK_PP_MAP(TERARK_PP_PREPEND, ->, __VA_ARGS__))
 
-}  // namespace terark
-
-// using terark::cmp;
+}  // namespace tools
+}  // namespace TERARKDB_NAMESPACE
+   // using tools::cmp;

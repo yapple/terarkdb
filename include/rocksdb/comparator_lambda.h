@@ -51,22 +51,22 @@ static const char SFINAE_STR[1] = "";
 template <class KeyExtractor, class KeyComparator>
 auto operator<(const KeyExtractor& ex, const KeyComparator& cmp)
     -> decltype(cmp.Compare(SFINAE_STR, SFINAE_STR),
-                terark::ExtractorComparator(ex, StdCompareLess(&cmp))) {
-  return terark::ExtractorComparator(ex, StdCompareLess(&cmp));
+                tools::ExtractorComparator(ex, StdCompareLess(&cmp))) {
+  return tools::ExtractorComparator(ex, StdCompareLess(&cmp));
 }
 
 template <class KeyExtractor, class KeyComparator>
 auto operator>(const KeyExtractor& ex, const KeyComparator& cmp)
     -> decltype(cmp.Compare(SFINAE_STR, SFINAE_STR),
-                terark::ExtractorComparator(ex, StdCompareGreater(&cmp))) {
-  return terark::ExtractorComparator(ex, StdCompareGreater(&cmp));
+                tools::ExtractorComparator(ex, StdCompareGreater(&cmp))) {
+  return tools::ExtractorComparator(ex, StdCompareGreater(&cmp));
 }
 
 template <class KeyExtractor, class KeyComparator>
 auto operator==(const KeyExtractor& ex, const KeyComparator& cmp)
     -> decltype(cmp.Compare(SFINAE_STR, SFINAE_STR),
-                terark::ExtractorComparator(ex, StdCompareEqual(&cmp))) {
-  return terark::ExtractorComparator(ex, StdCompareEqual(&cmp));
+                tools::ExtractorComparator(ex, StdCompareEqual(&cmp))) {
+  return tools::ExtractorComparator(ex, StdCompareEqual(&cmp));
 }
 
 template <class KeyComparator>

@@ -14,10 +14,10 @@
 #include <set>
 
 #include "rocksdb/terark_namespace.h"
+#include "rocksdb/utilities/util/valvec.hpp"
 #include "util/autovector.h"
 #include "util/kv_map.h"
 #include "util/vector_iterator.h"
-#include "rocksdb/utilities/util/valvec.hpp"
 
 namespace TERARKDB_NAMESPACE {
 
@@ -118,7 +118,7 @@ void FragmentedRangeTombstoneList::FragmentTombstones(
       for (auto flush_it = it; flush_it != cur_end_keys.end(); ++flush_it) {
         seqnums_to_flush.push_back(flush_it->sequence);
       }
-      terark::sort_a(seqnums_to_flush, std::greater<SequenceNumber>());
+      tools::sort_a(seqnums_to_flush, std::greater<SequenceNumber>());
 
       size_t start_idx = tombstone_seqs_.size();
       size_t end_idx = start_idx + seqnums_to_flush.size();

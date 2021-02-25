@@ -78,9 +78,9 @@ int main() {
 #ifdef BOOSTLIB
 #include <boost/range/algorithm.hpp>
 #endif
+#include "rocksdb/utilities/util/function.hpp"
 #include "util/testutil.h"
 #include "utilities/merge_operators.h"
-#include "rocksdb/utilities/util/function.hpp"
 
 using GFLAGS_NAMESPACE::ParseCommandLineFlags;
 using GFLAGS_NAMESPACE::RegisterFlagValidator;
@@ -548,7 +548,7 @@ enum TERARKDB_NAMESPACE::ChecksumType StringToChecksumType(const char* ctype) {
 std::string ChecksumTypeToString(TERARKDB_NAMESPACE::ChecksumType ctype) {
   auto iter = std::find_if(TERARKDB_NAMESPACE::checksum_type_string_map.begin(),
                            TERARKDB_NAMESPACE::checksum_type_string_map.end(),
-                           TERARK_GET(.second) == ctype);
+                           TERARKDB_NAMESPACE::TERARK_GET(.second) == ctype);
 
   assert(iter != TERARKDB_NAMESPACE::checksum_type_string_map.end());
   return iter->first;

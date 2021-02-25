@@ -62,6 +62,7 @@
 #include "rocksdb/table.h"
 #include "rocksdb/table_properties.h"
 #include "rocksdb/terark_namespace.h"
+#include "rocksdb/utilities/util/valvec.hpp"
 #include "table/block_based_table_factory.h"
 #include "table/get_context.h"
 #include "table/merging_iterator.h"
@@ -79,7 +80,6 @@
 #include "util/stop_watch.h"
 #include "util/string_util.h"
 #include "util/sync_point.h"
-#include "rocksdb/utilities/util/valvec.hpp"
 
 namespace TERARKDB_NAMESPACE {
 
@@ -590,12 +590,12 @@ void CompactionJob::GenSubcompactionBoundaries(int max_usable_threads) {
       }
     }
   }
-  terark::sort_a(bounds, &ExtractUserKey < *cfd_comparator);
+  tools::sort_a(bounds, &ExtractUserKey < *cfd_comparator);
 
   // Remove duplicated entries from bounds
   // bounds.resize(terark::unique_a(bounds, &ExtractUserKey ==
   // *cfd_comparator));
-  bounds.resize(terark::unique_a(bounds, &ExtractUserKey == *cfd_comparator));
+  bounds.resize(tools::unique_a(bounds, &ExtractUserKey == *cfd_comparator));
 
   // Combine consecutive pairs of boundaries into ranges with an approximate
   // size of data covered by keys in that range

@@ -19,13 +19,13 @@
 #include "rocksdb/iterator.h"
 #include "rocksdb/table.h"
 #include "rocksdb/terark_namespace.h"
+#include "rocksdb/utilities/util/valvec.hpp"
 #include "table/cuckoo_table_factory.h"
 #include "table/get_context.h"
 #include "table/internal_iterator.h"
 #include "table/meta_blocks.h"
 #include "util/arena.h"
 #include "util/coding.h"
-#include "rocksdb/utilities/util/valvec.hpp"
 
 namespace TERARKDB_NAMESPACE {
 namespace {
@@ -313,7 +313,7 @@ void CuckooTableIterator::InitIfNeeded() {
   }
   assert(sorted_bucket_ids_.size() ==
          reader_->GetTableProperties()->num_entries);
-  terark::sort_a(sorted_bucket_ids_, bucket_comparator_);
+  tools::sort_a(sorted_bucket_ids_, bucket_comparator_);
   curr_key_idx_ = kInvalidIndex;
   initialized_ = true;
 }
@@ -335,8 +335,8 @@ void CuckooTableIterator::Seek(const Slice& target) {
   const BucketComparator seek_comparator(
       reader_->file_data_, reader_->ucomp_, reader_->bucket_length_,
       reader_->user_key_length_, ExtractUserKey(target));
-  curr_key_idx_ = static_cast<uint32_t>(terark::lower_bound_a(
-      sorted_bucket_ids_, kInvalidIndex, seek_comparator));
+  curr_key_idx_ = static_cast<uint32_t>(
+      tools::lower_bound_a(sorted_bucket_ids_, kInvalidIndex, seek_comparator));
   PrepareKVAtCurrIdx();
 }
 

@@ -1,12 +1,11 @@
-#ifdef WITH_TERARK_ZIP
-#include <terark/valvec.hpp>
-#else
 
 #include <stdlib.h>
 
+#include "rocksdb/terark_namespace.h"
 #include "rocksdb/utilities/util/function.hpp"
 
-namespace terark {
+namespace TERARKDB_NAMESPACE {
+namespace tools {
 
 /// STL like algorithm with array/RanIt and size_t param
 
@@ -312,5 +311,5 @@ void sort_ex_a(Container& a, KeyExtractor keyEx, Comp cmp) {
   std::sort(std::begin(a), std::end(a), ExtractorComparator(keyEx, cmp));
 }
 
-}  // namespace terark
-#endif
+}  // namespace tools
+}  // namespace TERARKDB_NAMESPACE

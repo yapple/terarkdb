@@ -21,9 +21,9 @@
 #include "port/port.h"
 #include "rocksdb/memtablerep.h"
 #include "rocksdb/terark_namespace.h"
+#include "rocksdb/utilities/util/valvec.hpp"
 #include "util/murmurhash.h"
 #include "util/string_util.h"
-#include "rocksdb/utilities/util/valvec.hpp"
 
 namespace TERARKDB_NAMESPACE {
 namespace {
@@ -550,7 +550,7 @@ HashCuckooRep::Iterator::Iterator(
 
 void HashCuckooRep::Iterator::DoSort() const {
   if (!sorted_) {
-    terark::sort_a(*bucket_, "" < compare_);
+    tools::sort_a(*bucket_, "" < compare_);
     cit_ = bucket_->begin();
     sorted_ = true;
   }

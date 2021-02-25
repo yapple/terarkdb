@@ -19,9 +19,9 @@
 #include "db/event_helpers.h"
 #include "db/memtable_list.h"
 #include "rocksdb/terark_namespace.h"
+#include "rocksdb/utilities/util/valvec.hpp"
 #include "util/file_util.h"
 #include "util/sst_file_manager_impl.h"
-#include "rocksdb/utilities/util/valvec.hpp"
 
 namespace TERARKDB_NAMESPACE {
 
@@ -396,9 +396,9 @@ void DBImpl::PurgeObsoleteFiles(JobContext& state, bool schedule_only) {
 
   // dedup state.candidate_files so we don't try to delete the same
   // file twice
-  terark::sort_a(candidate_files, CompareCandidateFile);
-  candidate_files.resize(terark::unique_a(candidate_files, EqualCandidateFile));
-  terark::sort_a(state.skip_candidate_files);
+  tools::sort_a(candidate_files, CompareCandidateFile);
+  candidate_files.resize(tools::unique_a(candidate_files, EqualCandidateFile));
+  tools::sort_a(state.skip_candidate_files);
 
   if (state.prev_total_log_size > 0) {
     ROCKS_LOG_INFO(immutable_db_options_.info_log,
@@ -428,7 +428,7 @@ void DBImpl::PurgeObsoleteFiles(JobContext& state, bool schedule_only) {
     // 2. remove if file number in skip_candidate_files
     if (!ParseFileName(fname, &number, info_log_prefix.prefix, &type) ||
         (type != kInfoLogFile &&
-         terark::binary_search_a(state.skip_candidate_files, number))) {
+         tools::binary_search_a(state.skip_candidate_files, number))) {
       // erase this candidate_files
       candidate_files[i] = std::move(candidate_files.back());
       candidate_files.pop_back();

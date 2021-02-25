@@ -3174,7 +3174,7 @@ Status DBImpl::DeleteFilesInRanges(ColumnFamilyHandle* column_family,
         deleted_range.push_back(deleted);
       }
       // sort & merge ranges
-      terark::sort_a(deleted_range, TERARK_FIELD(start) < *uc);
+      tools::sort_a(deleted_range, TERARK_FIELD(start) < *uc);
       size_t c = 0;
       n = deleted_range.size();
       for (size_t i = 1; i < n; ++i) {
