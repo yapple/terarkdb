@@ -1,8 +1,17 @@
 #pragma once
 
-#ifdef WITH_TERARK_ZIP
-#include "terark/util/factory.ipp"
-#else
+#ifndef WITH_TERARK_ZIP
+#define BYTEDANCE_TERARK_DLL_EXPORT
+namespace terark {
+BYTEDANCE_TERARK_DLL_EXPORT bool getEnvBool(const char* envName,
+                                            bool Default = false);
+BYTEDANCE_TERARK_DLL_EXPORT long getEnvLong(const char* envName,
+                                            long Default = false);
+BYTEDANCE_TERARK_DLL_EXPORT double getEnvDouble(const char* envName,
+                                                double Default);
+}  // namespace terark
+// #endif  // __UTILITIES_UTIL_FACTORY_HPP__
+#endif
 
 #include <rocksdb/slice.h>
 
@@ -10,7 +19,7 @@
 #include <boost/current_function.hpp>
 #include <boost/noncopyable.hpp>
 #else
-#define BOOST_CURRENT_FUNCTION "(unknown)"
+#define BOOST_CURRENT_FUNCTION __FUNCTION__
 #endif
 
 #include <mutex>
@@ -18,13 +27,11 @@
 #include <typeinfo>
 #include <unordered_map>
 
-#include "util/hash.h"
 #include "rocksdb/utilities/util/function.hpp"
 #include "rocksdb/utilities/util/terark_boost.hpp"
 
-#define BYTEDANCE_TERARK_DLL_EXPORT
-
-namespace terark {
+namespace TERARKDB_NAMESPACE {
+namespace tools {
 ///@note on principle, the factory itself is stateless, but its product
 /// can has states, sometimes we need factory of factory, in this case,
 /// just let the factory being factoryable:
@@ -35,17 +42,17 @@ template <class ProductPtr, class... CreatorArgs>
 class Factoryable {
  public:
   virtual ~Factoryable();
-  static ProductPtr create(TERARKDB_NAMESPACE::Slice name, CreatorArgs...);
+  static ProductPtr create(Slice name, CreatorArgs...);
 
-  TERARKDB_NAMESPACE::Slice reg_name() const;
+  Slice reg_name() const;
 
 #ifdef BOOSTLIB
   struct AutoReg : boost::noncopyable {
 #else
   struct AutoReg : boost::noncopyable {
 #endif
-    typedef function<ProductPtr(CreatorArgs...)> CreatorFunc;
-    AutoReg(TERARKDB_NAMESPACE::Slice name, CreatorFunc creator, const std::type_info&);
+    typedef std::function<ProductPtr(CreatorArgs...)> CreatorFunc;
+    AutoReg(Slice name, CreatorFunc creator, const std::type_info&);
     ~AutoReg();
     std::string m_name;
     std::type_index m_type_idx;
@@ -72,19 +79,6 @@ class Factoryable {
 
 #define TERARK_FACTORY_REGISTER(Class, Creator) \
   TERARK_FACTORY_REGISTER_EX(Class, TERARK_PP_STR(Class), Creator)
-
-}  // namespace terark
-namespace terark {
-BYTEDANCE_TERARK_DLL_EXPORT bool getEnvBool(const char* envName,
-                                            bool Default = false);
-BYTEDANCE_TERARK_DLL_EXPORT long getEnvLong(const char* envName,
-                                            long Default = false);
-BYTEDANCE_TERARK_DLL_EXPORT double getEnvDouble(const char* envName,
-                                                double Default);
-}  // namespace terark
-// #endif  // __UTILITIES_UTIL_FACTORY_HPP__
-
-namespace terark {
 
 template <class ProductPtr, class... CreatorArgs>
 struct Factoryable<ProductPtr, CreatorArgs...>::AutoReg::Impl {
@@ -114,7 +108,7 @@ struct Factoryable<ProductPtr, CreatorArgs...>::AutoReg::Impl {
 
 template <class ProductPtr, class... CreatorArgs>
 Factoryable<ProductPtr, CreatorArgs...>::AutoReg::AutoReg(
-    TERARKDB_NAMESPACE::Slice name, CreatorFunc creator, const std::type_info& ti)
+    Slice name, CreatorFunc creator, const std::type_info& ti)
     : m_name(name.ToString()), m_type_idx(ti) {
   auto& imp = Impl::s_singleton();
   auto& func_map = imp.func_map;
@@ -126,7 +120,7 @@ Factoryable<ProductPtr, CreatorArgs...>::AutoReg::AutoReg(
   }
   if (!imp.type_map.emplace(ti, name.ToString()).second) {
 #if defined(TERARK_FACTORY_WARN_ON_DUP_NAME)
-    TERARKDB_NAMESPACE::Slice oldname = imp.type_map.val(ib.first);
+    Slice oldname = imp.type_map.val(ib.first);
     fprintf(stderr,
             "WARN: %s: dup name: {old=\"%.*s\", new=\"%.*s\"} "
             "for type: %s, new name ignored\n",
@@ -159,7 +153,7 @@ Factoryable<ProductPtr, CreatorArgs...>::AutoReg::~AutoReg() {
 
 template <class ProductPtr, class... CreatorArgs>
 ProductPtr Factoryable<ProductPtr, CreatorArgs...>::create(
-    TERARKDB_NAMESPACE::Slice name, CreatorArgs... args) {
+    Slice name, CreatorArgs... args) {
   auto& imp = AutoReg::Impl::s_singleton();
   auto& func_map = imp.func_map;
   imp.mtx.lock();
@@ -175,9 +169,9 @@ ProductPtr Factoryable<ProductPtr, CreatorArgs...>::create(
 }
 
 template <class ProductPtr, class... CreatorArgs>
-TERARKDB_NAMESPACE::Slice Factoryable<ProductPtr, CreatorArgs...>::reg_name() const {
+Slice Factoryable<ProductPtr, CreatorArgs...>::reg_name() const {
   auto& imp = AutoReg::Impl::s_singleton();
-  TERARKDB_NAMESPACE::Slice name;
+  Slice name;
   imp.mtx.lock();
   auto i = imp.type_map.find(std::type_index(typeid(*this)));
   if (imp.type_map.end() != i) {
@@ -190,7 +184,7 @@ TERARKDB_NAMESPACE::Slice Factoryable<ProductPtr, CreatorArgs...>::reg_name() co
 template <class ProductPtr, class... CreatorArgs>
 Factoryable<ProductPtr, CreatorArgs...>::~Factoryable() {}
 
-}  // namespace terark
+}  // namespace tools
 
 /// ---- user land ----
 
@@ -202,8 +196,10 @@ Factoryable<ProductPtr, CreatorArgs...>::~Factoryable() {}
 
 ///@note this macro must be called in global namespace
 #define TERARK_FACTORY_INSTANTIATE_GNS(ProductPtr, ...)  \
-  namespace terark {                                     \
+  namespace TERARKDB_NAMESPACE {                         \
+  namespace tools {                                      \
   TERARK_FACTORY_INSTANTIATE(ProductPtr, ##__VA_ARGS__); \
+  }                                                      \
   }
 
-#endif
+}  // namespace TERARKDB_NAMESPACE

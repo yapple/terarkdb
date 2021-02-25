@@ -30,7 +30,7 @@ class Slice;
  * ColumnFamilyOptions.
  */
 class SliceTransform
-    : public terark::Factoryable<SliceTransform*, const std::string&> {
+    : public tools::Factoryable<SliceTransform*, const std::string&> {
  public:
   virtual ~SliceTransform(){};
 

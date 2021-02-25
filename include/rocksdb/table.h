@@ -435,7 +435,7 @@ class RandomAccessFileReader;
 
 // A base class for table factories.
 class TableFactory
-    : public terark::Factoryable<TableFactory*, const std::string&, Status*> {
+    : public tools::Factoryable<TableFactory*, const std::string&, Status*> {
  public:
   virtual ~TableFactory() {}
 

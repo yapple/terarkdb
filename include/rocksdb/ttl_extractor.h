@@ -33,7 +33,7 @@ class TtlExtractor {
 };
 
 class TtlExtractorFactory
-    : public terark::Factoryable<TtlExtractorFactory*, Slice> {
+    : public tools::Factoryable<TtlExtractorFactory*, Slice> {
  public:
   virtual ~TtlExtractorFactory() {}
 
