@@ -2,6 +2,8 @@
 // This source code is licensed under Apache 2.0 License.
 #ifndef WITH_TERARK_ZIP
 #include "rocksdb/utilities/util/factory.h"
+
+#include "env.h"
 //#include <terark/hash_strmap.hpp>
 // #include <terark/gold_hash_map.hpp>
 

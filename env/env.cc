@@ -16,10 +16,11 @@
 #include "port/sys_time.h"
 #include "rocksdb/options.h"
 #include "rocksdb/terark_namespace.h"
-#include "util/arena.h"
-#include "util/autovector.h"
 #include "rocksdb/utilities/util/factory.h"
 #include "rocksdb/utilities/util/function.hpp"
+#include "util/arena.h"
+#include "util/autovector.h"
+#include "util/env.h"
 
 namespace TERARKDB_NAMESPACE {
 

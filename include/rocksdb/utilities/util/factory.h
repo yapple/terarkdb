@@ -1,18 +1,5 @@
 #pragma once
 
-#ifndef WITH_TERARK_ZIP
-#define BYTEDANCE_TERARK_DLL_EXPORT
-namespace terark {
-BYTEDANCE_TERARK_DLL_EXPORT bool getEnvBool(const char* envName,
-                                            bool Default = false);
-BYTEDANCE_TERARK_DLL_EXPORT long getEnvLong(const char* envName,
-                                            long Default = false);
-BYTEDANCE_TERARK_DLL_EXPORT double getEnvDouble(const char* envName,
-                                                double Default);
-}  // namespace terark
-// #endif  // __UTILITIES_UTIL_FACTORY_HPP__
-#endif
-
 #include <rocksdb/slice.h>
 
 #ifdef BOOSTLIB
@@ -27,6 +14,7 @@ BYTEDANCE_TERARK_DLL_EXPORT double getEnvDouble(const char* envName,
 #include <typeinfo>
 #include <unordered_map>
 
+#include "rocksdb/terark_namespace.h"
 #include "rocksdb/utilities/util/function.hpp"
 #include "rocksdb/utilities/util/terark_boost.hpp"
 

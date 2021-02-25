@@ -16,11 +16,12 @@
 #include "monitoring/iostats_context_imp.h"
 #include "port/port.h"
 #include "rocksdb/terark_namespace.h"
+#include "rocksdb/utilities/util/factory.h"
+#include "util/env.h"
 #include "util/random.h"
 #include "util/rate_limiter.h"
 #include "util/string_util.h"
 #include "util/sync_point.h"
-#include "rocksdb/utilities/util/factory.h"
 
 #undef min
 
