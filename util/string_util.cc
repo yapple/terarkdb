@@ -28,7 +28,7 @@
 #include "rocksdb/env.h"
 #include "rocksdb/slice.h"
 #include "rocksdb/terark_namespace.h"
-#include "utilities/util/function.hpp"
+#include "rocksdb/utilities/util/function.hpp"
 
 namespace TERARKDB_NAMESPACE {
 

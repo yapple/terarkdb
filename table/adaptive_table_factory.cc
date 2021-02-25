@@ -9,7 +9,7 @@
 #include "rocksdb/terark_namespace.h"
 #include "table/format.h"
 #include "table/table_builder.h"
-#include "utilities/util/factory.h"
+#include "rocksdb/utilities/util/factory.h"
 
 namespace TERARKDB_NAMESPACE {
 

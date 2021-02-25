@@ -13,7 +13,7 @@
 #include "rocksdb/status.h"
 #include "rocksdb/terark_namespace.h"
 #include "rocksdb/types.h"
-#include "utilities/util/factory.h"
+#include "rocksdb/utilities/util/factory.h"
 
 namespace TERARKDB_NAMESPACE {
 

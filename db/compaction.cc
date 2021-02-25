@@ -23,7 +23,7 @@
 #include "rocksdb/terark_namespace.h"
 #include "util/string_util.h"
 #include "util/sync_point.h"
-#include "utilities/util/factory.h"
+#include "rocksdb/utilities/util/factory.h"
 
 namespace TERARKDB_NAMESPACE {
 

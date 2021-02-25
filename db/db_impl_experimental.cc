@@ -22,7 +22,7 @@
 #include "db/version_set.h"
 #include "rocksdb/status.h"
 #include "rocksdb/terark_namespace.h"
-#include "utilities/util/valvec.hpp"
+#include "rocksdb/utilities/util/valvec.hpp"
 
 namespace TERARKDB_NAMESPACE {
 

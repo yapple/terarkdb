@@ -18,8 +18,8 @@
 #include "rocksdb/terark_namespace.h"
 #include "util/arena.h"
 #include "util/autovector.h"
-#include "utilities/util/factory.h"
-#include "utilities/util/function.hpp"
+#include "rocksdb/utilities/util/factory.h"
+#include "rocksdb/utilities/util/function.hpp"
 
 namespace TERARKDB_NAMESPACE {
 

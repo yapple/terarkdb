@@ -19,8 +19,8 @@
 #include <unordered_map>
 
 #include "util/hash.h"
-#include "utilities/util/function.hpp"
-#include "utilities/util/terark_boost.hpp"
+#include "rocksdb/utilities/util/function.hpp"
+#include "rocksdb/utilities/util/terark_boost.hpp"
 
 #define BYTEDANCE_TERARK_DLL_EXPORT
 

@@ -11,7 +11,7 @@
 #include "rocksdb/terark_namespace.h"
 #include "rocksdb/ttl_extractor.h"
 #include "util/coding.h"
-#include "utilities/util/factory.h"
+#include "rocksdb/utilities/util/factory.h"
 
 namespace TERARKDB_NAMESPACE {
 

@@ -23,7 +23,7 @@
 #include "rocksdb/terark_namespace.h"
 #include "util/murmurhash.h"
 #include "util/string_util.h"
-#include "utilities/util/valvec.hpp"
+#include "rocksdb/utilities/util/valvec.hpp"
 
 namespace TERARKDB_NAMESPACE {
 namespace {

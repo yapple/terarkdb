@@ -755,7 +755,7 @@ set(SOURCES
         utilities/ttl/db_ttl_impl.cc
         utilities/write_batch_with_index/write_batch_with_index.cc
         utilities/write_batch_with_index/write_batch_with_index_internal.cc
-        utilities/util/factory.cc
+        include/rocksdb/utilities/util/factory.cc
         $<TARGET_OBJECTS:rocksdb_build_version>)
 
 IF(WITH_TERARK_ZIP)

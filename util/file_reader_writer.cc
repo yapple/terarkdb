@@ -20,7 +20,7 @@
 #include "util/rate_limiter.h"
 #include "util/string_util.h"
 #include "util/sync_point.h"
-#include "utilities/util/factory.h"
+#include "rocksdb/utilities/util/factory.h"
 
 #undef min
 

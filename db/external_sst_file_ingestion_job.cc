@@ -27,7 +27,7 @@
 #include "util/file_util.h"
 #include "util/stop_watch.h"
 #include "util/sync_point.h"
-#include "utilities/util/function.hpp"
+#include "rocksdb/utilities/util/function.hpp"
 
 namespace TERARKDB_NAMESPACE {
 

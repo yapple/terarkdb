@@ -80,7 +80,7 @@ int main() {
 #endif
 #include "util/testutil.h"
 #include "utilities/merge_operators.h"
-#include "utilities/util/function.hpp"
+#include "rocksdb/utilities/util/function.hpp"
 
 using GFLAGS_NAMESPACE::ParseCommandLineFlags;
 using GFLAGS_NAMESPACE::RegisterFlagValidator;

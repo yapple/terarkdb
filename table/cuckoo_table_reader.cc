@@ -25,7 +25,7 @@
 #include "table/meta_blocks.h"
 #include "util/arena.h"
 #include "util/coding.h"
-#include "utilities/util/valvec.hpp"
+#include "rocksdb/utilities/util/valvec.hpp"
 
 namespace TERARKDB_NAMESPACE {
 namespace {

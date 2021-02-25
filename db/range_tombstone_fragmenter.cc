@@ -17,7 +17,7 @@
 #include "util/autovector.h"
 #include "util/kv_map.h"
 #include "util/vector_iterator.h"
-#include "utilities/util/valvec.hpp"
+#include "rocksdb/utilities/util/valvec.hpp"
 
 namespace TERARKDB_NAMESPACE {
 

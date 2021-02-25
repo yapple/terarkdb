@@ -4,7 +4,7 @@
 
 #include <stdlib.h>
 
-#include "utilities/util/function.hpp"
+#include "rocksdb/utilities/util/function.hpp"
 
 namespace terark {
 

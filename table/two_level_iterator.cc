@@ -16,7 +16,7 @@
 #include "table/format.h"
 #include "util/arena.h"
 #include "util/heap.h"
-#include "utilities/util/function.hpp"
+#include "rocksdb/utilities/util/function.hpp"
 
 namespace TERARKDB_NAMESPACE {
 

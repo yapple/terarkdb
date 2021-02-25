@@ -24,7 +24,7 @@
 #include "table/merging_iterator.h"
 #include "util/string_util.h"
 #include "util/sync_point.h"
-#include "utilities/util/valvec.hpp"
+#include "rocksdb/utilities/util/valvec.hpp"
 
 namespace TERARKDB_NAMESPACE {
 

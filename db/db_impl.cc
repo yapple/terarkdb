@@ -89,7 +89,7 @@
 #include <sys/unistd.h>
 
 #endif
-#include "utilities/util/valvec.hpp"
+#include "rocksdb/utilities/util/valvec.hpp"
 
 #ifdef __GNUC__
 #pragma GCC diagnostic push

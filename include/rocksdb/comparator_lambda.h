@@ -2,7 +2,7 @@
 // This source code is licensed under Apache 2.0 License.
 #pragma once
 #include "rocksdb/terark_namespace.h"
-#include "utilities/util/function.hpp"
+#include "rocksdb/utilities/util/function.hpp"
 
 namespace TERARKDB_NAMESPACE {
 

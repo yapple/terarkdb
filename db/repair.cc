@@ -87,7 +87,7 @@
 #include "util/file_reader_writer.h"
 #include "util/filename.h"
 #include "util/string_util.h"
-#include "utilities/util/function.hpp"
+#include "rocksdb/utilities/util/function.hpp"
 
 namespace TERARKDB_NAMESPACE {
 

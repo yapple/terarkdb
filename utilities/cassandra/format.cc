@@ -11,7 +11,7 @@
 
 #include "rocksdb/terark_namespace.h"
 #include "utilities/cassandra/serialize.h"
-#include "utilities/util/valvec.hpp"
+#include "rocksdb/utilities/util/valvec.hpp"
 
 namespace TERARKDB_NAMESPACE {
 namespace cassandra {

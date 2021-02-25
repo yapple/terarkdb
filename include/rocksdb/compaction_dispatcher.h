@@ -14,7 +14,7 @@
 
 #include "rocksdb/env.h"
 #include "rocksdb/terark_namespace.h"
-#include "utilities/util/terark_boost.hpp"
+#include "rocksdb/utilities/util/terark_boost.hpp"
 
 namespace TERARKDB_NAMESPACE {
 // using boost::noncopyable;

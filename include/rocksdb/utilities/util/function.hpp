@@ -5,9 +5,9 @@
 #else
 
 #include <functional>
-#include "utilities/util/config.hpp"
-#include "utilities/util/preproc.hpp"
-#include "utilities/util/terark_boost.hpp"
+#include "rocksdb/utilities/util/config.hpp"
+#include "rocksdb/utilities/util/preproc.hpp"
+#include "rocksdb/utilities/util/terark_boost.hpp"
 namespace terark {
 
 using std::bind;
