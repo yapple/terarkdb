@@ -1,8 +1,4 @@
 ﻿#pragma once
-#ifdef WITH_TERARK_ZIP
-#include "terark/util/function.hpp"
-#include "terark/valvec.hpp"
-#else
 
 #include <functional>
 #include "rocksdb/utilities/util/config.hpp"
@@ -442,4 +438,3 @@ CombinableExtractorT<Extractor1> CombinableExtractor(Extractor1&& ex1) {
 }  // namespace terark
 
 // using terark::cmp;
-#endif
