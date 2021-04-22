@@ -348,6 +348,8 @@ struct ColumnFamilyOptions : public AdvancedColumnFamilyOptions {
   // Default: 0
   size_t ttl_max_scan_gap = 0;
 
+  size_t blob_sst_num_limit = -1;
+
   // Create ColumnFamilyOptions with default values for all fields
   ColumnFamilyOptions();
   // Create ColumnFamilyOptions from Options

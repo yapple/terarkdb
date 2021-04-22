@@ -308,7 +308,8 @@ MutableCFOptions::MutableCFOptions(const ColumnFamilyOptions& options, Env* env)
       report_bg_io_stats(options.report_bg_io_stats),
       compression(options.compression),
       ttl_gc_ratio(options.ttl_gc_ratio),
-      ttl_max_scan_gap(options.ttl_max_scan_gap) {
+      ttl_max_scan_gap(options.ttl_max_scan_gap),
+      blob_sst_num_limit(options.blob_sst_num_limit){
   RefreshDerivedOptions(options.num_levels);
 
   int_tbl_prop_collector_factories = std::make_shared<
