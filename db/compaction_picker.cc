@@ -816,6 +816,26 @@ Compaction* CompactionPicker::PickGarbageCollection(
       gc_files.push_back(info);
     }
   }
+  if(gc_files.empty() && vstorage->LevelFiles(-1).size() > mutable_cf_options.blob_sst_num_limit){
+    // no small file
+    // no score of file lower than blob_gc_ratio
+    // and the num of blob sst is more than blob_sst_num_limit
+
+    for (auto f : vstorage->LevelFiles(-1)) {
+      if (!f->is_gc_permitted() || f->being_compacted) {
+        continue;
+      }
+      GarbageFileInfo info = {f};
+      info.score = std::min(
+          1.0, f->num_antiquation / std::max<double>(1, f->prop.num_entries));
+      info.estimate_size =
+          static_cast<uint64_t>(f->fd.file_size * (1 - info.score));
+      gc_files.push_back(info);
+      if(gc_files.size() > 100){
+        break;
+      }
+    }
+  }
 
   // Sorting by ratio decreasing.
   std::sort(gc_files.begin(), gc_files.end(), TERARK_CMP(score, >));
