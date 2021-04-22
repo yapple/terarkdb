@@ -788,8 +788,11 @@ Compaction* CompactionPicker::PickGarbageCollection(
   // Setting fragment_size as one eighth max_file_size prevents selecting
   // massive files to single compaction which would pin down the maximum
   // deletable file number for a long time resulting possible storage leakage.
-  size_t max_file_size =
+  size_t base_file_size =
       MaxFileSizeForLevel(mutable_cf_options, 1, ioptions_.compaction_style);
+  size_t max_file_size = MaxFileSizeForLevel(
+      mutable_cf_options, mutable_cf_options.max_file_size.size() - 1,
+      ioptions_.compaction_style);
   size_t fragment_size = max_file_size / 8;
 
   // Traverse level -1 to filter out all blob sstables needs GC.
@@ -806,7 +809,7 @@ Compaction* CompactionPicker::PickGarbageCollection(
     info.estimate_size =
         static_cast<uint64_t>(f->fd.file_size * (1 - info.score));
     if (info.score >= mutable_cf_options.blob_gc_ratio ||
-        info.estimate_size <= fragment_size) {
+        info.estimate_size <= base_file_size / 8) {
       gc_files.push_back(info);
     } else if (f->marked_for_compaction) {
       info.score = mutable_cf_options.blob_gc_ratio;
