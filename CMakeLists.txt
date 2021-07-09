@@ -33,7 +33,7 @@ option(WITH_ZLIB "build with zlib" ON)
 option(WITH_ZSTD "build with zstd" ON)
 option(WITH_BZ2 "build with bzip2" ON)
 option(WITH_WINDOWS_UTF8_FILENAMES "use UTF8 as characterset for opening files, regardles of the system code page" OFF)
-option(WITH_BYTEDANCE_METRICS "build with bytedance internal metrics" OFF)
+option(WITH_BYTEDANCE_METRICS "build with bytedance internal metrics" ON)
 option(WITH_ASAN "build with ASAN" OFF)
 option(WITH_GFLAGS "build with GFlags" ON)
 include(CMakeDependentOption)
@@ -69,6 +69,11 @@ endif()
 if(WITH_ZENFS)
   add_definitions(-DLIBZBD)
   add_definitions(-DROCKSDB_NAMESPACE=${WITH_TERARKDB_NAMESPACE})
+  if(NOT EXISTS ${PROJECT_SOURCE_DIR}/include/rocksdb/plugin)
+    execute_process(COMMAND
+      bash -c "ln -s ../../third-party ${PROJECT_SOURCE_DIR}/include/rocksdb/plugin"
+    )
+  endif()
 endif()
 
 IF(FORCE_TERARKDB_RELEASE_BUILD)
@@ -1205,11 +1210,6 @@ if(WITH_TOOLS)
   target_link_libraries(db_bench${ARTIFACT_SUFFIX} gtest ${ROCKSDB_STATIC_LIB})
 
   if(WITH_ZENFS)
-    if(NOT EXISTS ../includee/rocksdb/plugin)
-      execute_process(COMMAND
-        bash -c "ln -s ../../third-party ../include/rocksdb/plugin"
-      )
-    endif()
     add_executable(zenfs${ARTIFACT_SUFFIX} third-party/zenfs/util/zenfs.cc
         $<TARGET_OBJECTS:testharness>)
     target_link_libraries(zenfs${ARTIFACT_SUFFIX} gtest ${ROCKSDB_STATIC_LIB})
