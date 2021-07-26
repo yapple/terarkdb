@@ -1782,9 +1782,8 @@ void VersionStorageInfo::ComputeCompactionScore(
         // Level-based involves L0->L0 compactions that can lead to oversized
         // L0 files. Take into account size as well to avoid later giant
         // compactions to the base level.
-        score =
-            std::max(score, static_cast<double>(total_size) /
-                                mutable_cf_options.max_bytes_for_level_base);
+        score = std::max(score,
+                         static_cast<double>(total_size) / level_max_bytes_[0]);
       }
     } else {
       // Compute the ratio of current size to size limit.
@@ -2781,6 +2780,7 @@ void VersionStorageInfo::CalculateBaseBytes(const ImmutableCFOptions& ioptions,
       }
 
       uint64_t level_size = base_level_size;
+      level_max_bytes_[0] = level_size;
       for (int i = base_level_; i < num_levels_; i++) {
         if (i > base_level_) {
           level_size = MultiplyCheckOverflow(level_size, level_multiplier_);
