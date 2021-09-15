@@ -1073,34 +1073,52 @@ Status DBImpl::SwitchWAL(WriteContext* write_context) {
   // no need to refcount because drop is happening in write thread, so can't
   // happen while we're in the write thread
   autovector<ColumnFamilyData*> cfds;
+  autovector<ColumnFamilyData*> cfds_flush_only;
   for (auto cfd : *versions_->GetColumnFamilySet()) {
     if (cfd->IsDropped()) {
       continue;
     }
-    if (cfd->OldestLogToKeep() <= oldest_alive_log) {
+    if (cfd->mem()->GetNextLogNumber() <= oldest_alive_log) {
       cfds.push_back(cfd);
+    } else if (cfd->imm()->NeedFlushForSwitchWAL(oldest_alive_log)) {
+      if (cfd->ioptions()->atomic_flush_group != nullptr) {
+        cfds.push_back(cfd);
+      } else {
+        cfds_flush_only.push_back(cfd);
+      }
     }
   }
   FlushRequestVec flush_req_vec;
   ProcessAtomicFlushGroup(&cfds, &flush_req_vec);
-  uint64_t total_log_size = total_log_size_.load();
-  uint64_t max_total_wal_size = GetMaxTotalWalSize();
   for (const auto cfd : cfds) {
-    ROCKS_LOG_BUFFER(
-        &write_context->info_buffer,
-        "Flushing column family [%s] with data in WAL number %" PRIu64
-        ". Total log size is %" PRIu64 " while max_total_wal_size is %" PRIu64,
-        cfd->GetName().c_str(), oldest_alive_log, total_log_size,
-        max_total_wal_size);
-
     cfd->Ref();
     status = SwitchMemtable(cfd, write_context);
     cfd->Unref();
     if (!status.ok()) {
       break;
     }
+    assert(std::find(cfds_flush_only.begin(), cfds_flush_only.end(), cfd) ==
+           cfds_flush_only.end());
   }
   if (status.ok()) {
+    for (auto cfd : cfds_flush_only) {
+      assert(cfd->ioptions()->atomic_flush_group == nullptr);
+      cfds.push_back(cfd);
+      flush_req_vec.emplace_back();
+      auto& flush_req = flush_req_vec.back();
+      flush_req.emplace_back(cfd, 0);
+    }
+    uint64_t total_log_size = total_log_size_.load();
+    uint64_t max_total_wal_size = GetMaxTotalWalSize();
+    for (const auto cfd : cfds) {
+      ROCKS_LOG_BUFFER(
+          &write_context->info_buffer,
+          "Flushing column family [%s] with data in WAL number %" PRIu64
+          ". Total log size is %" PRIu64
+          " while max_total_wal_size is %" PRIu64,
+          cfd->GetName().c_str(), oldest_alive_log, total_log_size,
+          max_total_wal_size);
+    }
     PrepareFlushReqVec(flush_req_vec, true /* force_flush */);
     SchedulePendingFlush(flush_req_vec, FlushReason::kWriteBufferManager);
     MaybeScheduleFlushOrCompaction();

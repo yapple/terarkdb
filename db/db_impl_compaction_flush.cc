@@ -1605,7 +1605,9 @@ Status DBImpl::FlushMemTable(
     ProcessAtomicFlushGroup(&cfds, &flush_req_vec);
     for (auto cfd : cfds) {
       if (!cfd->mem()->IsEmpty() || !cached_recoverable_state_empty_.load()) {
+        cfd->Ref();
         s = SwitchMemtable(cfd, &context);
+        cfd->Unref();
       }
       if (!s.ok()) {
         break;

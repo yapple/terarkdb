@@ -276,6 +276,17 @@ class MemTableList {
     return memlist.front()->GetID();
   }
 
+  bool NeedFlushForSwitchWAL(uint64_t oldest_alive_log) const {
+    auto& memlist = current_->memlist_;
+    for (auto mem : memlist) {
+      if (!mem->flush_in_progress_ &&
+          mem->GetNextLogNumber() <= oldest_alive_log) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   void AssignAtomicFlushSeq(const SequenceNumber& seq) {
     const auto& memlist = current_->memlist_;
     // Scan the memtable list from new to old
