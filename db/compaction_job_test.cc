@@ -231,7 +231,8 @@ class CompactionJobTest : public testing::Test {
       const std::vector<std::vector<FileMetaData*>>& input_files,
       const stl_wrappers::KVMap& expected_results,
       const std::vector<SequenceNumber>& snapshots = {},
-      SequenceNumber earliest_write_conflict_snapshot = kMaxSequenceNumber) {
+      SequenceNumber earliest_write_conflict_snapshot = kMaxSequenceNumber,
+      std::vector<SelectedRange> input_range = {}) {
     auto cfd = versions_->GetColumnFamilySet()->GetDefault();
 
     size_t num_input_files = 0;
@@ -255,6 +256,7 @@ class CompactionJobTest : public testing::Test {
     params.compression_opts = cfd->ioptions()->compression_opts;
     params.manual_compaction = true;
     params.separation_type = kCompactionIgnoreSeparate;
+    params.input_range = input_range;
 
     Compaction compaction(std::move(params));
     compaction.SetInputVersion(cfd->current());
@@ -945,6 +947,27 @@ TEST_F(CompactionJobTest, CorruptionAfterDeletion) {
   SetLastSequence(6U);
   auto files = cfd_->current()->storage_info()->LevelFiles(0);
   RunCompaction({files}, expected_results);
+}
+
+TEST_F(CompactionJobTest, InputRange) {
+  NewDB();
+
+  auto file1 =
+      mock::MakeMockFile({{test::KeyStr("A", 6U, kTypeValue), "val3"},
+                          {test::KeyStr("B", 5U, kTypeValue), "val4"}});
+  AddMockFile(file1);
+
+  auto expected_results =
+      mock::MakeMockFile({{test::KeyStr("A", 0U, kTypeValue), "val3"},
+                          {test::KeyStr("B", 0U, kTypeValue), "val4"}});
+
+  SetLastSequence(6U);
+  auto files = cfd_->current()->storage_info()->LevelFiles(0);
+  SelectedRange range("A", "B", true, false);
+  std::vector<SelectedRange> input_range = {range};
+//  RunCompaction({files}, expected_results, {}, kMaxSequenceNumber, input_range);
+
+  std::cout << "hello " <<  std::endl;
 }
 
 }  // namespace TERARKDB_NAMESPACE
