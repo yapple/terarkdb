@@ -335,6 +335,7 @@ Compaction::Compaction(CompactionParams&& params)
       is_full_compaction_(IsFullCompaction(params.input_version, inputs_)),
       is_manual_compaction_(params.manual_compaction),
       is_trivial_move_(false),
+      is_single_thread_sub_compact_(params.single_thread_sub_compact),
       compaction_reason_(params.compaction_reason) {
   MarkFilesBeingCompacted(true);
   if (is_manual_compaction_) {

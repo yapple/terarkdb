@@ -257,6 +257,7 @@ class CompactionJobTest : public testing::Test {
     params.manual_compaction = true;
     params.separation_type = kCompactionIgnoreSeparate;
     params.input_range = input_range;
+    params.single_thread_sub_compact = true;
 
     Compaction compaction(std::move(params));
     compaction.SetInputVersion(cfd->current());

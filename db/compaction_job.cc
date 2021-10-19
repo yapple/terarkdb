@@ -780,6 +780,9 @@ int CompactionJob::Prepare(int sub_compaction_slots) {
     size_t n =
         std::min({uint32_t(sub_compaction_slots + 1),
                   uint32_t(input_range.size()), c->max_subcompactions()});
+    if (c->is_single_thread_sub_compact()) {
+      n = input_range.size();
+    }
     boundaries_.resize(n * 2);
     auto uc = c->column_family_data()->user_comparator();
     if (n < input_range.size()) {
@@ -1258,18 +1261,26 @@ Status CompactionJob::RunSelf() {
   const uint64_t start_micros = env_->NowMicros();
 
   if (compact_->compaction->compaction_type() != kMapCompaction) {
-    // map compact don't need multithreads
-    std::vector<ProcessArg> vec_process_arg(num_threads - 1);
-    for (size_t i = 0; i < num_threads - 1; i++) {
-      vec_process_arg[i].job = this;
-      vec_process_arg[i].task_id = int(i);
-      vec_process_arg[i].future = vec_process_arg[i].finished.get_future();
-      env_->Schedule(&CompactionJob::CallProcessCompaction, &vec_process_arg[i],
-                     TERARKDB_NAMESPACE::Env::LOW, this, nullptr);
-    }
-    ProcessCompaction(&compact_->sub_compact_states.back());
-    for (auto& arg : vec_process_arg) {
-      arg.future.wait();
+    auto* c = compact_->compaction;
+    if (c->is_single_thread_sub_compact()) {
+      for (auto& sub_compact : compact_->sub_compact_states) {
+        ProcessCompaction(&sub_compact);
+      }
+    } else {
+      // map compact don't need multithreads
+      std::vector<ProcessArg> vec_process_arg(num_threads - 1);
+      for (size_t i = 0; i < num_threads - 1; i++) {
+        vec_process_arg[i].job = this;
+        vec_process_arg[i].task_id = int(i);
+        vec_process_arg[i].future = vec_process_arg[i].finished.get_future();
+        env_->Schedule(&CompactionJob::CallProcessCompaction,
+                       &vec_process_arg[i], TERARKDB_NAMESPACE::Env::LOW, this,
+                       nullptr);
+      }
+      ProcessCompaction(&compact_->sub_compact_states.back());
+      for (auto& arg : vec_process_arg) {
+        arg.future.wait();
+      }
     }
   } else {
     assert(num_threads == 1);

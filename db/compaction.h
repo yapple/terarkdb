@@ -96,6 +96,7 @@ struct CompactionParams {
   bool manual_compaction = false;
   double score = -1;
   bool partial_compaction = false;
+  bool single_thread_sub_compact = false;
   CompactionType compaction_type = kKeyValueCompaction;
   SeparationType separation_type = kCompactionAutoRebuildBlob;
   std::vector<SelectedRange> input_range = {};
@@ -344,6 +345,8 @@ class Compaction {
   // are non-overlapping and can be trivially moved.
   bool is_trivial_move() const { return is_trivial_move_; }
 
+  bool is_single_thread_sub_compact() { return is_single_thread_sub_compact_; }
+
   // How many total levels are there?
   int number_levels() const { return number_levels_; }
 
@@ -510,6 +513,8 @@ class Compaction {
   // True if we can do trivial move in Universal multi level
   // compaction
   bool is_trivial_move_;
+
+  bool is_single_thread_sub_compact_;
 
   // Does input compression match the output compression?
   bool InputCompressionMatchesOutput() const;
