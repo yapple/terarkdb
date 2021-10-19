@@ -273,10 +273,10 @@ class CompactionJobTest : public testing::Test {
         earliest_write_conflict_snapshot, snapshot_checker, table_cache_,
         &event_logger, false, false, dbname_, &compaction_job_stats_);
     VerifyInitializationOfCompactionJobStats(compaction_job_stats_);
+    int sub_compaction_slots = input_range.size();
 
-    int sub_compaction_used =
-        compaction_job.Prepare(0 /* sub_compaction_slots */);
-    ASSERT_EQ(sub_compaction_used, 0);
+    int sub_compaction_used = compaction_job.Prepare(sub_compaction_slots);
+    ASSERT_LE(sub_compaction_used, sub_compaction_slots);
     mutex_.Unlock();
     Status s;
     s = compaction_job.Run();
@@ -291,8 +291,28 @@ class CompactionJobTest : public testing::Test {
     if (expected_results.empty()) {
       ASSERT_EQ(compaction_job_stats_.num_output_files, 0U);
     } else {
-      ASSERT_EQ(compaction_job_stats_.num_output_files, 1U);
-      mock_table_factory_->AssertLatestFile(expected_results);
+      int size = input_range.size();
+      if (size > 0) {
+        ASSERT_EQ(compaction_job_stats_.num_output_files, size);
+        auto files = mock_table_factory_->GetLatestNFile(size);
+        if (files[size - 1] != expected_results) {
+          for (auto file : files) {
+            for (const auto& kv : file) {
+              ParsedInternalKey ikey;
+              std::string key, value;
+              std::tie(key, value) = kv;
+              ParseInternalKey(Slice(key), &ikey);
+              std::cout << ikey.DebugString(false) << " -> " << value
+                        << std::endl;
+            }
+            std::cout << "-------------------" << std::endl;
+          }
+        }
+        ASSERT_TRUE(files[size - 1] == expected_results);
+      } else {
+        ASSERT_EQ(compaction_job_stats_.num_output_files, 1U);
+        mock_table_factory_->AssertLatestFile(expected_results);
+      }
     }
   }
 
@@ -950,24 +970,27 @@ TEST_F(CompactionJobTest, CorruptionAfterDeletion) {
 }
 
 TEST_F(CompactionJobTest, InputRange) {
+  env_->SetBackgroundThreads(1);
   NewDB();
 
   auto file1 =
       mock::MakeMockFile({{test::KeyStr("A", 6U, kTypeValue), "val3"},
-                          {test::KeyStr("B", 5U, kTypeValue), "val4"}});
+                          {test::KeyStr("B", 5U, kTypeValue), "val4"},
+                          {test::KeyStr("C", 4U, kTypeValue), "val5"},
+                          {test::KeyStr("D", 3U, kTypeValue), "val6"}});
   AddMockFile(file1);
 
   auto expected_results =
-      mock::MakeMockFile({{test::KeyStr("A", 0U, kTypeValue), "val3"},
-                          {test::KeyStr("B", 0U, kTypeValue), "val4"}});
+      mock::MakeMockFile({{test::KeyStr("C", 0U, kTypeValue), "val5"},
+                          {test::KeyStr("D", 0U, kTypeValue), "val6"}});
 
   SetLastSequence(6U);
   auto files = cfd_->current()->storage_info()->LevelFiles(0);
-  SelectedRange range("A", "B", true, false);
-  std::vector<SelectedRange> input_range = {range};
-//  RunCompaction({files}, expected_results, {}, kMaxSequenceNumber, input_range);
-
-  std::cout << "hello " <<  std::endl;
+  SelectedRange range1("A", "B", true, false);
+  SelectedRange range2("B", "C", true, false);
+  SelectedRange range3("C", "D", true, true);
+  std::vector<SelectedRange> input_range = {range1, range2, range3};
+  RunCompaction({files}, expected_results, {}, kMaxSequenceNumber, input_range);
 }
 
 }  // namespace TERARKDB_NAMESPACE

@@ -229,6 +229,7 @@ class MockTableFactory : public TableFactory {
   void AssertSingleFile(const stl_wrappers::KVMap& file_contents,
                         const stl_wrappers::KVMap& range_deletions);
   void AssertLatestFile(const stl_wrappers::KVMap& file_contents);
+  std::vector<stl_wrappers::KVMap> GetLatestNFile(int n);
 
  private:
   uint32_t GetAndWriteNextID(WritableFileWriter* file) const;

@@ -152,6 +152,22 @@ void MockTableFactory::AssertSingleFile(
   ASSERT_EQ(file_contents, file_system_.files.begin()->second.table);
   ASSERT_EQ(range_deletions, file_system_.files.begin()->second.tombstone);
 }
+std::vector<stl_wrappers::KVMap> MockTableFactory::GetLatestNFile(int n) {
+  auto files = file_system_.files;
+  assert(files.size() > n);
+  auto it = files.rbegin();
+  std::vector<stl_wrappers::KVMap> result = {};
+  while (n > 0) {
+    result.emplace_back(it->second.table);
+    it++;
+    n--;
+  }
+  auto cmp = [](stl_wrappers::KVMap a, stl_wrappers::KVMap b) {
+    return a.begin()->first < b.begin()->first;
+  };
+  sort(result.begin(), result.end(), cmp);
+  return result;
+}
 
 void MockTableFactory::AssertLatestFile(
     const stl_wrappers::KVMap& file_contents) {
@@ -184,6 +200,7 @@ void MockTableFactory::AssertLatestFile(
       ParseInternalKey(Slice(key), &ikey);
       std::cout << ikey.DebugString(false) << " -> " << value << std::endl;
       std::cout << "--- ^^ ---" << std::endl;
+      it++;
     }
     FAIL();
   }

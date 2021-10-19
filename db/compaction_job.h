@@ -109,6 +109,7 @@ class CompactionJob {
   };
 
   static void CallProcessCompaction(void* arg);
+  static void UnSchedule(void* arg);
 
  private:
   struct SubcompactionState;
@@ -192,6 +193,7 @@ class CompactionJob {
 
   EventLogger* event_logger_;
 
+  bool sequencial_sub_compaction_;
   bool bottommost_level_;
   bool paranoid_file_checks_;
   bool measure_io_stats_;
