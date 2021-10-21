@@ -805,6 +805,15 @@ class DBImpl : public DB {
   void FlushInfoLog();
 
   void ScheduleTtlGC();
+  Status SplitFile(const CompactionOptions& compact_options,
+                   std::string filename, std::set<std::string> split_point,
+                   std::vector<std::string>* const output_file_names,
+                   LogBuffer* log_buffer);
+  Status SplitFile(const CompactionOptions& compact_options,
+                   ColumnFamilyData* cfd, Version* version,
+                   std::string filename, std::set<std::string> split_point,
+                   std::vector<std::string>* const output_file_names,
+                   LogBuffer* log_buffer);
 
 #ifdef WITH_ZENFS
   // schedule GC by polling ZNS zone status

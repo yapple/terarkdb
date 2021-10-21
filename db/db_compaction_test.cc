@@ -3834,7 +3834,24 @@ TEST_F(DBCompactionTest, CompactionStatsTest) {
 
   VerifyCompactionStats(*cfd, *collector);
 }
+TEST_F(DBCompactionTest, CompactSplitFile) {
+  Options options = CurrentOptions();
+  FlushedFileCollector* collector = new FlushedFileCollector();
+  options.listeners.emplace_back(collector);
+  Reopen(options);
 
+  ASSERT_OK(Put("a", "val"));
+  ASSERT_OK(Put("b", "val"));
+  ASSERT_OK(Put("c", "val"));
+  ASSERT_OK(Put("d", "val"));
+  ASSERT_OK(Flush());
+  std::vector<std::string> filenames = collector->GetFlushedFiles();
+  std::vector<std::string> outputs = {};
+  dbfull()->SplitFile(CompactionOptions(), filenames[0], {"bb"}, &outputs,
+                      nullptr);
+  std::cout << outputs.size() << std::endl;
+
+}
 TEST_F(DBCompactionTest, CompactFilesOutputRangeConflict) {
   // LSM setup:
   // L1:      [ba bz]

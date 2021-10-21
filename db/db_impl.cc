@@ -4555,6 +4555,160 @@ Status DBImpl::TraceIteratorSeekForPrev(const uint32_t& cf_id,
   return s;
 }
 
+Status DBImpl::SplitFile(const CompactionOptions& compact_options,
+                         std::string filename,
+                         std::set<std::string> split_points,
+                         std::vector<std::string>* const output_file_names,
+                         LogBuffer* log_buffer) {
+  auto cfd =
+      reinterpret_cast<ColumnFamilyHandleImpl*>(DefaultColumnFamily())->cfd();
+  return SplitFile(compact_options, cfd, cfd->current(), filename, split_points,
+                   output_file_names, log_buffer);
+}
+
+Status DBImpl::SplitFile(const CompactionOptions& compact_options,
+                         ColumnFamilyData* cfd, Version* version,
+                         std::string file_name,
+                         std::set<std::string> split_points,
+                         std::vector<std::string>* const output_file_names,
+                         LogBuffer* log_buffer) {
+  mutex_.AssertHeld();
+  JobContext job_context(next_job_id_.fetch_add(1), true);
+  std::unordered_set<uint64_t> input_set;
+  input_set.insert(TableFileNameToNumber(file_name));
+  std::vector<CompactionInputFiles> input_files;
+  Status s = cfd->compaction_picker()->GetCompactionInputsFromFileNumbers(
+      &input_files, &input_set, version->storage_info(), compact_options);
+  if (!s.ok()) {
+    return s;
+  }
+  for (const auto& inputs : input_files) {
+    if (cfd->compaction_picker()->AreFilesInCompaction(inputs.files)) {
+      return Status::Aborted(
+          "Some of the necessary compaction input "
+          "files are already being compacted");
+    }
+  }
+  assert(split_points.size() > 0);
+  assert(input_files.size() == 0);
+  assert(input_files[0].files.size() == 0);
+
+  // construct split_points_
+  Slice smallest = input_files[0].files[0]->smallest.user_key();
+  Slice largest = input_files[0].files[0]->largest.user_key();
+  const Comparator* cmp = cfd->user_comparator();
+  auto comparator = [cmp](const Slice& a, const Slice& b) {
+    return cmp->Compare(a, b) < 0;
+  };
+  std::set<Slice, decltype(comparator)> split_points_(comparator);
+
+  for (auto split_point : split_points) {
+    split_points_.insert(split_point);
+  }
+  split_points_.insert(smallest);
+  split_points_.insert(largest);
+
+  // check split_points_
+  if (cmp->Compare(*split_points_.begin(), smallest) != 0 ||
+      cmp->Compare(*split_points_.end()--, largest) != 0 ||
+      split_points_.size() < 3) {
+    std::string msg = "";
+    for (auto point : split_points_) {
+      msg += point.ToString() + ";";
+    }
+    return Status::Aborted("Invalid points:" + msg);
+  }
+
+  bool sfm_reserved_compact_space = false;
+  // First check if we have enough room to do the compaction
+  bool enough_room = EnoughRoomForCompaction(
+      cfd, input_files, &sfm_reserved_compact_space, log_buffer);
+
+  if (!enough_room) {
+    // m's vars will get set properly at the end of this function,
+    // as long as status == CompactionTooLarge
+    return Status::CompactionTooLarge();
+  }
+  bg_compaction_scheduled_++;
+
+  CompactionParams params(cfd->current()->storage_info(), *cfd->ioptions(),
+                          *cfd->GetLatestMutableCFOptions());
+
+  // construct input_range
+  std::vector<SelectedRange> input_range = {};
+  auto it = split_points_.begin();
+  Slice start = *it;
+  while (it != split_points_.end()) {
+    it++;
+    Slice end = *it;
+    input_range.emplace_back(start, end, true, false);
+    start = end;
+  }
+  input_range.back().include_limit = true;
+
+  params.inputs = input_files;
+  params.output_level = input_files[0].level;
+  params.compression_opts = cfd->ioptions()->compression_opts;
+  params.manual_compaction = true;
+  params.input_range = input_range;
+  params.single_thread_sub_compact = true;
+
+  Compaction c(std::move(params));
+  c.SetInputVersion(cfd->current());
+  SnapshotChecker* snapshot_checker = nullptr;
+  SequenceNumber earliest_write_conflict_snapshot;
+
+  auto pending_outputs_inserted_elem =
+      CaptureCurrentFileNumberInPendingOutputs();
+  std::vector<SequenceNumber> snapshot_seqs =
+      snapshots_.GetAll(&earliest_write_conflict_snapshot);
+
+  CompactionJob compaction_job(
+      0, &c, immutable_db_options_, env_options_, versions_.get(),
+      &shutting_down_, preserve_deletes_seqnum_, log_buffer, nullptr, nullptr,
+      nullptr, &mutex_, &error_handler_, snapshot_seqs,
+      earliest_write_conflict_snapshot, snapshot_checker, table_cache_,
+      &event_logger_, c.mutable_cf_options()->paranoid_file_checks,
+      c.mutable_cf_options()->report_bg_io_stats, dbname_, nullptr);
+  compaction_job.Prepare(input_range.size());
+  mutex_.Unlock();
+  compaction_job.Run();
+  mutex_.Lock();
+  Status status = compaction_job.Install(*c.mutable_cf_options());
+  if (status.ok()) {
+    InstallSuperVersionAndScheduleWork(c.column_family_data(),
+                                       &job_context.superversion_contexts[0],
+                                       *c.mutable_cf_options());
+  }
+  c.ReleaseCompactionFiles(s);
+
+#ifndef ROCKSDB_LITE
+  // Need to make sure SstFileManager does its bookkeeping
+  auto sfm = static_cast<SstFileManagerImpl*>(
+      immutable_db_options_.sst_file_manager.get());
+  if (sfm && sfm_reserved_compact_space) {
+    sfm->OnCompactionCompletion(&c);
+  }
+#endif  // ROCKSDB_LITE
+
+  ReleaseFileNumberFromPendingOutputs(pending_outputs_inserted_elem);
+
+  if (output_file_names != nullptr) {
+    for (const auto& newf : c.edit()->GetNewFiles()) {
+      (*output_file_names)
+          .push_back(TableFileName(c.immutable_cf_options()->cf_paths,
+                                   newf.second.fd.GetNumber(),
+                                   newf.second.fd.GetPathId()));
+    }
+  }
+  bg_compaction_scheduled_--;
+  if (bg_compaction_scheduled_ == 0) {
+    bg_cv_.SignalAll();
+  }
+  MaybeScheduleFlushOrCompaction();
+  return s;
+}
+
 #endif  // ROCKSDB_LITE
 
 }  // namespace TERARKDB_NAMESPACE
