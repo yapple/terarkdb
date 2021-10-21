@@ -807,13 +807,7 @@ class DBImpl : public DB {
   void ScheduleTtlGC();
   Status SplitFile(const CompactionOptions& compact_options,
                    std::string filename, std::set<std::string> split_point,
-                   std::vector<std::string>* const output_file_names,
-                   LogBuffer* log_buffer);
-  Status SplitFile(const CompactionOptions& compact_options,
-                   ColumnFamilyData* cfd, Version* version,
-                   std::string filename, std::set<std::string> split_point,
-                   std::vector<std::string>* const output_file_names,
-                   LogBuffer* log_buffer);
+                   std::vector<std::string>* const output_file_names);
 
 #ifdef WITH_ZENFS
   // schedule GC by polling ZNS zone status
@@ -1009,6 +1003,12 @@ class DBImpl : public DB {
 
   struct PrepickedCompaction;
   struct PurgeFileInfo;
+
+  Status SplitFileImpl(const CompactionOptions& compact_options,
+                       ColumnFamilyData* cfd, Version* version,
+                       std::string filename, std::set<std::string> split_point,
+                       std::vector<std::string>* const output_file_names,
+                       JobContext* job_context, LogBuffer* log_buffer);
 
   // Initialize the built-in column family for persistent stats. Depending on
   // whether on-disk persistent stats have been enabled before, it may either

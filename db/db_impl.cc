@@ -4558,22 +4558,58 @@ Status DBImpl::TraceIteratorSeekForPrev(const uint32_t& cf_id,
 Status DBImpl::SplitFile(const CompactionOptions& compact_options,
                          std::string filename,
                          std::set<std::string> split_points,
-                         std::vector<std::string>* const output_file_names,
-                         LogBuffer* log_buffer) {
-  auto cfd =
-      reinterpret_cast<ColumnFamilyHandleImpl*>(DefaultColumnFamily())->cfd();
-  return SplitFile(compact_options, cfd, cfd->current(), filename, split_points,
-                   output_file_names, log_buffer);
+                         std::vector<std::string>* const output_file_names) {
+  Status s;
+  JobContext job_context(0, true);
+  LogBuffer log_buffer(InfoLogLevel::INFO_LEVEL,
+                       immutable_db_options_.info_log.get());
+  {
+    InstrumentedMutexLock l(&mutex_);
+    // This call will unlock/lock the mutex to wait for current running
+    // IngestExternalFile() calls to finish.
+    WaitForIngestFile();
+
+    auto cfd =
+        reinterpret_cast<ColumnFamilyHandleImpl*>(DefaultColumnFamily())->cfd();
+
+    s = SplitFileImpl(compact_options, cfd, cfd->current(), filename,
+                      split_points, output_file_names, &job_context,
+                      &log_buffer);
+  }
+  // Find and delete obsolete files
+  {
+    InstrumentedMutexLock l(&mutex_);
+    // If !s.ok(), this means that Compaction failed. In that case, we want
+    // to delete all obsolete files we might have created and we force
+    // FindObsoleteFiles(). This is because job_context does not
+    // catch all created files if compaction failed.
+    FindObsoleteFiles(&job_context, !s.ok());
+  }  // release the mutex
+  // delete unnecessary files if any, this is done outside the mutex
+  if (job_context.HaveSomethingToClean() ||
+      job_context.HaveSomethingToDelete() || !log_buffer.IsEmpty()) {
+    // Have to flush the info logs before bg_compaction_scheduled_--
+    // because if bg_flush_scheduled_ becomes 0 and the lock is
+    // released, the deconstructor of DB can kick in and destroy all the
+    // states of DB so info_log might not be available after that point.
+    // It also applies to access other states that DB owns.
+    log_buffer.FlushBufferToLog();
+    if (job_context.HaveSomethingToDelete()) {
+      // no mutex is locked here.  No need to Unlock() and Lock() here.
+      PurgeObsoleteFiles(job_context);
+    }
+    job_context.Clean(&mutex_);
+  }
+  return s;
 }
 
-Status DBImpl::SplitFile(const CompactionOptions& compact_options,
-                         ColumnFamilyData* cfd, Version* version,
-                         std::string file_name,
-                         std::set<std::string> split_points,
-                         std::vector<std::string>* const output_file_names,
-                         LogBuffer* log_buffer) {
+Status DBImpl::SplitFileImpl(const CompactionOptions& compact_options,
+                             ColumnFamilyData* cfd, Version* version,
+                             std::string file_name,
+                             std::set<std::string> split_points,
+                             std::vector<std::string>* const output_file_names,
+                             JobContext* job_context, LogBuffer* log_buffer) {
   mutex_.AssertHeld();
-  JobContext job_context(next_job_id_.fetch_add(1), true);
   std::unordered_set<uint64_t> input_set;
   input_set.insert(TableFileNameToNumber(file_name));
   std::vector<CompactionInputFiles> input_files;
@@ -4677,7 +4713,7 @@ Status DBImpl::SplitFile(const CompactionOptions& compact_options,
   Status status = compaction_job.Install(*c.mutable_cf_options());
   if (status.ok()) {
     InstallSuperVersionAndScheduleWork(c.column_family_data(),
-                                       &job_context.superversion_contexts[0],
+                                       &job_context->superversion_contexts[0],
                                        *c.mutable_cf_options());
   }
   c.ReleaseCompactionFiles(s);
