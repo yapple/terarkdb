@@ -4626,8 +4626,8 @@ Status DBImpl::SplitFileImpl(const CompactionOptions& compact_options,
     }
   }
   assert(split_points.size() > 0);
-  assert(input_files.size() == 0);
-  assert(input_files[0].files.size() == 0);
+  assert(input_files.size() > 0);
+  assert(input_files[0].files.size() > 0);
 
   // construct split_points_
   Slice smallest = input_files[0].files[0]->smallest.user_key();
@@ -4646,7 +4646,7 @@ Status DBImpl::SplitFileImpl(const CompactionOptions& compact_options,
 
   // check split_points_
   if (cmp->Compare(*split_points_.begin(), smallest) != 0 ||
-      cmp->Compare(*split_points_.end()--, largest) != 0 ||
+      cmp->Compare(*(--split_points_.end()), largest) != 0 ||
       split_points_.size() < 3) {
     std::string msg = "";
     for (auto point : split_points_) {
@@ -4674,13 +4674,15 @@ Status DBImpl::SplitFileImpl(const CompactionOptions& compact_options,
   std::vector<SelectedRange> input_range = {};
   auto it = split_points_.begin();
   Slice start = *it;
-  while (it != split_points_.end()) {
+  while (true) {
     it++;
+    if(it == split_points_.end()) break;
     Slice end = *it;
     input_range.emplace_back(start, end, true, false);
     start = end;
   }
-  input_range.back().include_limit = true;
+  auto& b = input_range.back();
+  b.include_limit = true;
 
   params.inputs = input_files;
   params.output_level = input_files[0].level;

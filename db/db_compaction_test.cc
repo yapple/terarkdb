@@ -3847,9 +3847,7 @@ TEST_F(DBCompactionTest, CompactSplitFile) {
   ASSERT_OK(Flush());
   std::vector<std::string> filenames = collector->GetFlushedFiles();
   std::vector<std::string> outputs = {};
-  dbfull()->SplitFile(CompactionOptions(), filenames[0], {"bb"}, &outputs,
-                      nullptr);
-  std::cout << outputs.size() << std::endl;
+  dbfull()->SplitFile(CompactionOptions(), filenames[0], {"b"}, &outputs);
 
 }
 TEST_F(DBCompactionTest, CompactFilesOutputRangeConflict) {
