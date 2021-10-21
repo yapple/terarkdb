@@ -17,6 +17,7 @@
 #include "util/fault_injection_test_env.h"
 #include "util/sync_point.h"
 #include "utilities/merge_operators/string_append/stringappend2.h"
+#include "tools/sst_dump_tool_imp.h"
 
 namespace TERARKDB_NAMESPACE {
 
@@ -3840,14 +3841,26 @@ TEST_F(DBCompactionTest, CompactSplitFile) {
   options.listeners.emplace_back(collector);
   Reopen(options);
 
-  ASSERT_OK(Put("a", "val"));
-  ASSERT_OK(Put("b", "val"));
-  ASSERT_OK(Put("c", "val"));
-  ASSERT_OK(Put("d", "val"));
+  ASSERT_OK(Put("A", "val"));
+  ASSERT_OK(Put("B", "val"));
+  ASSERT_OK(Put("C", "val"));
+  ASSERT_OK(Put("D", "val"));
   ASSERT_OK(Flush());
   std::vector<std::string> filenames = collector->GetFlushedFiles();
   std::vector<std::string> outputs = {};
-  dbfull()->SplitFile(CompactionOptions(), filenames[0], {"b"}, &outputs);
+  dbfull()->SplitFile(CompactionOptions(), filenames[0], {"B"}, &outputs);
+  auto p = [](std::string filename) {
+    TERARKDB_NAMESPACE::SstFileDumper dumper(filename, false, false);
+    std::string from,to;
+    Status st =
+        dumper.ReadSequential(true, std::numeric_limits<uint64_t>::max(),
+                              false,            // has_from
+                              from, false,  // has_to
+                              to);
+  };
+  for(auto out:outputs){
+    p(out);
+  }
 
 }
 TEST_F(DBCompactionTest, CompactFilesOutputRangeConflict) {

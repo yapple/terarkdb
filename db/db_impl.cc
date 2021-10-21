@@ -4673,23 +4673,28 @@ Status DBImpl::SplitFileImpl(const CompactionOptions& compact_options,
   // construct input_range
   std::vector<SelectedRange> input_range = {};
   auto it = split_points_.begin();
-  Slice start = *it;
+  Slice start(*it);
+  Slice end;
+
   while (true) {
     it++;
     if(it == split_points_.end()) break;
-    Slice end = *it;
-    input_range.emplace_back(start, end, true, false);
+    end = *it;
+    input_range.emplace_back(start, end, true, input_range.size() == split_points_.size()-2);
     start = end;
   }
-  auto& b = input_range.back();
-  b.include_limit = true;
+  for(auto range: input_range){
+    std::cout << range.start << " " << range.limit << " " << range.include_limit << std::endl;
+  }
 
   params.inputs = input_files;
-  params.output_level = input_files[0].level;
+  // TODO , if in Level0, maybe map
+  params.output_level = input_files[0].level + 1;
   params.compression_opts = cfd->ioptions()->compression_opts;
   params.manual_compaction = true;
   params.input_range = input_range;
   params.single_thread_sub_compact = true;
+  params.separation_type = kCompactionIgnoreSeparate;
 
   Compaction c(std::move(params));
   c.SetInputVersion(cfd->current());
