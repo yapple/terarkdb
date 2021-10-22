@@ -4654,6 +4654,9 @@ Status DBImpl::SplitFileImpl(const CompactionOptions& compact_options,
     }
     return Status::Aborted("Invalid points:" + msg);
   }
+  if (input_files[0].level == 0) {
+    return Status::Aborted("Not support split level-0's file");
+  }
 
   bool sfm_reserved_compact_space = false;
   // First check if we have enough room to do the compaction
@@ -4678,18 +4681,20 @@ Status DBImpl::SplitFileImpl(const CompactionOptions& compact_options,
 
   while (true) {
     it++;
-    if(it == split_points_.end()) break;
+    if (it == split_points_.end()) break;
     end = *it;
-    input_range.emplace_back(start, end, true, input_range.size() == split_points_.size()-2);
+    input_range.emplace_back(start, end, true,
+                             input_range.size() == split_points_.size() - 2);
     start = end;
   }
-  for(auto range: input_range){
-    std::cout << range.start << " " << range.limit << " " << range.include_limit << std::endl;
+  for (auto range : input_range) {
+    std::cout << range.start << " " << range.limit << " " << range.include_limit
+              << std::endl;
   }
 
   params.inputs = input_files;
   // TODO , if in Level0, maybe map
-  params.output_level = input_files[0].level + 1;
+  params.output_level = input_files[0].level;
   params.compression_opts = cfd->ioptions()->compression_opts;
   params.manual_compaction = true;
   params.input_range = input_range;

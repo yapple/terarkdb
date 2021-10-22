@@ -14,10 +14,10 @@
 #include "rocksdb/options.h"
 #include "rocksdb/terark_namespace.h"
 #include "rocksdb/utilities/convenience.h"
+#include "tools/sst_dump_tool_imp.h"
 #include "util/fault_injection_test_env.h"
 #include "util/sync_point.h"
 #include "utilities/merge_operators/string_append/stringappend2.h"
-#include "tools/sst_dump_tool_imp.h"
 
 namespace TERARKDB_NAMESPACE {
 
@@ -3851,17 +3851,16 @@ TEST_F(DBCompactionTest, CompactSplitFile) {
   dbfull()->SplitFile(CompactionOptions(), filenames[0], {"B"}, &outputs);
   auto p = [](std::string filename) {
     TERARKDB_NAMESPACE::SstFileDumper dumper(filename, false, false);
-    std::string from,to;
+    std::string from, to;
     Status st =
         dumper.ReadSequential(true, std::numeric_limits<uint64_t>::max(),
-                              false,            // has_from
+                              false,        // has_from
                               from, false,  // has_to
                               to);
   };
-  for(auto out:outputs){
+  for (auto out : outputs) {
     p(out);
   }
-
 }
 TEST_F(DBCompactionTest, CompactFilesOutputRangeConflict) {
   // LSM setup:
