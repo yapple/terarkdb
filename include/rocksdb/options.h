@@ -1447,6 +1447,8 @@ struct IngestExternalFileOptions {
   bool write_global_seqno = true;
   // Mark all files need compaction
   bool marked_for_compaction = false;
+  // quick ingest
+  bool quick_ingest = false;
 };
 
 // TraceOptions is used for StartTrace

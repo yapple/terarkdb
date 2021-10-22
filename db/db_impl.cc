@@ -4353,12 +4353,13 @@ Status DBImpl::IngestExternalFile(
 
     // Stop writes to the DB by entering both write threads
     WriteThread::Writer w;
-    write_thread_.EnterUnbatched(&w, &mutex_);
     WriteThread::Writer nonmem_w;
-    if (two_write_queues_) {
-      nonmem_write_thread_.EnterUnbatched(&nonmem_w, &mutex_);
+    if (!ingestion_options.quick_ingest) {
+      write_thread_.EnterUnbatched(&w, &mutex_);
+      if (two_write_queues_) {
+        nonmem_write_thread_.EnterUnbatched(&nonmem_w, &mutex_);
+      }
     }
-
     num_running_ingest_file_++;
     TEST_SYNC_POINT("DBImpl::IngestExternalFile:AfterIncIngestFileCounter");
 
@@ -4374,6 +4375,9 @@ Status DBImpl::IngestExternalFile(
       status = ingestion_job.NeedsFlush(&need_flush, cfd->GetSuperVersion());
       TEST_SYNC_POINT_CALLBACK("DBImpl::IngestExternalFile:NeedFlush",
                                &need_flush);
+      if (ingestion_options.quick_ingest && need_flush) {
+        return Status::InvalidArgument("IngestedFile overlap with memtable");
+      }
       if (status.ok() && need_flush) {
         FlushOptions flush_opts;
         flush_opts.allow_write_stall = true;
@@ -4402,11 +4406,16 @@ Status DBImpl::IngestExternalFile(
                                          FlushReason::kExternalFileIngestion);
     }
 
-    // Resume writes to the DB
-    if (two_write_queues_) {
-      nonmem_write_thread_.ExitUnbatched(&nonmem_w);
+    if (!ingestion_options.quick_ingest) {
+      // Resume writes to the DB
+      if (two_write_queues_) {
+        nonmem_write_thread_.ExitUnbatched(&nonmem_w);
+      }
+      write_thread_.ExitUnbatched(&w);
+      // TODO double check
+      // check range overlap with db
+      // if overlap ,return abort
     }
-    write_thread_.ExitUnbatched(&w);
 
     // Update stats
     if (status.ok()) {

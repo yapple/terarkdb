@@ -196,6 +196,24 @@ Status ExternalSstFileIngestionJob::Run() {
     if (assigned_seqno == last_seqno + 1) {
       consumed_seqno = true;
     }
+    if (ingestion_options_.quick_ingest) {
+      int bottom_level = cfd_->NumberLevels() - 1;
+      if (f.picked_level != bottom_level) {
+        bool overlap = false;
+        ReadOptions ro;
+        ro.total_order_seek = true;
+        InternalKey smallest(f.smallest_user_key, kMaxSequenceNumber,
+                             kTypeValue);
+        InternalKey largest(f.largest_user_key, 0, kTypeValue);
+        std::vector<FileMetaData*> inputs;
+        super_version->current->storage_info()
+            ->GetOverlappingInputsRangeBinarySearch(
+                bottom_level, &smallest, &largest, &inputs, 0, nullptr);
+        assert(inputs.size() == 1);
+        // TODO Split File
+
+      }
+    }
     if (!status.ok()) {
       return status;
     }
@@ -524,6 +542,9 @@ Status ExternalSstFileIngestionJob::AssignLevelAndSeqnoForIngestedFile(
   if (overlap_with_db && *assigned_seqno == 0) {
     *assigned_seqno = last_seqno + 1;
   }
+  if (overlap_with_db && ingestion_options_.quick_ingest) {
+    return Status::InvalidArgument("IngestedFile overlap with DB");
+  }
   return status;
 }
 
@@ -556,6 +577,10 @@ Status ExternalSstFileIngestionJob::CheckLevelForIngestedBehindFile(
 
 Status ExternalSstFileIngestionJob::AssignGlobalSeqnoForIngestedFile(
     IngestedFileInfo* file_to_ingest, SequenceNumber seqno) {
+  if (ingestion_options_.quick_ingest) {
+    file_to_ingest->assigned_seqno = 0;
+    return Status::OK();
+  }
   if (file_to_ingest->original_seqno == seqno) {
     // This file already have the correct global seqno
     return Status::OK();
