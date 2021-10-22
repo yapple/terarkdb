@@ -3813,7 +3813,16 @@ TEST_F(DBCompactionTest, CompactRangeFlushOverlappingMemtable) {
     }
   }
 }
-
+// for debug
+void dumpsst(std::string filename) {
+    TERARKDB_NAMESPACE::SstFileDumper dumper(filename, false, false);
+    std::string from, to;
+    Status st =
+        dumper.ReadSequential(true, std::numeric_limits<uint64_t>::max(),
+                              false,        // has_from
+                              from, false,  // has_to
+                              to);
+}
 TEST_F(DBCompactionTest, CompactionStatsTest) {
   Options options = CurrentOptions();
   options.level0_file_num_compaction_trigger = 2;
@@ -3843,24 +3852,14 @@ TEST_F(DBCompactionTest, CompactSplitFile) {
 
   ASSERT_OK(Put("A", "val"));
   ASSERT_OK(Put("B", "val"));
-  ASSERT_OK(Put("C", "val"));
-  ASSERT_OK(Put("D", "val"));
+  ASSERT_OK(Put("F", "val"));
+  ASSERT_OK(Put("G", "val"));
   ASSERT_OK(Flush());
+  MoveFilesToLevel(1);
   std::vector<std::string> filenames = collector->GetFlushedFiles();
   std::vector<std::string> outputs = {};
-  dbfull()->SplitFile(CompactionOptions(), filenames[0], {"B"}, &outputs);
-  auto p = [](std::string filename) {
-    TERARKDB_NAMESPACE::SstFileDumper dumper(filename, false, false);
-    std::string from, to;
-    Status st =
-        dumper.ReadSequential(true, std::numeric_limits<uint64_t>::max(),
-                              false,        // has_from
-                              from, false,  // has_to
-                              to);
-  };
-  for (auto out : outputs) {
-    p(out);
-  }
+  dbfull()->SplitFile(CompactionOptions(), filenames[0], {"C","D"}, &outputs);
+  assert(outputs.size() == 2);
 }
 TEST_F(DBCompactionTest, CompactFilesOutputRangeConflict) {
   // LSM setup:

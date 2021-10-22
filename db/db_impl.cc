@@ -4633,12 +4633,13 @@ Status DBImpl::SplitFileImpl(const CompactionOptions& compact_options,
   Slice smallest = input_files[0].files[0]->smallest.user_key();
   Slice largest = input_files[0].files[0]->largest.user_key();
   const Comparator* cmp = cfd->user_comparator();
-  auto comparator = [cmp](const Slice& a, const Slice& b) {
+  auto comparator = [cmp](const Slice &a, const Slice &b) {
     return cmp->Compare(a, b) < 0;
   };
   std::set<Slice, decltype(comparator)> split_points_(comparator);
 
-  for (auto split_point : split_points) {
+  // must auto& instead of auto
+  for (auto& split_point : split_points) {
     split_points_.insert(split_point);
   }
   split_points_.insert(smallest);
