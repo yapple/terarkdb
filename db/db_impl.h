@@ -808,6 +808,16 @@ class DBImpl : public DB {
   Status SplitFile(const CompactionOptions& compact_options,
                    std::string filename, std::set<std::string> split_point,
                    std::vector<std::string>* const output_file_names);
+  Status SplitFile(const CompactionOptions& compact_options,
+                   ColumnFamilyData* cfd, Version* version,
+                   std::string filename, std::set<std::string> split_point,
+                   std::vector<std::string>* const output_file_names);
+  void ProcessIngestConflict(ColumnFamilyHandle* column_family, bool need_flush,
+                             std::vector<Range>& overlap_range,
+                             std::vector<FileMetaData*>& split_file,
+                             std::vector<Range>& split_range,
+                             std::vector<Compaction*> compactions,
+                             LogBuffer* log_buffer);
 
 #ifdef WITH_ZENFS
   // schedule GC by polling ZNS zone status

@@ -150,9 +150,110 @@ Status ExternalSstFileIngestionJob::NeedsFlush(bool* flush_needed,
   }
   return status;
 }
+Status ExternalSstFileIngestionJob::NeedsFilterRange(
+    std::vector<Range>& range) {
+  Status s;
+  // TODO support target_level, refer to compactRange's target_level
+  //  int bottom_lvl = cfd_->NumberLevels() - 1;
+  //  int target_level = ingestion_options_.target_level;
+  //  if (target_level < 0 || target_level > bottom_lvl) {
+  //    s = Status::InvalidArgument("Invalid target_level, valid level should be
+  //    " +
+  //                                ToString(-bottom_lvl) + "~" +
+  //                                ToString(bottom_lvl));
+  //  }
+  bool overlap = false;
+  s = NeedsFlush(&overlap, cfd_->GetSuperVersion());
+  assert(s.ok() && !overlap);
+  if (s.ok()) {
+    s = OverlapRange(range);
+  }
+  return s;
+}
+
+Status ExternalSstFileIngestionJob::NeedsSplitFileOrWaitCompaction(
+    std::vector<FileMetaData*>& inputs, std::vector<Range>& ranges,
+    std::vector<Compaction*> compactions) {
+  Status s;
+  int target_level = cfd_->current()->storage_info()->num_non_empty_levels();
+  // target_level 0, needn't splitfile or wait compaction
+  if (target_level == 0) return s;
+  if (s.ok()) {
+    s = OverlapRange(ranges);
+  }
+  if (s.ok()) {
+    // confirm no overlap
+    assert(ranges.size() == 0);
+    if (ranges.size() > 0) {
+      s = Status::Aborted("IngestJob overlap with db");
+    }
+    if (s.ok()) {
+      ReadOptions ro;
+      ro.total_order_seek = true;
+      auto* vstorage = cfd_->current()->storage_info();
+      for (int i = 0; s.ok() && i < files_to_ingest_.size(); i++) {
+        auto& f = files_to_ingest_[i];
+        InternalKey smallest(f.smallest_user_key, kMaxSequenceNumber,
+                             kTypeValue);
+        InternalKey largest(f.largest_user_key, 0, kTypeValue);
+        Slice file_smallest_user_key(f.smallest_user_key);
+        Slice file_largest_user_key(f.largest_user_key);
+        // check conflict with compaction
+        auto ucmp = cfd_->ioptions()->user_comparator;
+        for (auto c : *cfd_->compaction_picker()->compactions_in_progress()) {
+          if (c->output_level() != target_level ||
+              ucmp->Compare(c->GetSmallestUserKey(), f.largest_user_key) > 0 ||
+              ucmp->Compare(c->GetLargestUserKey(), f.smallest_user_key) < 0) {
+            continue;
+          }
+          compactions.emplace_back(c);
+          // Files overlap with a compaction, we cannot add it to this level
+        }
+        if (compactions.size() > 0) break;
+        // check conflict with file
+        if (vstorage->OverlapInLevel(target_level, &file_smallest_user_key,
+                                     &file_largest_user_key)) {
+          // overlap with sst OR overlap with compaction file in progress
+          std::vector<FileMetaData*> inputs;
+          vstorage->GetOverlappingInputsRangeBinarySearch(
+              target_level, &smallest, &largest, &inputs, 0, nullptr);
+          assert(inputs.size() == 1);
+          inputs.emplace_back(inputs.front());
+          ranges.emplace_back(f.smallest_user_key, f.largest_user_key);
+        }
+      }
+    }
+  }
+  return s;
+}
+
+Status ExternalSstFileIngestionJob::CheckConflict(
+    bool* need_flush, std::vector<Range>& overlap_range,
+    std::vector<FileMetaData*>& split_file, std::vector<Range>& split_range,
+    std::vector<Compaction*> compactions) {
+  Status s;
+  int target_level = cfd_->current()->storage_info()->num_non_empty_levels();
+  // TODO support target_level
+  if (target_level < 0 || target_level > cfd_->NumberLevels()) {
+    s = Status::InvalidArgument("target_level is" + ToString(target_level) +
+                                "valid target_level should be 0~" +
+                                ToString(cfd_->NumberLevels()));
+  }
+  if (s.ok()) {
+    s = NeedsFlush(need_flush, cfd_->GetSuperVersion());
+  }
+  if (s.ok() && !*need_flush) {
+    s = NeedsFilterRange(overlap_range);
+  }
+  if (s.ok() && overlap_range.size() == 0) {
+    s = NeedsSplitFileOrWaitCompaction(split_file, split_range, compactions);
+  }
+  return s;
+}
 
 // REQUIRES: we have become the only writer by entering both write_thread_ and
 // nonmem_write_thread_
+// TODO support target_level , if necessary
 Status ExternalSstFileIngestionJob::Run() {
   Status status;
   SuperVersion* super_version = cfd_->GetSuperVersion();
@@ -195,24 +296,6 @@ Status ExternalSstFileIngestionJob::Run() {
                              &assigned_seqno);
     if (assigned_seqno == last_seqno + 1) {
       consumed_seqno = true;
-    }
-    if (ingestion_options_.quick_ingest) {
-      int bottom_level = cfd_->NumberLevels() - 1;
-      if (f.picked_level != bottom_level) {
-        bool overlap = false;
-        ReadOptions ro;
-        ro.total_order_seek = true;
-        InternalKey smallest(f.smallest_user_key, kMaxSequenceNumber,
-                             kTypeValue);
-        InternalKey largest(f.largest_user_key, 0, kTypeValue);
-        std::vector<FileMetaData*> inputs;
-        super_version->current->storage_info()
-            ->GetOverlappingInputsRangeBinarySearch(
-                bottom_level, &smallest, &largest, &inputs, 0, nullptr);
-        assert(inputs.size() == 1);
-        // TODO Split File
-
-      }
     }
     if (!status.ok()) {
       return status;
@@ -577,10 +660,6 @@ Status ExternalSstFileIngestionJob::CheckLevelForIngestedBehindFile(
 
 Status ExternalSstFileIngestionJob::AssignGlobalSeqnoForIngestedFile(
     IngestedFileInfo* file_to_ingest, SequenceNumber seqno) {
-  if (ingestion_options_.quick_ingest) {
-    file_to_ingest->assigned_seqno = 0;
-    return Status::OK();
-  }
   if (file_to_ingest->original_seqno == seqno) {
     // This file already have the correct global seqno
     return Status::OK();
@@ -631,6 +710,37 @@ bool ExternalSstFileIngestionJob::IngestedFileFitInLevel(
 
   // File did not overlap with level files, our compaction output
   return true;
+}
+
+Status ExternalSstFileIngestionJob::OverlapRange(std::vector<Range>& range) {
+  Status s;
+  auto sv = cfd_->GetSuperVersion();
+  auto* vstorage = cfd_->current()->storage_info();
+  for (auto it = files_to_ingest_.begin();
+       s.ok() && it != files_to_ingest_.end(); ++it) {
+    IngestedFileInfo& f = *it;
+    // TODO support target_level
+    for (int lvl = 0; lvl < cfd_->NumberLevels(); lvl++) {
+      if (vstorage->NumLevelFiles(lvl) > 0) {
+        bool overlap_with_level = false;
+        ReadOptions ro;
+        ro.total_order_seek = true;
+        s = sv->current->OverlapWithLevelIterator(
+            ro, env_options_, f.smallest_user_key, f.largest_user_key, lvl,
+            &overlap_with_level);
+        if (!s.ok()) {
+          break;
+        }
+        if (overlap_with_level) {
+          range.emplace_back(Slice(f.smallest_user_key),
+                             Slice(f.largest_user_key));
+          // important! prevent duplication
+          break;
+        }
+      }
+    }
+  }
+  return s;
 }
 
 }  // namespace TERARKDB_NAMESPACE

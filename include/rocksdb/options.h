@@ -1447,7 +1447,10 @@ struct IngestExternalFileOptions {
   bool write_global_seqno = true;
   // Mark all files need compaction
   bool marked_for_compaction = false;
-  // quick ingest
+
+  // ingest to bottom_level
+  // Will check NeedFlush、NeedFilterRange、NeedSplitFile、NeedWaitCompaction
+  // If exist any conflict, need process conflict
   bool quick_ingest = false;
 };
 

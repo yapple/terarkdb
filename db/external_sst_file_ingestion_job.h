@@ -92,12 +92,17 @@ class ExternalSstFileIngestionJob {
   // Check if we need to flush the memtable before running the ingestion job
   // This will be true if the files we are ingesting are overlapping with any
   // key range in the memtable.
-  //
   // @param super_version A referenced SuperVersion that will be held for the
   //    duration of this function.
   //
   // Thread-safe
   Status NeedsFlush(bool* flush_needed, SuperVersion* super_version);
+
+  //
+  Status CheckConflict(bool* need_flush, std::vector<Range>& overlap_range,
+                       std::vector<FileMetaData*>& split_file,
+                       std::vector<Range>& split_range,
+                       std::vector<Compaction*> compactions);
 
   // Will execute the ingestion job and prepare edit() to be applied.
   // REQUIRES: Mutex held
@@ -117,6 +122,21 @@ class ExternalSstFileIngestionJob {
   }
 
  private:
+  // Check if we need to make a SplitFiles job to split target level's SST
+  // before running the ingestion job, in order to support the ingest file can
+  // fit in target level
+  // The inputs and the ranges will be not empty if the ingesting files are not
+  // fitting in target level
+  Status NeedsSplitFileOrWaitCompaction(std::vector<FileMetaData*>& inputs,
+                    std::vector<Range>& ranges,
+                    std::vector<Compaction*> compactions);
+
+  // Check if we need to make a CompactRange job to filter overlap data before
+  // running the ingestion job.
+  // This range will be not empty if the ingesting files are overlapping
+  // with key range in each level's file
+  Status NeedsFilterRange(std::vector<Range>& range);
+
   // Open the external file and populate `file_to_ingest` with all the
   // external information we need to ingest this file.
   Status GetIngestedFileInfo(const std::string& external_file,
@@ -146,6 +166,9 @@ class ExternalSstFileIngestionJob {
   // REQUIRES: Mutex held
   bool IngestedFileFitInLevel(const IngestedFileInfo* file_to_ingest,
                               int level);
+
+  // Create Iterator in each level, there is potential IO overhead
+  Status OverlapRange(std::vector<Range>& range);
 
   Env* env_;
   VersionSet* versions_;

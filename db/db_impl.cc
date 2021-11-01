@@ -4354,11 +4354,9 @@ Status DBImpl::IngestExternalFile(
     // Stop writes to the DB by entering both write threads
     WriteThread::Writer w;
     WriteThread::Writer nonmem_w;
-    if (!ingestion_options.quick_ingest) {
-      write_thread_.EnterUnbatched(&w, &mutex_);
-      if (two_write_queues_) {
-        nonmem_write_thread_.EnterUnbatched(&nonmem_w, &mutex_);
-      }
+    write_thread_.EnterUnbatched(&w, &mutex_);
+    if (two_write_queues_) {
+      nonmem_write_thread_.EnterUnbatched(&nonmem_w, &mutex_);
     }
     num_running_ingest_file_++;
     TEST_SYNC_POINT("DBImpl::IngestExternalFile:AfterIncIngestFileCounter");
@@ -4371,21 +4369,57 @@ Status DBImpl::IngestExternalFile(
 
     // Figure out if we need to flush the memtable first
     if (status.ok()) {
-      bool need_flush = false;
-      status = ingestion_job.NeedsFlush(&need_flush, cfd->GetSuperVersion());
-      TEST_SYNC_POINT_CALLBACK("DBImpl::IngestExternalFile:NeedFlush",
-                               &need_flush);
-      if (ingestion_options.quick_ingest && need_flush) {
-        return Status::InvalidArgument("IngestedFile overlap with memtable");
-      }
-      if (status.ok() && need_flush) {
-        FlushOptions flush_opts;
-        flush_opts.allow_write_stall = true;
-        mutex_.Unlock();
-        status = FlushMemTable({cfd}, flush_opts,
-                               FlushReason::kExternalFileIngestion,
-                               true /* writes_stopped */);
-        mutex_.Lock();
+      if (ingestion_options.quick_ingest) {
+        do {
+          bool need_flush = false;
+          std::vector<FileMetaData*> split_file;
+          std::vector<Range> overlap_range = {};
+          std::vector<Range> split_range = {};
+          std::vector<Compaction*> compactions;
+          status = ingestion_job.CheckConflict(
+              &need_flush, overlap_range, split_file, split_range, compactions);
+          if (status.ok()) {
+            if (need_flush || overlap_range.size() > 0 ||
+                split_file.size() > 0 || compactions.size() > 0) {
+              // Resume writes to the DB
+              if (two_write_queues_) {
+                nonmem_write_thread_.ExitUnbatched(&nonmem_w);
+              }
+              write_thread_.ExitUnbatched(&w);
+              num_running_ingest_file_--;
+              mutex_.Unlock();
+              ProcessIngestConflict(column_family, need_flush, overlap_range,
+                                    split_file, split_range, compactions);
+              mutex_.Lock();
+              // Stop writes to the DB by entering both write threads
+              write_thread_.EnterUnbatched(&w, &mutex_);
+              if (two_write_queues_) {
+                nonmem_write_thread_.EnterUnbatched(&nonmem_w, &mutex_);
+              }
+              num_running_ingest_file_++;
+            } else {
+              break;
+            }
+          }
+        } while (status.ok());
+
+      } else {
+        bool need_flush = false;
+        status = ingestion_job.NeedsFlush(&need_flush, cfd->GetSuperVersion());
+        TEST_SYNC_POINT_CALLBACK("DBImpl::IngestExternalFile:NeedFlush",
+                                 &need_flush);
+        if (need_flush) {
+          return Status::InvalidArgument("IngestedFile overlap with memtable");
+        }
+        if (status.ok() && need_flush) {
+          FlushOptions flush_opts;
+          flush_opts.allow_write_stall = true;
+          mutex_.Unlock();
+          status = FlushMemTable({cfd}, flush_opts,
+                                 FlushReason::kExternalFileIngestion,
+                                 true /* writes_stopped */);
+          mutex_.Lock();
+        }
       }
     }
 
@@ -4405,17 +4439,11 @@ Status DBImpl::IngestExternalFile(
       InstallSuperVersionAndScheduleWork(cfd, &sv_context, *mutable_cf_options,
                                          FlushReason::kExternalFileIngestion);
     }
-
-    if (!ingestion_options.quick_ingest) {
-      // Resume writes to the DB
-      if (two_write_queues_) {
-        nonmem_write_thread_.ExitUnbatched(&nonmem_w);
-      }
-      write_thread_.ExitUnbatched(&w);
-      // TODO double check
-      // check range overlap with db
-      // if overlap ,return abort
+    // Resume writes to the DB
+    if (two_write_queues_) {
+      nonmem_write_thread_.ExitUnbatched(&nonmem_w);
     }
+    write_thread_.ExitUnbatched(&w);
 
     // Update stats
     if (status.ok()) {
@@ -4563,8 +4591,17 @@ Status DBImpl::TraceIteratorSeekForPrev(const uint32_t& cf_id,
   }
   return s;
 }
-
 Status DBImpl::SplitFile(const CompactionOptions& compact_options,
+                         std::string filename,
+                         std::set<std::string> split_points,
+                         std::vector<std::string>* const output_file_names) {
+  auto cfd =
+      reinterpret_cast<ColumnFamilyHandleImpl*>(DefaultColumnFamily())->cfd();
+  return SplitFile(compact_options, cfd, cfd->current(), filename, split_points,
+                   output_file_names);
+}
+Status DBImpl::SplitFile(const CompactionOptions& compact_options,
+                         ColumnFamilyData* cfd, Version* version,
                          std::string filename,
                          std::set<std::string> split_points,
                          std::vector<std::string>* const output_file_names) {
@@ -4577,9 +4614,6 @@ Status DBImpl::SplitFile(const CompactionOptions& compact_options,
     // This call will unlock/lock the mutex to wait for current running
     // IngestExternalFile() calls to finish.
     WaitForIngestFile();
-
-    auto cfd =
-        reinterpret_cast<ColumnFamilyHandleImpl*>(DefaultColumnFamily())->cfd();
 
     s = SplitFileImpl(compact_options, cfd, cfd->current(), filename,
                       split_points, output_file_names, &job_context,
@@ -4611,13 +4645,11 @@ Status DBImpl::SplitFile(const CompactionOptions& compact_options,
   }
   return s;
 }
-
-Status DBImpl::SplitFileImpl(const CompactionOptions& compact_options,
-                             ColumnFamilyData* cfd, Version* version,
-                             std::string file_name,
-                             std::set<std::string> split_points,
-                             std::vector<std::string>* const output_file_names,
-                             JobContext* job_context, LogBuffer* log_buffer) {
+Status DBImpl::SplitFileImpl(
+    const CompactionOptions& compact_options, ColumnFamilyData* cfd,
+    Version* version, std::string file_name, std::set<std::string> split_points,
+    std::vector<std::string>* const output_file_names = nullptr,
+    JobContext* job_context = nullptr, LogBuffer* log_buffer = nullptr) {
   mutex_.AssertHeld();
   std::unordered_set<uint64_t> input_set;
   input_set.insert(TableFileNameToNumber(file_name));
@@ -4696,10 +4728,6 @@ Status DBImpl::SplitFileImpl(const CompactionOptions& compact_options,
                              input_range.size() == split_points_.size() - 2);
     start = end;
   }
-  for (auto range : input_range) {
-    std::cout << range.start << " " << range.limit << " " << range.include_limit
-              << std::endl;
-  }
 
   params.inputs = input_files;
   // TODO , if in Level0, maybe map
@@ -4766,6 +4794,66 @@ Status DBImpl::SplitFileImpl(const CompactionOptions& compact_options,
   return s;
 }
 
+void DBImpl::ProcessIngestConflict(ColumnFamilyHandle* column_family,
+                                   bool need_flush,
+                                   std::vector<Range>& overlap_range,
+                                   std::vector<FileMetaData*>& split_file,
+                                   std::vector<Range>& split_range,
+                                   std::vector<Compaction*> compactions,
+                                   LogBuffer* log_buffer = nullptr) {
+  Status s;
+  auto cfh = reinterpret_cast<ColumnFamilyHandleImpl*>(column_family);
+  auto cfd = cfh->cfd();
+
+  if (need_flush) {
+    FlushOptions flush_opts;
+    flush_opts.allow_write_stall = true;
+
+    s = FlushMemTable({cfd}, flush_opts, FlushReason::kExternalFileIngestion,
+                      true /* writes_stopped */);
+    ROCKS_LOG_BUFFER(log_buffer, "process flush conflict");
+  }
+  if (overlap_range.size() > 0) {
+    CompactRangeOptions option;
+    // TODO support compactrange with target-level
+    for (int i = 0; s.ok() && i < overlap_range.size(); i++) {
+      s = CompactRange(option, column_family, &overlap_range[i].start,
+                       &overlap_range[i].limit);
+      ROCKS_LOG_BUFFER(log_buffer, "process overlap_range conflict");
+    }
+  }
+  if (split_file.size() > 0) {
+    assert(split_file.size() == split_range.size());
+    CompactionOptions option;
+    for (int i = 0; s.ok() && i < split_file.size(); i++) {
+      std::string filename;
+      MakeTableFileName(filename, split_file[i]->fd.GetNumber());
+      s = SplitFile(
+          option, cfd, cfd->current(), filename,
+          {split_range[i].start.ToString(), split_range[i].limit.ToString()},
+          nullptr);
+    }
+  }
+  if (compactions.size() > 0) {
+    bool finished = true;
+    do {
+      // Exist any one unfinished conflicting compaction, keep wait
+      for (int i = 0; finished && i < compactions.size(); i++) {
+        for (auto& compaction :
+             *cfd->compaction_picker()->compactions_in_progress()) {
+          if (compaction == compactions[i]) {
+            finished = false;
+            break;
+          }
+        }
+      }
+      if (!finished) {
+        // TODO wait compaction finish
+        env_->SleepForMicroseconds(1000);
+      }
+    } while (!finished);
+  }
+}
 #endif  // ROCKSDB_LITE
 
 }  // namespace TERARKDB_NAMESPACE
