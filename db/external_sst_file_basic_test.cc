@@ -30,9 +30,11 @@ class ExternalSSTFileBasicTest : public DBTestBase,
 
   Status DeprecatedAddFile(const std::vector<std::string>& files,
                            bool move_files = false,
-                           bool skip_snapshot_check = false) {
+                           bool skip_snapshot_check = false,
+                           bool quick_ingest = false) {
     IngestExternalFileOptions opts;
     opts.move_files = move_files;
+    opts.quick_ingest = quick_ingest;
     opts.snapshot_consistency = !skip_snapshot_check;
     opts.allow_global_seqno = false;
     opts.allow_blocking_flush = false;
@@ -176,6 +178,15 @@ TEST_F(ExternalSSTFileBasicTest, Basic) {
   s = DeprecatedAddFile({file1});
   ASSERT_TRUE(s.ok()) << s.ToString();
   ASSERT_EQ(db_->GetLatestSequenceNumber(), 0U);
+  for (int k = 0; k < 100; k++) {
+    ASSERT_EQ(Get(Key(k)), Key(k) + "_val");
+  }
+
+  for (int k = 0; k < 100; k++) {
+    ASSERT_OK(db_->Delete(WriteOptions(),Key(k)));
+  }
+  s = DeprecatedAddFile({file1}, false, false, true);
+  ASSERT_TRUE(s.ok()) << s.ToString();
   for (int k = 0; k < 100; k++) {
     ASSERT_EQ(Get(Key(k)), Key(k) + "_val");
   }

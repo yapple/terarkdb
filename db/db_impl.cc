@@ -4388,8 +4388,11 @@ Status DBImpl::IngestExternalFile(
               write_thread_.ExitUnbatched(&w);
               num_running_ingest_file_--;
               mutex_.Unlock();
+              LogBuffer log_buffer(InfoLogLevel::INFO_LEVEL,
+                                   immutable_db_options_.info_log.get());
               ProcessIngestConflict(column_family, need_flush, overlap_range,
-                                    split_file, split_range, compactions);
+                                    split_file, split_range, compactions,
+                                    &log_buffer);
               mutex_.Lock();
               // Stop writes to the DB by entering both write threads
               write_thread_.EnterUnbatched(&w, &mutex_);
@@ -4811,7 +4814,7 @@ void DBImpl::ProcessIngestConflict(ColumnFamilyHandle* column_family,
 
     s = FlushMemTable({cfd}, flush_opts, FlushReason::kExternalFileIngestion,
                       true /* writes_stopped */);
-    ROCKS_LOG_BUFFER(log_buffer, "process flush conflict");
+    ROCKS_LOG_INFO(immutable_db_options_.info_log, "process flush conflict");
   }
   if (overlap_range.size() > 0) {
     CompactRangeOptions option;
@@ -4819,7 +4822,8 @@ void DBImpl::ProcessIngestConflict(ColumnFamilyHandle* column_family,
     for (int i = 0; s.ok() && i < overlap_range.size(); i++) {
       s = CompactRange(option, column_family, &overlap_range[i].start,
                        &overlap_range[i].limit);
-      ROCKS_LOG_BUFFER(log_buffer, "process overlap_range conflict");
+      ROCKS_LOG_INFO(immutable_db_options_.info_log,
+                     "process overlap_range conflict");
     }
   }
   if (split_file.size() > 0) {
