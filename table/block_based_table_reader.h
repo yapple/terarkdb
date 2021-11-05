@@ -328,7 +328,7 @@ class BlockBasedTable : public TableReader {
       const Slice& compression_dict, SequenceNumber seq_no,
       size_t read_amp_bytes_per_bit, MemoryAllocator* memory_allocator,
       bool is_index = false, Cache::Priority pri = Cache::Priority::LOW,
-      GetContext* get_context = nullptr);
+      GetContext* get_context = nullptr,int64_t fileno = 0);
 
   // Calls (*handle_result)(arg, ...) repeatedly, starting with the entry found
   // after a call to Seek(key), until handle_result returns false.
@@ -391,6 +391,15 @@ class BlockBasedTable : public TableReader {
 
   friend class PartitionedFilterBlockReader;
   friend class PartitionedFilterBlockTest;
+  Status PutDataBlockToCache(
+      const Slice& block_cache_key, const Slice& compressed_block_cache_key,
+      Cache* block_cache, Cache* block_cache_compressed, const ReadOptions&,
+      const ImmutableCFOptions& ioptions, CachableEntry<Block>* cached_block,
+      BlockContents* raw_block_contents, CompressionType raw_block_comp_type,
+      uint32_t format_version, const Slice& compression_dict,
+      SequenceNumber seq_no, size_t read_amp_bytes_per_bit,
+      MemoryAllocator* memory_allocator, bool is_index,
+      Cache::Priority priority, GetContext* get_context, uint64_t fileno);
 };
 
 // Maitaning state of a two-level iteration on a partitioned index structure
