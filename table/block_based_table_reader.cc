@@ -122,8 +122,8 @@ void DeleteCachedEntry(const Slice& /*key*/, void* value, size_t charge) {
   delete entry;
 }
 
-void DeleteCachedFilterEntry(const Slice& key, void* value);
-void DeleteCachedIndexEntry(const Slice& key, void* value);
+void DeleteCachedFilterEntry(const Slice& key, void* value, size_t);
+void DeleteCachedIndexEntry(const Slice& key, void* value, size_t);
 
 // Release the cached entry and decrement its ref count.
 void ReleaseCachedEntry(void* arg, void* h) {
@@ -3251,7 +3251,7 @@ void BlockBasedTable::DumpKeyValue(const Slice& key, const Slice& value,
 
 namespace {
 
-void DeleteCachedFilterEntry(const Slice& /*key*/, void* value) {
+void DeleteCachedFilterEntry(const Slice& /*key*/, void* value, size_t charge) {
   FilterBlockReader* filter = reinterpret_cast<FilterBlockReader*>(value);
   if (filter->statistics() != nullptr) {
     RecordTick(filter->statistics(), BLOCK_CACHE_FILTER_BYTES_EVICT,
@@ -3260,7 +3260,7 @@ void DeleteCachedFilterEntry(const Slice& /*key*/, void* value) {
   delete filter;
 }
 
-void DeleteCachedIndexEntry(const Slice& /*key*/, void* value) {
+void DeleteCachedIndexEntry(const Slice& /*key*/, void* value, size_t charge) {
   IndexReader* index_reader = reinterpret_cast<IndexReader*>(value);
   if (index_reader->statistics() != nullptr) {
     RecordTick(index_reader->statistics(), BLOCK_CACHE_INDEX_BYTES_EVICT,
