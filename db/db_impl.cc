@@ -4808,7 +4808,8 @@ void DBImpl::ProcessIngestConflict(ColumnFamilyHandle* column_family,
   if (need_flush) {
     FlushOptions flush_opts;
     flush_opts.allow_write_stall = true;
-    TEST_SYNC_POINT("DBImpl::IngestExternalFile:ProcessFlush");
+    TEST_SYNC_POINT_CALLBACK("DBImpl::IngestExternalFile:ProcessFlush",
+                             nullptr);
 
     s = FlushMemTable({cfd}, flush_opts, FlushReason::kExternalFileIngestion,
                       true /* writes_stopped */);
@@ -4823,18 +4824,22 @@ void DBImpl::ProcessIngestConflict(ColumnFamilyHandle* column_family,
       ROCKS_LOG_INFO(immutable_db_options_.info_log,
                      "process overlap_range conflict");
     }
+    TEST_SYNC_POINT_CALLBACK(
+        "DBImpl::IngestExternalFile:ProcessOverlapConflict", nullptr);
   }
   if (split_file.size() > 0) {
     assert(split_file.size() == split_range.size());
     CompactionOptions option;
     for (int i = 0; s.ok() && i < split_file.size(); i++) {
       std::string filename;
-      MakeTableFileName(filename, split_file[i]->fd.GetNumber());
+      filename = MakeTableFileName("", split_file[i]->fd.GetNumber());
       s = SplitFile(
           option, cfd, cfd->current(), filename,
           {split_range[i].start.ToString(), split_range[i].limit.ToString()},
           nullptr);
     }
+    TEST_SYNC_POINT_CALLBACK("DBImpl::IngestExternalFile:ProcessSplitConflict",
+                             nullptr);
   }
   if (compactions.size() > 0) {
     bool finished = true;

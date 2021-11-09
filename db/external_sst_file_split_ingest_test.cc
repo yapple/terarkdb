@@ -103,6 +103,41 @@ TEST_F(ExternalSSTFileBasicTest, FlushConflict) {
   }
   DestroyAndRecreateExternalSSTFilesDir();
 }
+TEST_F(ExternalSSTFileBasicTest, SplitConflict) {
+  Options options = CurrentOptions();
+  bool split_conflict = false;
+  SyncPoint::GetInstance()->SetCallBack(
+      "DBImpl::IngestExternalFile:ProcessSplitConflict",
+      [&](void* arg) { split_conflict = true; });
+  SyncPoint::GetInstance()->EnableProcessing();
+
+  for (int k = 0; k < 100; k++) {
+    if (k >= 50 && k < 60) continue;
+    ASSERT_OK(db_->Put(WriteOptions(), Key(k), Key(k) + "_val"));
+  }
+  // we will split this sst
+  Status s = db_->Flush(FlushOptions());
+  MoveFilesToLevel(1);
+
+
+  ASSERT_OK(s);
+  SstFileWriter sst_file_writer(EnvOptions(), options);
+  ASSERT_EQ(sst_file_writer.FileSize(), 0);
+
+  // file2.sst (50 => 59)
+  std::string file2 = sst_files_dir_ + "file2.sst";
+  ASSERT_OK(sst_file_writer.Open(file2));
+  for (int k = 50; k < 60; k++) {
+    ASSERT_OK(sst_file_writer.Put(Key(k), Key(k) + "_val"));
+  }
+  ExternalSstFileInfo file2_info;
+  s = sst_file_writer.Finish(&file2_info);
+  s = DeprecatedAddFile({file2}, false, false, true);
+  ASSERT_TRUE(s.ok()) << s.ToString();
+  ASSERT_TRUE(split_conflict);
+
+  DestroyAndRecreateExternalSSTFilesDir();
+}
 
 #endif
 }  // namespace TERARKDB_NAMESPACE

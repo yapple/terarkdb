@@ -176,7 +176,8 @@ Status ExternalSstFileIngestionJob::NeedsSplitFileOrWaitCompaction(
     std::vector<FileMetaData*>& inputs, std::vector<Range>& ranges,
     std::vector<Compaction*> compactions) {
   Status s;
-  int target_level = cfd_->current()->storage_info()->num_non_empty_levels();
+  int target_level =
+      std::max(cfd_->current()->storage_info()->num_non_empty_levels() - 1, 0);
   // target_level 0, needn't splitfile or wait compaction
   if (target_level == 0) return s;
   if (s.ok()) {
@@ -215,11 +216,11 @@ Status ExternalSstFileIngestionJob::NeedsSplitFileOrWaitCompaction(
         if (vstorage->OverlapInLevel(target_level, &file_smallest_user_key,
                                      &file_largest_user_key)) {
           // overlap with sst OR overlap with compaction file in progress
-          std::vector<FileMetaData*> inputs;
+          std::vector<FileMetaData*> inputs_search;
           vstorage->GetOverlappingInputsRangeBinarySearch(
-              target_level, &smallest, &largest, &inputs, 0, nullptr);
-          assert(inputs.size() == 1);
-          inputs.emplace_back(inputs.front());
+              target_level, &smallest, &largest, &inputs_search, 0, nullptr);
+          assert(inputs_search.size() == 1);
+          inputs.emplace_back(inputs_search.front());
           ranges.emplace_back(f.smallest_user_key, f.largest_user_key);
         }
       }
@@ -233,7 +234,9 @@ Status ExternalSstFileIngestionJob::CheckConflict(
     std::vector<FileMetaData*>& split_file, std::vector<Range>& split_range,
     std::vector<Compaction*> compactions) {
   Status s;
-  int target_level = cfd_->current()->storage_info()->num_non_empty_levels();
+  int num_non_empty_levels =
+      cfd_->current()->storage_info()->num_non_empty_levels();
+  int target_level = std::max(num_non_empty_levels - 1, 0);
   // TODO support target_level
   if (target_level < 0 || target_level > cfd_->NumberLevels()) {
     s = Status::InvalidArgument("target_level is" + ToString(target_level) +
