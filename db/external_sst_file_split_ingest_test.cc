@@ -75,11 +75,6 @@ TEST_F(ExternalSSTFileBasicTest, FlushConflict) {
   ASSERT_EQ(file1_info.num_range_del_entries, 0);
   ASSERT_EQ(file1_info.smallest_range_del_key, "");
   ASSERT_EQ(file1_info.largest_range_del_key, "");
-  // sst_file_writer already finished, cannot add this value
-  s = sst_file_writer.Put(Key(100), "bad_val");
-  ASSERT_FALSE(s.ok()) << s.ToString();
-  s = sst_file_writer.DeleteRange(Key(100), Key(200));
-  ASSERT_FALSE(s.ok()) << s.ToString();
 
   DestroyAndReopen(options);
   // Add file using file path
@@ -119,7 +114,6 @@ TEST_F(ExternalSSTFileBasicTest, SplitConflict) {
   Status s = db_->Flush(FlushOptions());
   MoveFilesToLevel(1);
 
-
   ASSERT_OK(s);
   SstFileWriter sst_file_writer(EnvOptions(), options);
   ASSERT_EQ(sst_file_writer.FileSize(), 0);
@@ -135,6 +129,44 @@ TEST_F(ExternalSSTFileBasicTest, SplitConflict) {
   s = DeprecatedAddFile({file2}, false, false, true);
   ASSERT_TRUE(s.ok()) << s.ToString();
   ASSERT_TRUE(split_conflict);
+
+  DestroyAndRecreateExternalSSTFilesDir();
+}
+// if exist any overlap, will trigger compactRange
+TEST_F(ExternalSSTFileBasicTest, RangeOverlapConflict) {
+  Options options = CurrentOptions();
+  bool overlap_conflict = false;
+  SyncPoint::GetInstance()->SetCallBack(
+      "DBImpl::IngestExternalFile:ProcessOverlapConflict",
+      [&](void* arg) { overlap_conflict = true; });
+  SyncPoint::GetInstance()->EnableProcessing();
+
+  for (int k = 0; k < 100; k++) {
+    ASSERT_OK(db_->Put(WriteOptions(), Key(k), Key(k) + "_val"));
+  }
+  Status s = db_->Flush(FlushOptions());
+
+  for (int k = 0; k < 100; k++) {
+    ASSERT_OK(db_->Delete(WriteOptions(), Key(k)));
+  }
+  s = db_->Flush(FlushOptions());
+  // there are two sst in level0
+
+  ASSERT_OK(s);
+  SstFileWriter sst_file_writer(EnvOptions(), options);
+  ASSERT_EQ(sst_file_writer.FileSize(), 0);
+
+  // file2.sst (0 => 99)
+  std::string file2 = sst_files_dir_ + "file2.sst";
+  ASSERT_OK(sst_file_writer.Open(file2));
+  for (int k = 0; k < 100; k++) {
+    ASSERT_OK(sst_file_writer.Put(Key(k), Key(k) + "_val"));
+  }
+  ExternalSstFileInfo file2_info;
+  s = sst_file_writer.Finish(&file2_info);
+  s = DeprecatedAddFile({file2}, false, false, true);
+  ASSERT_TRUE(s.ok()) << s.ToString();
+  ASSERT_TRUE(overlap_conflict);
 
   DestroyAndRecreateExternalSSTFilesDir();
 }
