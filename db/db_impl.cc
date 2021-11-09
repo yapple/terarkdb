@@ -4411,9 +4411,6 @@ Status DBImpl::IngestExternalFile(
         status = ingestion_job.NeedsFlush(&need_flush, cfd->GetSuperVersion());
         TEST_SYNC_POINT_CALLBACK("DBImpl::IngestExternalFile:NeedFlush",
                                  &need_flush);
-        if (need_flush) {
-          return Status::InvalidArgument("IngestedFile overlap with memtable");
-        }
         if (status.ok() && need_flush) {
           FlushOptions flush_opts;
           flush_opts.allow_write_stall = true;
@@ -4811,6 +4808,7 @@ void DBImpl::ProcessIngestConflict(ColumnFamilyHandle* column_family,
   if (need_flush) {
     FlushOptions flush_opts;
     flush_opts.allow_write_stall = true;
+    TEST_SYNC_POINT("DBImpl::IngestExternalFile:ProcessFlush");
 
     s = FlushMemTable({cfd}, flush_opts, FlushReason::kExternalFileIngestion,
                       true /* writes_stopped */);

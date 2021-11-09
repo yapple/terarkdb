@@ -145,7 +145,8 @@ Status ExternalSstFileIngestionJob::NeedsFlush(bool* flush_needed,
   Status status =
       cfd_->RangesOverlapWithMemtables(ranges, super_version, flush_needed);
   if (status.ok() && *flush_needed &&
-      !ingestion_options_.allow_blocking_flush) {
+      (!ingestion_options_.allow_blocking_flush &&
+       !ingestion_options_.quick_ingest)) {
     status = Status::InvalidArgument("External file requires flush");
   }
   return status;
@@ -245,7 +246,7 @@ Status ExternalSstFileIngestionJob::CheckConflict(
   if (s.ok() && !*need_flush) {
     s = NeedsFilterRange(overlap_range);
   }
-  if (s.ok() && overlap_range.size() == 0) {
+  if (s.ok() && !*need_flush && overlap_range.size() == 0) {
     s = NeedsSplitFileOrWaitCompaction(split_file, split_range, compactions);
   }
   return s;

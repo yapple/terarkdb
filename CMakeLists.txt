@@ -1007,6 +1007,7 @@ if(WITH_TESTS)
         db/error_handler_test.cc
         db/obsolete_files_test.cc
         db/external_sst_file_basic_test.cc
+        db/external_sst_file_split_ingest_test.cc
         db/external_sst_file_test.cc
         db/fault_injection_test.cc
         db/file_indexer_test.cc

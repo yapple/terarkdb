@@ -181,16 +181,6 @@ TEST_F(ExternalSSTFileBasicTest, Basic) {
   for (int k = 0; k < 100; k++) {
     ASSERT_EQ(Get(Key(k)), Key(k) + "_val");
   }
-
-  for (int k = 0; k < 100; k++) {
-    ASSERT_OK(db_->Delete(WriteOptions(),Key(k)));
-  }
-  s = DeprecatedAddFile({file1}, false, false, true);
-  ASSERT_TRUE(s.ok()) << s.ToString();
-  for (int k = 0; k < 100; k++) {
-    ASSERT_EQ(Get(Key(k)), Key(k) + "_val");
-  }
-
   DestroyAndRecreateExternalSSTFilesDir();
 }
 
