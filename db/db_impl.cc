@@ -273,7 +273,7 @@ static std::string prev_latency_metric_name = "dbiter_prev_latency";
 
 static std::string write_throughput_metric_name = "dbimpl_writeimpl_throughput";
 static std::string write_batch_size_metric_name = "dbimpl_writeimpl_batch_size";
-#ifdef WITHZENFS
+#ifdef WITH_ZENFS
 std::string MetricsTag(Env* env);
 #endif
 
