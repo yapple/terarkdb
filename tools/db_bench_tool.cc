@@ -3729,6 +3729,9 @@ class Benchmark {
 
   void OpenDb(Options options, const std::string& db_name,
               DBWithColumnFamilies* db) {
+#ifdef WITH_ZENFS
+    db_name = db_name + FLAGS_zbd_path;
+#endif
     Status s;
     // Open with column families if necessary.
     if (FLAGS_num_column_families > 1) {
@@ -5925,9 +5928,6 @@ int db_bench_tool(int argc, char** argv) {
     default_db_path += "/dbbench";
     FLAGS_db = default_db_path;
   }
-#ifdef WITH_ZENFS
-  FLAGS_db = FLAGS_db + FLAGS_zbd_path;
-#endif
 
   if (FLAGS_stats_interval_seconds > 0) {
     // When both are set then FLAGS_stats_interval determines the frequency
