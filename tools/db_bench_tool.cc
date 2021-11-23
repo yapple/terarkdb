@@ -5868,7 +5868,7 @@ int db_bench_tool(int argc, char** argv) {
     FLAGS_db = default_db_path;
   }
 #ifdef WITH_ZENFS
-  FLAGS_db = FLAGS_db + FLAGS_zbd_path;
+  FLAGS_db = FLAGS_db +":" + FLAGS_zbd_path;
 #endif
 
   std::unique_ptr<Env> custom_env_guard;
