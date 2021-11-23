@@ -372,7 +372,7 @@ DBImpl::DBImpl(const DBOptions& options, const std::string& dbname,
       error_handler_(this, immutable_db_options_, &mutex_),
       atomic_flush_install_cv_(&mutex_),
 #ifdef WITH_ZENFS
-      bytedance_tags_("dbname=" + dbname + ":" + MetricsTag(env_)),
+      bytedance_tags_("dbname=" + MetricsTag(env_) + "/" + dbname),
 #else
       bytedance_tags_("dbname=" + dbname),
 #endif
