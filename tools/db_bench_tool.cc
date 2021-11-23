@@ -3730,7 +3730,7 @@ class Benchmark {
   void OpenDb(Options options, const std::string& db_name,
               DBWithColumnFamilies* db) {
 #ifdef WITH_ZENFS
-    db_name = db_name + FLAGS_zbd_path;
+    db_name = dbname + FLAGS_zbd_path;
 #endif
     Status s;
     // Open with column families if necessary.
