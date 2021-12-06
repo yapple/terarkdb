@@ -82,7 +82,7 @@ git clone https://github.com/bytedance/terarkdb.git
 
 cd terarkdb && git submodule update --init --recursive
 
-./build.sh
+./build_zenfs_no_metrics.sh
 ```
 
 2) linking
