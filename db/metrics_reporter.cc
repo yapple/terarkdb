@@ -7,6 +7,8 @@
 #include <string>
 
 #include "rocksdb/env.h"
+#include "rocksdb/iostats_context.h"
+#include "rocksdb/perf_context.h"
 #include "util/logging.h"
 
 #ifdef WITH_BOOSTLIB
@@ -58,6 +60,10 @@ LatencyHistLoggedGuard::~LatencyHistLoggedGuard() {
                    handle_->GetName(), handle_->GetTag(),
                    static_cast<uint64_t>(us));
 #endif
+    ROCKS_LOG_WARN(handle_->GetLogger(),
+                   "slow log(%" PRIi64 " us) for: \nperf:[%s], \nio:[%s]", us,
+                   get_perf_context()->ToString().c_str(),
+                   get_iostats_context()->ToString().c_str());
   }
 
 #if REPORT_DEBUG_STACKTRACE
