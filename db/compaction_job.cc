@@ -116,6 +116,8 @@ const char* GetCompactionReasonString(CompactionReason compaction_reason) {
       return "FilesMarkedFromRangeDeletion";
     case CompactionReason::kFilesMarkedFromTTL:
       return "FilesMarkedFromTTL";
+    case CompactionReason::kFilesMarkedFromFileSystemHigh:
+      return "FilesMarkedFromFileSystemHigh";
     case CompactionReason::kFilesMarkedFromFileSystem:
       return "FilesMarkedFromFileSystem";
     case CompactionReason::kFilesMarkedFromUpdateBlob:
@@ -132,6 +134,8 @@ const char* GetCompactionReasonString(CompactionReason compaction_reason) {
       return "TrivialMoveLevel";
     case CompactionReason::kGarbageCollection:
       return "GarbageCollection";
+    case CompactionReason::kGarbageCollectionMarkForHigh:
+      return "GarbageCollectionMarkedForHigh";
     case CompactionReason::kRangeDeletion:
       return "RangeDeletion";
     case CompactionReason::kNumOfReasons:
@@ -1470,26 +1474,7 @@ Status CompactionJob::Install(const MutableCFOptions& mutable_cf_options) {
            << compaction_job_stats_->file_prepare_write_nanos;
   }
 
-  stream << "lsm_state";
-  stream.StartArray();
-  for (int level = 0; level < vstorage->num_levels(); ++level) {
-    if (vstorage->LevelFiles(level).size() == 1 &&
-        vstorage->LevelFiles(level).front()->prop.is_map_sst()) {
-      stream << std::to_string(
-          vstorage->LevelFiles(level).front()->prop.num_entries);
-    } else {
-      stream << vstorage->NumLevelFiles(level);
-    }
-  }
-  stream.EndArray();
-  stream << "edge_state";
-  stream.StartArray();
-  for (auto& cnt : vstorage->edge_cnt_levels()) {
-    stream << cnt;
-  }
-  stream.EndArray();
-  stream << "blob_count";
-  stream << vstorage->NumLevelFiles(-1);
+  vstorage->LogLSMState(stream);
 
   CleanupCompaction();
   return status;

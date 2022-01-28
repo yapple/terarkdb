@@ -157,6 +157,25 @@ void AssignUserKey(std::string& key, const Slice& ikey) {
   key.assign(ukey.data(), ukey.size());
 };
 
+CompactionReason ConvertInputsCompactionReason(
+    const std::vector<CompactionInputFiles>& inputs,
+    CompactionReason default_reason) {
+#ifdef WITH_ZENFS
+  for (auto& level : inputs) {
+    for (auto file : level.files) {
+      CompactionReason reason = CompactionPicker::ConvertCompactionReason(
+          file->marked_for_compaction, default_reason);
+      if (reason != default_reason) {
+        return reason;
+      }
+    }
+  }
+#else
+  (void)inputs;
+#endif
+  return default_reason;
+}
+
 }  // anonymous namespace
 
 bool FindIntraL0Compaction(const std::vector<FileMetaData*>& level_files,
@@ -265,11 +284,14 @@ CompactionReason CompactionPicker::ConvertCompactionReason(
   if (marked & FileMetaData::kMarkedFromUser) {
     return CompactionReason::kFilesMarkedFromUser;
   }
-  if (marked & FileMetaData::kMarkedFromTableBuilder) {
-    return CompactionReason::kFilesMarkedFromTableBuilder;
+  if (marked & FileMetaData::kMarkedFromFileSystemHigh) {
+    return CompactionReason::kFilesMarkedFromFileSystemHigh;
   }
   if (marked & FileMetaData::kMarkedFromRangeDeletion) {
     return CompactionReason::kFilesMarkedFromRangeDeletion;
+  }
+  if (marked & FileMetaData::kMarkedFromTableBuilder) {
+    return CompactionReason::kFilesMarkedFromTableBuilder;
   }
   if (marked & FileMetaData::kMarkedFromTTL) {
     return CompactionReason::kFilesMarkedFromTTL;
@@ -580,7 +602,8 @@ Compaction* CompactionPicker::CompactFiles(
   // This compaction output should not overlap with a running compaction as
   // `SanitizeCompactionInputFiles` should've checked earlier and db mutex
   // shouldn't have been released since.
-  assert(!FilesRangeOverlapWithCompaction(input_files, output_level));
+  assert(output_level < 1 ||
+         !FilesRangeOverlapWithCompaction(input_files, output_level));
 
   CompressionType compression_type;
   if (compact_options.compression == kDisableCompressionOption) {
@@ -611,6 +634,10 @@ Compaction* CompactionPicker::CompactFiles(
 
   params.max_subcompactions = compact_options.max_subcompactions;
   params.manual_compaction = true;
+
+  if (output_level == -1) {
+    params.compaction_type = kGarbageCollection;
+  }
 
   return RegisterCompaction(new Compaction(std::move(params)));
 }
@@ -830,6 +857,14 @@ Compaction* CompactionPicker::PickGarbageCollection(
   if (fragment_size == 0) {
     fragment_size = target_blob_file_size / 8;
   }
+  // Preferentially select files marked by high priority
+  auto candidate_cmp = [](const GarbageFileInfo& l, const GarbageFileInfo& r) {
+    assert(l.f != nullptr && !l.f->being_compacted);
+    assert(r.f != nullptr && !l.f->being_compacted);
+    return (l.f->marked_for_compaction < r.f->marked_for_compaction) ||
+           (l.f->marked_for_compaction == r.f->marked_for_compaction &&
+            l.score < r.score);
+  };
 
   auto& hidden_files = vstorage->LevelFiles(-1);
   uint64_t idx = 0;
@@ -842,7 +877,8 @@ Compaction* CompactionPicker::PickGarbageCollection(
       continue;
     }
     GarbageFileInfo info{f};
-    if (info.score > dirtiest_blob.score) {
+    // candidate_cmp is less comparator
+    if (dirtiest_blob.f == nullptr || candidate_cmp(dirtiest_blob, info)) {
       dirtiest_blob = info;
     }
   }
@@ -917,10 +953,6 @@ Compaction* CompactionPicker::PickGarbageCollection(
                 push_candidate);
   std::for_each(overlapping.begin(), overlapping.end(), push_candidate);
 
-  // Pick Top 8(<=) score blob
-  auto candidate_cmp = [](const GarbageFileInfo& l, const GarbageFileInfo& r) {
-    return l.score < r.score;
-  };
   std::make_heap(candidate_blob_vec.begin(), candidate_blob_vec.end(),
                  candidate_cmp);
   while (!candidate_blob_vec.empty() && input.files.size() < 8) {
@@ -953,7 +985,8 @@ Compaction* CompactionPicker::PickGarbageCollection(
   params.max_subcompactions = 1;
   params.score = vstorage->total_garbage_ratio();
   params.compaction_type = kGarbageCollection;
-  params.compaction_reason = CompactionReason::kGarbageCollection;
+  params.compaction_reason = ConvertInputsCompactionReason(
+      params.inputs, CompactionReason::kGarbageCollection);
 
   Compaction* c = RegisterCompaction(new Compaction(std::move(params)));
   vstorage->ComputeCompactionScore(ioptions_, mutable_cf_options);
@@ -2219,10 +2252,12 @@ void LevelCompactionBuilder::SetupInitialFiles() {
         // found the compaction!
         if (start_level_ == 0) {
           // L0 score = `num L0 files` / `level0_file_num_compaction_trigger`
-          compaction_reason_ = CompactionReason::kLevelL0FilesNum;
+          compaction_reason_ = ConvertInputsCompactionReason(
+              compaction_inputs_, CompactionReason::kLevelL0FilesNum);
         } else {
           // L1+ score = `Level files size` / `MaxBytesForLevel`
-          compaction_reason_ = CompactionReason::kLevelMaxLevelSize;
+          compaction_reason_ = ConvertInputsCompactionReason(
+              compaction_inputs_, CompactionReason::kLevelMaxLevelSize);
         }
         break;
       } else {

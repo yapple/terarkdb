@@ -96,6 +96,10 @@ IF(WITH_COVERAGE)
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage")
 ENDIF()
 
+if(WITH_ZENFS)
+  include_directories(third-party/zenfs)
+ENDIF()
+
 #-------------------------- Print Global Options
 MESSAGE("[terarkdb] FORCE_RELEASE_BUILD = ${FORCE_TERARKDB_RELEASE_BUILD}, cmake_build_type = ${CMAKE_BUILD_TYPE}")
 MESSAGE("[terarkdb] TERARKDB_NAMESPACE=${WITH_TERARKDB_NAMESPACE}")
@@ -761,6 +765,7 @@ set(SOURCES
         utilities/spatialdb/spatial_db.cc
         utilities/table_properties_collectors/compact_on_deletion_collector.cc
         utilities/trace/file_trace_reader_writer.cc
+        utilities/trace/bytedance_metrics_histogram.cc
         utilities/trace/bytedance_metrics_reporter.cc
         utilities/transactions/optimistic_transaction_db_impl.cc
         utilities/transactions/optimistic_transaction.cc

@@ -3,9 +3,10 @@
 #include "rocksdb/terark_namespace.h"
 
 #ifdef WITH_ZENFS
-#include "third-party/zenfs/fs/fs_zenfs.h"
-#include "third-party/zenfs/fs/zbd_stat.h"
-#include "third-party/zenfs/fs/zbd_zenfs.h"
+#include "fs/fs_zenfs.h"
+#include "fs/zbd_zenfs.h"
+#include "utilities/trace/bytedance_metrics_histogram.h"
+#include "utilities/trace/zbd_stat.h"
 
 namespace TERARKDB_NAMESPACE {
 
@@ -185,7 +186,10 @@ class ZenfsEnv : public EnvWrapper {
   Status InitZenfs(
       const std::string& zdb_path, std::string bytedance_tags_,
       std::shared_ptr<MetricsReporterFactory> metrics_reporter_factory_) {
-    return NewZenFS(&fs_, zdb_path, bytedance_tags_, metrics_reporter_factory_);
+    // auto metrics = std::make_shared<NoZenFSMetrics>();
+    auto metrics = std::make_shared<BDZenFSMetrics>(metrics_reporter_factory_,
+                                                    bytedance_tags_, nullptr);
+    return NewZenFS(&fs_, zdb_path, metrics);
   }
 
   // Return the target to which this Env forwards all calls
@@ -225,7 +229,19 @@ class ZenfsEnv : public EnvWrapper {
   Status NewWritableFile(const std::string& f, std::unique_ptr<WritableFile>* r,
                          const EnvOptions& options) override {
     std::unique_ptr<FSWritableFile> file;
-    IOStatus s = fs_->NewWritableFile(f, options, &file, nullptr);
+
+    // Generally, we should let our user to decide whether a file is WAL
+    // or not. However, current TerarkDB environment doesn't provide such
+    // capability to hint. Therefore, we simply check the suffix of filename
+    // here.
+    FileOptions foptions(options);
+    static const std::string log_end = ".log";
+    if (f.size() > log_end.size()) {
+      bool is_wal = std::equal(log_end.rbegin(), log_end.rend(), f.rbegin());
+      foptions.io_options.type = is_wal ? IOType::kWAL : IOType::kUnknown;
+    }
+
+    IOStatus s = fs_->NewWritableFile(f, foptions, &file, nullptr);
     if (s.ok()) {
       r->reset(new ZenfsWritableFile(std::move(file)));
     }
@@ -469,21 +485,41 @@ class ZenfsEnv : public EnvWrapper {
 
   Status GetZbdDiskSpaceInfo(uint64_t& total_size, uint64_t& avail_size,
                              uint64_t& used_size) {
-    auto zbd = dynamic_cast<ZenFS*>(fs_)->GetZonedBlockDevice();
-    used_size = zbd->GetUsedSpace();
-    avail_size = zbd->GetFreeSpace();
-    total_size = used_size + avail_size;
-    return Status::OK();
+    return Status::NotSupported("GetZbdDiskSpaceInfo is not implemented.");
   }
 
-  std::vector<ZoneStat> GetStat() {
+  void GetStat(BDZenFSStat& stat) {
     auto zen_fs = dynamic_cast<ZenFS*>(fs_);
-    return zen_fs->GetStat();
+    ZenFSSnapshot snapshot;
+    ZenFSSnapshotOptions options;
+
+    options.zone_ = 1;
+    options.zone_file_ = 1;
+    options.log_garbage_ = 1;
+
+    zen_fs->GetZenFSSnapshot(snapshot, options);
+    stat.SetStat(snapshot, options);
   }
+
+  void GetZenFSSnapshot(ZenFSSnapshot& snapshot,
+                        const ZenFSSnapshotOptions& options) {
+    auto zen_fs = dynamic_cast<ZenFS*>(fs_);
+    zen_fs->GetZenFSSnapshot(snapshot, options);
+  }
+
+  void MigrateExtents(const std::vector<ZoneExtentSnapshot*>& exts,
+                      bool direct_io) {
+    auto zen_fs = dynamic_cast<ZenFS*>(fs_);
+    zen_fs->MigrateExtents(exts);
+  }
+
+  void Set_metrics_tag(std::string tag) { metrics_tag_ = tag; }
+  std::string MetricsTag() { return metrics_tag_; }
 
  private:
   Env* target_;
   FileSystem* fs_;
+  std::string metrics_tag_;
 };
 
 Status NewZenfsEnv(
@@ -491,22 +527,38 @@ Status NewZenfsEnv(
     std::shared_ptr<MetricsReporterFactory> metrics_reporter_factory_) {
   assert(zdb_path.length() > 0);
   auto env = new ZenfsEnv(Env::Default());
+  env->Set_metrics_tag(zdb_path);
   Status s =
       env->InitZenfs(zdb_path, bytedance_tags_, metrics_reporter_factory_);
   *zenfs_env = s.ok() ? env : nullptr;
   return s;
 }
 
-Status GetZbdDiskSpaceInfo(Env* env, uint64_t& total_size, uint64_t& avail_size,
-                           uint64_t& used_size) {
-  return dynamic_cast<ZenfsEnv*>(env)->GetZbdDiskSpaceInfo(
-      total_size, avail_size, used_size);
+void GetStat(Env* env, BDZenFSStat& stat) {
+  auto zen_env = dynamic_cast<ZenfsEnv*>(env);
+  if (zen_env) {
+    zen_env->GetStat(stat);
+  }
 }
 
-std::vector<ZoneStat> GetStat(Env* env) {
+void GetZenFSSnapshot(Env* env, ZenFSSnapshot& snapshot,
+                      const ZenFSSnapshotOptions& options) {
   auto zen_env = dynamic_cast<ZenfsEnv*>(env);
-  if (!zen_env) return {};
-  return zen_env->GetStat();
+  if (!zen_env) return;
+  zen_env->GetZenFSSnapshot(snapshot, options);
+}
+
+void MigrateExtents(Env* env, const std::vector<ZoneExtentSnapshot*>& exts,
+                    bool direct_io) {
+  auto zen_env = dynamic_cast<ZenfsEnv*>(env);
+  if (!zen_env) return;
+  zen_env->MigrateExtents(exts, direct_io);
+}
+
+std::string MetricsTag(Env* env) {
+  auto zen_env = dynamic_cast<ZenfsEnv*>(env);
+  if (!zen_env) return "";
+  return zen_env->MetricsTag();
 }
 
 }  // namespace TERARKDB_NAMESPACE
@@ -527,7 +579,11 @@ Status GetZbdDiskSpaceInfo(Env* env, uint64_t& total_size, uint64_t& avail_size,
   return Status::NotSupported("GetZbdDiskSpaceInfo is not implemented.");
 }
 
-std::vector<ZoneStat> GetStat(Env* env) { return {}; }
+void GetStat(Env* env, BDZenFSStat& stat) {}
+void GetZenFSSnapshot(Env* env, ZenFSSnapshot& snapshot,
+                      const ZenFSSnapshotOptions& options) {}
+void MigrateExtents(Env* env, const std::vector<ZoneExtentSnapshot*>& exts,
+                    bool direct_io);
 
 }  // namespace TERARKDB_NAMESPACE
 

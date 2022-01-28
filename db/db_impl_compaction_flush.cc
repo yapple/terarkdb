@@ -1848,9 +1848,9 @@ void DBImpl::MaybeScheduleFlushOrCompaction() {
     return;
   } else if (error_handler_.IsBGWorkStopped()) {
     // Compaction is not part of the recovery sequence from a hard error. We
-    // might get here because recovery might do a flush and install a new
-    // super version, which will try to schedule pending compactions. Bail
-    // out here and let the higher level recovery handle compactions
+    // might get here because recovery might do a flush and install a new super
+    // version, which will try to schedule pending compactions. Bail out here
+    // and let the higher level recovery handle compactions
     return;
   }
 
