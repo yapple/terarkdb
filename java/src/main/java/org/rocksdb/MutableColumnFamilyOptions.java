@@ -806,6 +806,18 @@ public class MutableColumnFamilyOptions {
     }
 
     @Override
+    public MutableColumnFamilyOptionsBuilder setBlobSize(
+        final long blobSize) {
+      return setLong(CompactionOption.disable_auto_compactions,
+          blobSize);
+    }
+
+    @Override
+    public long blobSize(){
+      return getLong(CompactionOption.disable_auto_compactions);
+    }
+
+    @Override
     public MutableColumnFamilyOptionsBuilder setDisableAutoCompactions(
         final boolean disableAutoCompactions) {
       return setBoolean(CompactionOption.disable_auto_compactions,

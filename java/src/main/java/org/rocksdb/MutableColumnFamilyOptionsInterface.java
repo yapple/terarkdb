@@ -156,4 +156,8 @@ public interface MutableColumnFamilyOptionsInterface
    * @return Compression type.
    */
   CompressionType compressionType();
+  
+  T setBlobSize(long blobSize);
+  
+  long blobSize();
 }

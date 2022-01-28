@@ -13,7 +13,6 @@ LIB_SOURCES =                                                   \
   db/compaction_job.cc                                          \
   db/compaction_picker.cc                                       \
   db/compaction_picker_universal.cc                             \
-  db/compaction_dispatcher.cc                                   \
   db/convenience.cc                                             \
   db/db_filesnapshot.cc                                         \
   db/db_impl.cc                                                 \
@@ -46,6 +45,7 @@ LIB_SOURCES =                                                   \
   db/memtable_list.cc                                           \
   db/merge_helper.cc                                            \
   db/merge_operator.cc                                          \
+  db/metrics_reporter.cc                                        \
   db/periodic_work_scheduler.cc                                 \
   db/range_del_aggregator.cc                                    \
   db/range_tombstone_fragmenter.cc                              \
@@ -68,6 +68,7 @@ LIB_SOURCES =                                                   \
   env/env_hdfs.cc                                               \
   env/env_io_prof.cc                                            \
   env/env_posix.cc                                              \
+  env/file_system.cc                                            \
   env/io_posix.cc                                               \
   env/mock_env.cc                                               \
   memtable/alloc_tracker.cc                                     \
@@ -76,8 +77,6 @@ LIB_SOURCES =                                                   \
   memtable/hash_linklist_rep.cc                                 \
   memtable/hash_skiplist_rep.cc                                 \
   memtable/skiplistrep.cc                                       \
-  memtable/terark_zip_entry_index.cc                            \
-  memtable/terark_zip_memtable.cc                               \
   memtable/vectorrep.cc                                         \
   memtable/write_buffer_manager.cc                              \
   monitoring/histogram.cc                                       \
@@ -108,10 +107,6 @@ LIB_SOURCES =                                                   \
   table/block_based_table_builder.cc                            \
   table/block_based_table_factory.cc                            \
   table/block_based_table_reader.cc                             \
-  table/terark_zip_config.cc                                    \
-  table/terark_zip_table_builder.cc                             \
-  table/terark_zip_table_reader.cc                              \
-  table/terark_zip_table.cc                                     \
   table/block_builder.cc                                        \
   table/block_fetcher.cc                                        \
   table/block_prefix_index.cc                                   \
@@ -140,11 +135,6 @@ LIB_SOURCES =                                                   \
   table/sst_file_writer.cc                                      \
   table/table_properties.cc                                     \
   table/table_reader.cc                                         \
-  table/terark_zip_common.cc                                    \
-  table/terark_zip_config.cc                                    \
-  table/terark_zip_table_builder.cc                             \
-  table/terark_zip_table_reader.cc                              \
-  table/terark_zip_table.cc                                     \
   table/two_level_iterator.cc                                   \
   tools/dump/db_dump_tool.cc                                    \
   util/arena.cc                                                 \
@@ -214,6 +204,7 @@ LIB_SOURCES =                                                   \
   utilities/merge_operators/string_append/stringappend2.cc      \
   utilities/merge_operators/uint64add.cc                        \
   utilities/merge_operators/bytesxor.cc                         \
+  utilities/object_registry.cc                                  \
   utilities/option_change_migration/option_change_migration.cc  \
   utilities/options/options_util.cc                             \
   utilities/persistent_cache/block_cache_tier.cc                \
@@ -244,6 +235,7 @@ LIB_SOURCES =                                                   \
   utilities/ttl/db_ttl_impl.cc                                  \
   utilities/write_batch_with_index/write_batch_with_index.cc    \
   utilities/write_batch_with_index/write_batch_with_index_internal.cc    \
+  utilities/util/factory.cc                                      \
 
 ifeq (,$(shell $(CXX) -fsyntax-only -maltivec -xc /dev/null 2>&1))
 LIB_SOURCES_ASM =\
@@ -375,7 +367,6 @@ MAIN_SOURCES =                                                          \
   memtable/memtablerep_bench.cc                                         \
   memtable/skiplist_test.cc                                             \
   memtable/terark_zip_entry_index.cc                                    \
-  memtable/terark_zip_memtable.cc                                       \
   memtable/write_buffer_manager_test.cc                                 \
   monitoring/histogram_test.cc                                          \
   monitoring/iostats_context_test.cc                                    \

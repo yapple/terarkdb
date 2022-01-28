@@ -1327,6 +1327,18 @@ public class Options extends RocksObject
   }
 
   @Override
+  public Options setBlobSize(final long blobSize){
+    setBlobSize(nativeHandle_,blobSize);
+    return this;
+  }
+
+  @Override
+  public long blobSize(){
+    return blobSize(nativeHandle_);
+  }
+
+
+  @Override
   public long maxSequentialSkipInIterations() {
     return maxSequentialSkipInIterations(nativeHandle_);
   }
@@ -1831,6 +1843,8 @@ public class Options extends RocksObject
   private native void setDisableAutoCompactions(
       long handle, boolean disableAutoCompactions);
   private native boolean disableAutoCompactions(long handle);
+  private native void setBlobSize(long handle, long blobSize);
+  private native long blobSize(long handle);
   private native void setCompactionStyle(long handle, byte compactionStyle);
   private native byte compactionStyle(long handle);
   private native void setMaxSequentialSkipInIterations(
