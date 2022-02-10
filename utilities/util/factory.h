@@ -125,9 +125,9 @@ Factoryable<ProductPtr, CreatorArgs...>::AutoReg::AutoReg(
   auto& func_map = imp.func_map;
   imp.mtx.lock();
   if (!func_map.emplace(name.ToString(), creator).second) {
-    fprintf(stderr, "FATAL: %s: duplicate name = %.*s\n", __FUNCTION__,
-            int(name.size()), name.data());
-    abort();
+    // fprintf(stderr, "FATAL: %s: duplicate name = %.*s\n", __FUNCTION__,
+    //         int(name.size()), name.data());
+    // abort();
   }
   if (!imp.type_map.emplace(ti, name.ToString()).second) {
 #if defined(TERARK_FACTORY_WARN_ON_DUP_NAME)
@@ -149,9 +149,9 @@ Factoryable<ProductPtr, CreatorArgs...>::AutoReg::~AutoReg() {
   size_t cnt1 = imp.func_map.erase(m_name);
   size_t cnt2 = imp.type_map.erase(m_type_idx);
   if (0 == cnt1) {
-    fprintf(stderr, "FATAL: %s: name = %.*s to creator not found\n",
-            __FUNCTION__, int(m_name.size()), m_name.data());
-    abort();
+    // fprintf(stderr, "FATAL: %s: name = %.*s to creator not found\n",
+            // __FUNCTION__, int(m_name.size()), m_name.data());
+    // abort();
   }
   if (0 == cnt2) {
 #if defined(TERARK_FACTORY_WARN_ON_DUP_NAME)
