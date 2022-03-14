@@ -48,6 +48,7 @@ public class ColumnFamilyOptions extends RocksObject
     this.comparator_ = other.comparator_;
     this.compactionFilter_ = other.compactionFilter_;
     this.compactionFilterFactory_ = other.compactionFilterFactory_;
+    this.valueExtractorFactory_ = other.valueExtractorFactory_;
     this.compactionOptionsUniversal_ = other.compactionOptionsUniversal_;
     this.compressionOptions_ = other.compressionOptions_;
   }
@@ -224,6 +225,15 @@ public class ColumnFamilyOptions extends RocksObject
     compactionFilterFactory_ = compactionFilterFactory;
     return this;
   }
+
+
+  public ColumnFamilyOptions setValueExtractorFactory(final AbstractValueExtractorFactory<? extends AbstractSlice<?>> valueExtractorFactory) {
+    assert (isOwningHandle());
+    setValueExtractorFactoryHandle(nativeHandle_, valueExtractorFactory.nativeHandle_);
+    valueExtractorFactory_ = valueExtractorFactory;
+    return this;
+  }
+
 
   @Override
   public ColumnFamilyOptions setWriteBufferSize(final long writeBufferSize) {
@@ -821,6 +831,8 @@ public class ColumnFamilyOptions extends RocksObject
       long compactionFilterHandle);
   private native void setCompactionFilterFactoryHandle(long handle,
       long compactionFilterFactoryHandle);
+  private native void setValueExtractorFactoryHandle(long handle, 
+      long valueExtractorFactoryHandle);
   private native void setWriteBufferSize(long handle, long writeBufferSize)
       throws IllegalArgumentException;
   private native long writeBufferSize(long handle);
@@ -963,6 +975,8 @@ public class ColumnFamilyOptions extends RocksObject
   private AbstractCompactionFilter<? extends AbstractSlice<?>> compactionFilter_;
   AbstractCompactionFilterFactory<? extends AbstractCompactionFilter<?>>
       compactionFilterFactory_;
+  AbstractValueExtractorFactory<? extends AbstractSlice<?>>
+      valueExtractorFactory_;
   private CompactionOptionsUniversal compactionOptionsUniversal_;
   private CompressionOptions compressionOptions_;
 

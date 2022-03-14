@@ -3370,6 +3370,20 @@ void Java_org_rocksdb_ColumnFamilyOptions_setMergeOperator(
 
 /*
  * Class:     org_rocksdb_ColumnFamilyOptions
+ * Method:    setValueExtractorFactoryHandle
+ * Signature: (JJ)V
+ */
+void Java_org_rocksdb_ColumnFamilyOptions_setValueExtractorFactoryHandle(
+    JNIEnv* /*env*/, jobject /*jobj*/, jlong jopt_handle,
+    jlong jvaluemeta_extractor_factory_handle) {
+  reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jopt_handle)
+      ->value_meta_extractor_factory =
+      reinterpret_cast<TERARKDB_NAMESPACE::ValueExtractorFactory*>(
+          jvaluemeta_extractor_factory_handle);
+}
+
+/*
+ * Class:     org_rocksdb_ColumnFamilyOptions
  * Method:    setCompactionFilterHandle
  * Signature: (JJ)V
  */
