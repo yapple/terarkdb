@@ -2,6 +2,7 @@ NATIVE_JAVA_CLASSES = org.rocksdb.AbstractCompactionFilter\
 	org.rocksdb.AbstractCompactionFilterFactory\
 	org.rocksdb.AbstractSlice\
 	org.rocksdb.AbstractTransactionNotifier\
+	org.rocksdb.AbstractvalueExtractorFactory\
 	org.rocksdb.BackupEngine\
 	org.rocksdb.BackupableDBOptions\
 	org.rocksdb.BlockBasedTableConfig\

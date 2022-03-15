@@ -3376,10 +3376,11 @@ void Java_org_rocksdb_ColumnFamilyOptions_setMergeOperator(
 void Java_org_rocksdb_ColumnFamilyOptions_setValueExtractorFactoryHandle(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jopt_handle,
     jlong jvaluemeta_extractor_factory_handle) {
+  auto* ve_factory = reinterpret_cast<std::shared_ptr<TERARKDB_NAMESPACE::ValueExtractorFactory>*>(
+      jvaluemeta_extractor_factory_handle);
   reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jopt_handle)
-      ->value_meta_extractor_factory =
-      reinterpret_cast<TERARKDB_NAMESPACE::ValueExtractorFactory*>(
-          jvaluemeta_extractor_factory_handle);
+      ->value_meta_extractor_factory = *ve_factory;
+
 }
 
 /*
