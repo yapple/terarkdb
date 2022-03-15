@@ -234,3 +234,13 @@ jboolean Java_org_rocksdb_FlinkCompactionFilter_configureFlinkCompactionFilter(
           list_filter_factory)};
   return static_cast<jboolean>(config_holder->Configure(config));
 }
+
+
+jlong Java_org_rocksdb_FlinkCompactionFilter_createFlinkValueExtractorFactory(
+    JNIEnv* env, jclass /* jcls */, jlong config_holder_handle) {
+  using namespace TERARKDB_NAMESPACE::flink;
+  auto config_holder =
+      *(reinterpret_cast<std::shared_ptr<FlinkCompactionFilter::ConfigHolder>*>(
+          config_holder_handle));
+  return reinterpret_cast<jlong>(new FlinkValueExtractorFactory(config_holder));
+}
