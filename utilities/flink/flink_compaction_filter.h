@@ -205,7 +205,7 @@ class FlinkValueExtractorFactory : public ValueExtractorFactory {
       std::shared_ptr<FlinkCompactionFilter::ConfigHolder> config_holder)
       : config_holder_(std::move(config_holder)) {}
   std::unique_ptr<ValueExtractor> CreateValueExtractor(
-      const Context& context) const {
+      const Context& context) const override{
     return std::unique_ptr<ValueExtractor>(
         new FlinkCompactionFilter(config_holder_, nullptr, nullptr));
   };

@@ -174,6 +174,20 @@ jlong Java_org_rocksdb_FlinkCompactionFilter_createNewFlinkCompactionFilterConfi
  * Method:    disposeFlinkCompactionFilterConfigHolder
  * Signature: (J)V
  */
+void Java_org_rocksdb_FlinkCompactionFilter_disposeInternalFlinkValueExtractorFactory(
+    JNIEnv* /* env */, jclass /* jcls */, jlong handle) {
+  using namespace TERARKDB_NAMESPACE::flink;
+  auto* flink_value_extractor =
+      reinterpret_cast<std::shared_ptr<FlinkValueExtractorFactory>*>(
+          handle);
+  delete flink_value_extractor;
+}
+
+/*
+ * Class:     org_rocksdb_FlinkCompactionFilter
+ * Method:    disposeFlinkCompactionFilterConfigHolder
+ * Signature: (J)V
+ */
 void Java_org_rocksdb_FlinkCompactionFilter_disposeFlinkCompactionFilterConfigHolder(
     JNIEnv* /* env */, jclass /* jcls */, jlong handle) {
   using namespace TERARKDB_NAMESPACE::flink;

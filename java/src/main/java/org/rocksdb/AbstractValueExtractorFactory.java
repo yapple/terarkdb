@@ -9,9 +9,8 @@ package org.rocksdb;
  * Each compaction will create a new {@link AbstractCompactionFilter}
  * allowing the application to know about different compactions
  *
- * @param <T> The concrete type of the compaction filter
  */
-public abstract class AbstractValueExtractorFactory<T extends AbstractSlice<?>>
+public abstract class AbstractValueExtractorFactory
     extends RocksObject {
 
   public AbstractValueExtractorFactory(final long nativeHandle) {
@@ -25,9 +24,10 @@ public abstract class AbstractValueExtractorFactory<T extends AbstractSlice<?>>
    * The name will be printed to the LOG file on start up for diagnosis
    */
   public abstract String name();
-
-  @Override
-  protected final native void disposeInternal(final long handle);
   
   // private native void disposeInternal(final long handle);
+  @Override
+  protected void disposeInternal() {
+    disposeInternal(nativeHandle_);
+  }
 }

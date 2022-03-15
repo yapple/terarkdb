@@ -26,10 +26,12 @@ public class FlinkCompactionFilter
    public FlinkCompactionFilter(ConfigHolder configHolder, TimeProvider timeProvider, Logger logger) {
     super(createNewFlinkCompactionFilter0(configHolder.nativeHandle_, timeProvider, logger == null ? 0 : logger.nativeHandle_));
   }
+  
    private native static long createFlinkValueExtractorFactory(long configHolderHandle);
    private native static long createNewFlinkCompactionFilter0(long configHolderHandle, TimeProvider timeProvider, long loggerHandle);
   private native static long createNewFlinkCompactionFilterConfigHolder();
   private native static void disposeFlinkCompactionFilterConfigHolder(long configHolderHandle);
+  private native static void disposeInternalFlinkValueExtractorFactory(long flinkValueExtractorHandle);
   private native static boolean configureFlinkCompactionFilter(
           long configHolderHandle, int stateType, int timestampOffset, long ttl, long queryTimeAfterNumEntries,
           int fixedElementLength, ListElementFilterFactory listElementFilterFactory);
@@ -119,7 +121,7 @@ public class FlinkCompactionFilter
   }
 
   public static class FlinkValueExtractorFactory
-    extends AbstractValueExtractorFactory<Slice> {
+    extends AbstractValueExtractorFactory {
 
       public FlinkValueExtractorFactory(ConfigHolder configHolder) {
           super(createFlinkValueExtractorFactory(configHolder.nativeHandle_));
@@ -127,6 +129,11 @@ public class FlinkCompactionFilter
       @Override
       public String name() {
         return "FlinkValueExtractorFactory";
+      }
+
+      @Override
+      protected void disposeInternal(long handle) {
+        disposeInternalFlinkValueExtractorFactory(handle);
       }
   }
 

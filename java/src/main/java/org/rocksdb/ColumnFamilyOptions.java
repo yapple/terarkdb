@@ -227,7 +227,7 @@ public class ColumnFamilyOptions extends RocksObject
   }
 
 
-  public ColumnFamilyOptions setValueExtractorFactory(final AbstractValueExtractorFactory<? extends AbstractSlice<?>> valueExtractorFactory) {
+  public ColumnFamilyOptions setValueExtractorFactory(final AbstractValueExtractorFactory valueExtractorFactory) {
     assert (isOwningHandle());
     setValueExtractorFactoryHandle(nativeHandle_, valueExtractorFactory.nativeHandle_);
     valueExtractorFactory_ = valueExtractorFactory;
@@ -975,8 +975,7 @@ public class ColumnFamilyOptions extends RocksObject
   private AbstractCompactionFilter<? extends AbstractSlice<?>> compactionFilter_;
   AbstractCompactionFilterFactory<? extends AbstractCompactionFilter<?>>
       compactionFilterFactory_;
-  AbstractValueExtractorFactory<? extends AbstractSlice<?>>
-      valueExtractorFactory_;
+  AbstractValueExtractorFactory valueExtractorFactory_;
   private CompactionOptionsUniversal compactionOptionsUniversal_;
   private CompressionOptions compressionOptions_;
 
