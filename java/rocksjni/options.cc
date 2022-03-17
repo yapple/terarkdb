@@ -34,6 +34,7 @@
 #include "rocksjni/comparatorjnicallback.h"
 #include "rocksjni/portal.h"
 #include "rocksjni/statisticsjni.h"
+#include "utilities/flink/flink_compaction_filter.h"
 #include "utilities/merge_operators.h"
 
 /*
@@ -3511,6 +3512,7 @@ void Java_org_rocksdb_ColumnFamilyOptions_setCompactionFilterHandle(
           jcompactionfilter_handle);
 }
 
+#define FLINK
 /*
  * Class:     org_rocksdb_ColumnFamilyOptions
  * Method:    setCompactionFilterFactoryHandle
@@ -3525,6 +3527,15 @@ Java_org_rocksdb_ColumnFamilyOptions_setCompactionFilterFactoryHandle(
       jcompactionfilterfactory_handle);
   reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jopt_handle)
       ->compaction_filter_factory = *cff_factory;
+#ifdef FLINK
+  auto flink_value_extrator = std::make_shared<TERARKDB_NAMESPACE::flink::FlinkValueExtractorFactory>();
+  flink_value_extrator->compaction_filter_factory = *cff_factory;
+  reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jopt_handle)
+      ->value_meta_extractor_factory = flink_value_extrator;
+  reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jopt_handle)
+      ->ttl_extractor_factory = flink_value_extrator;
+  reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jopt_handle)->ttl_gc_ratio = 0.1;
+#endif
 }
 
 /*

@@ -7,6 +7,7 @@
 
 #include <random>
 
+#include "rocksdb/types.h"
 #include "rocksdb/terark_namespace.h"
 #include "util/testharness.h"
 
@@ -45,7 +46,7 @@ class ConsoleLogger : public Logger {
     printf("\n");
   }
 };
-
+uint64_t ttl_extract();
 int64_t time = 0;
 
 class TestTimeProvider : public FlinkCompactionFilter::TimeProvider {
@@ -85,6 +86,13 @@ CompactionFilter::Decision decide(size_t data_size = sizeof(data)) {
                           &new_list /* new value*/, &stub);
 }
 
+uint64_t ttl_extract() {
+  bool has_ttl;
+  uint64_t timestamp;
+  filter->Extract(kEntryPut ,key, Slice(data),&has_ttl,&timestamp);
+  return timestamp;
+}
+
 void Init(
     FlinkCompactionFilter::StateType stype, CompactionFilter::ValueType vtype,
     FlinkCompactionFilter::ListElementFilterFactory* fixed_len_filter_factory,
@@ -116,6 +124,7 @@ void InitValue(FlinkCompactionFilter::StateType stype,
   time = rnd(mt);
   SetTimestamp(time, timestamp_offset);
   Init(stype, vtype, nullptr, timestamp_offset, expired);
+  if(time > 0) EXPECT_EQ(ttl_extract(), (time + ttl)/1000);
 }
 
 void InitList(CompactionFilter::ValueType vtype, bool all_expired = false,

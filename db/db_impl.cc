@@ -1039,23 +1039,49 @@ void DBImpl::ScheduleTtlGC() {
     uint64_t new_mark_count = 0;
     uint64_t old_mark_count = 0;
     uint64_t total_count = 0;
-    if (!cfd->initialized() || cfd->IsDropped() ||
-        cfd->ioptions()->ttl_extractor_factory == nullptr) {
+    bool has_ttl = cfd->ioptions()->ttl_extractor_factory != nullptr;
+    if (!cfd->initialized() || cfd->IsDropped()) {
       continue;
     }
-    uint64_t now = cfd->ioptions()->ttl_extractor_factory->Now();
+    uint64_t now = 0;
+    if (has_ttl) {
+      now = cfd->ioptions()->ttl_extractor_factory->Now();
+    }
     VersionStorageInfo* vstorage = cfd->current()->storage_info();
     for (int l = 0; l < vstorage->num_non_empty_levels(); l++) {
       for (auto meta : vstorage->LevelFiles(l)) {
         if (meta->being_compacted) {
           continue;
         }
-        ++total_count;
+        auto max_to_zero = [](uint64_t v) {
+          return v == port::kMaxUint64 ? 0 : v;
+        };
+        ROCKS_LOG_BUFFER(
+          &log_buffer_debug,
+          "SST #%" PRIu64 " ttl schedule debug info @L%d , property: (%" PRIu64
+          " , %" PRIu64 ") now: %" PRIu64 " deleted key: %" PRIu64,
+          meta->fd.GetNumber(), l, max_to_zero(meta->prop.earliest_time_begin_compact),
+          max_to_zero(meta->prop.latest_time_end_compact), now, meta->prop.num_deletions);
         bool marked =
-            !!(meta->marked_for_compaction & FileMetaData::kMarkedFromTTL);
+            !!(meta->marked_for_compaction & (FileMetaData::kMarkedFromTTL | FileMetaData::kMarkedFromRangeDeletion));
+        ++total_count;
         old_mark_count += marked;
-        TEST_SYNC_POINT("DBImpl:Exist-SST");
         if (!marked &&
+            meta->prop.num_deletions > meta->prop.num_entries * 0.2) {
+          meta->marked_for_compaction |= FileMetaData::kMarkedFromRangeDeletion;
+          ROCKS_LOG_BUFFER(&log_buffer_info,
+                           "SST #%" PRIu64
+                           " ttl schedule debug info @L%d , property: (%" PRIu64
+                           " , %" PRIu64 ") now: %" PRIu64
+                           " deleted key: %" PRIu64 " marked as range_deletion",
+                           meta->fd.GetNumber(), l,
+                           max_to_zero(meta->prop.earliest_time_begin_compact),
+                           max_to_zero(meta->prop.latest_time_end_compact), now,
+                           meta->prop.num_deletions);
+          marked = true;
+        }
+        TEST_SYNC_POINT("DBImpl:Exist-SST");
+        if (!marked && has_ttl &&
             should_marked_for_compacted(
                 l, meta->fd.GetNumber(), meta->prop.earliest_time_begin_compact,
                 meta->prop.latest_time_end_compact, now)) {
