@@ -3,9 +3,9 @@
 //  COPYING file in the root directory) and Apache 2.0 License
 //  (found in the LICENSE.Apache file in the root directory).
 
+#include <include/rocksdb/env.h>
 #include <jni.h>
 
-#include <include/rocksdb/env.h>
 #include "include/org_rocksdb_FlinkCompactionFilter.h"
 #include "loggerjnicallback.h"
 #include "portal.h"
@@ -33,9 +33,9 @@ class JniCallbackBase : public TERARKDB_NAMESPACE::JniCallback {
 // the list element serializer has to be used in this case to compute the offset
 // of the next element. The filter wraps java object implenented in Flink. The
 // java object holds element serializer and performs filtering.
-class JavaListElementFilter
-    : public TERARKDB_NAMESPACE::flink::FlinkCompactionFilter::ListElementFilter,
-      JniCallbackBase {
+class JavaListElementFilter : public TERARKDB_NAMESPACE::flink::
+                                  FlinkCompactionFilter::ListElementFilter,
+                              JniCallbackBase {
  public:
   JavaListElementFilter(JNIEnv* env, jobject jlist_filter)
       : JniCallbackBase(env, jlist_filter) {
@@ -50,7 +50,8 @@ class JavaListElementFilter
     assert(m_jnext_unexpired_offset_methodid != nullptr);
   }
 
-  std::size_t NextUnexpiredOffset(const TERARKDB_NAMESPACE::Slice& list, int64_t ttl,
+  std::size_t NextUnexpiredOffset(const TERARKDB_NAMESPACE::Slice& list,
+                                  int64_t ttl,
                                   int64_t current_timestamp) const override {
     jboolean attached_thread = JNI_FALSE;
     JNIEnv* env = getJniEnv(&attached_thread);
@@ -75,7 +76,8 @@ class JavaListElementFilter
 };
 
 class JavaListElemenFilterFactory
-    : public TERARKDB_NAMESPACE::flink::FlinkCompactionFilter::ListElementFilterFactory,
+    : public TERARKDB_NAMESPACE::flink::FlinkCompactionFilter::
+          ListElementFilterFactory,
       JniCallbackBase {
  public:
   JavaListElemenFilterFactory(JNIEnv* env, jobject jlist_filter_factory)
@@ -199,7 +201,8 @@ jlong Java_org_rocksdb_FlinkCompactionFilter_createNewFlinkCompactionFilter0(
   auto logger =
       logger_handle == 0
           ? nullptr
-          : *(reinterpret_cast<std::shared_ptr<TERARKDB_NAMESPACE::LoggerJniCallback>*>(
+          : *(reinterpret_cast<
+                std::shared_ptr<TERARKDB_NAMESPACE::LoggerJniCallback>*>(
                 logger_handle));
   return reinterpret_cast<jlong>(new FlinkCompactionFilter(
       config_holder,

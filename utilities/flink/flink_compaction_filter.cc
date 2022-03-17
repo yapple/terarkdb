@@ -15,6 +15,7 @@
 namespace TERARKDB_NAMESPACE {
 namespace flink {
 
+// million seconds
 int64_t DeserializeTimestamp(const char* src, std::size_t offset) {
   uint64_t result = 0;
   for (unsigned long i = 0; i < sizeof(uint64_t); i++) {
@@ -112,36 +113,62 @@ inline void FlinkCompactionFilter::InitConfigIfNotYet() const {
       config_cached_ == &DISABLED_CONFIG ? config_holder_->GetConfig()
                                          : config_cached_;
 }
+Status FlinkCompactionFilter::Extract(const Slice& key, const Slice& value,
+                                      std::string* output) const try {
+  InitConfigIfNotYet();
+  const StateType state_type = config_cached_->state_type_;
+  const bool tooShortValue =
+      value.size() < config_cached_->timestamp_offset_ + TIMESTAMP_BYTE_SIZE;
+  if (state_type != StateType::List && !tooShortValue) {
+    output->assign(value.data() + config_cached_->timestamp_offset_,
+                   TIMESTAMP_BYTE_SIZE);
+  }
+  return Status::OK();
+} catch (const std::exception& e) {
+  return Status::Corruption(e.what());
+}
+
+Status FlinkCompactionFilter::Extract(EntryType entry_type,const Slice& user_key,
+                  const Slice& value_or_meta, bool* has_ttl,
+                  uint64_t* ttl_time_point) const{
+    InitConfigIfNotYet();
+    const StateType state_type = config_cached_->state_type_;
+    if(state_type == StateType::List ){
+      *has_ttl = false;
+      return Status::OK();
+    }
+    int64_t insert_ms = 0;
+    if (entry_type == EntryType::kEntryPut) {
+      // value_or_meta is value
+      insert_ms = DeserializeTimestamp(value_or_meta.data(), config_cached_->timestamp_offset_);
+    } else if (entry_type == EntryType::kEntryValueIndex) {
+      if(value_or_meta.size() < TIMESTAMP_BYTE_SIZE){
+        *has_ttl = false;
+        return Status::OK();
+      }
+      // value_or_meta is meta
+      insert_ms = DeserializeTimestamp(value_or_meta.data(), 0);
+    }
+    const int64_t ttlWithoutOverflow =
+      insert_ms > 0 ? std::min(JAVA_MAX_LONG - insert_ms, config_cached_->ttl_) : config_cached_->ttl_;
+
+    if ((*has_ttl = insert_ms > 0)) {
+      // flink timestamp is insert time, not the expired time
+      *ttl_time_point = (current_timestamp_, insert_ms + ttlWithoutOverflow ) /1000; 
+      Debug(logger_.get(),"Call FlinkCompactionFilter::TTLExtract current_timestamp_: %ld,insert_ms:%ld, ttl_time_point:%ld,config_cached_->ttl_:%ld",current_timestamp_,insert_ms,*ttl_time_point,config_cached_->ttl_);
+
+    }
+    return Status::OK();
+}
 
 CompactionFilter::Decision FlinkCompactionFilter::FilterV2(
     int /*level*/, const Slice& key, ValueType value_type,
-    const Slice& /*existing_value_meta*/, const LazyBuffer& existing_lazy_value,
+    const Slice& value_meta, const LazyBuffer& existing_lazy_value,
     LazyBuffer* new_value, std::string* /*skip_until*/) const {
-  auto s = existing_lazy_value.fetch();
-  if (!s.ok()) {
-    new_value->reset(std::move(s));
-    return CompactionFilter::Decision::kKeep;
-  }
-  const Slice& existing_value = existing_lazy_value.slice();
 
   InitConfigIfNotYet();
   CreateListElementFilterIfNull();
   UpdateCurrentTimestampIfStale();
-
-  const char* data = existing_value.data();
-
-  Debug(logger_.get(),
-        "Call FlinkCompactionFilter::FilterV2 - Key: %s, Data: %s, Value type: "
-        "%d, "
-        "State type: %d, TTL: %" PRIi64 " ms, timestamp_offset: %zd",
-        key.ToString().c_str(), existing_value.ToString(true).c_str(),
-        value_type, config_cached_->state_type_, config_cached_->ttl_,
-        config_cached_->timestamp_offset_);
-
-  // too short value to have timestamp at all
-  const bool tooShortValue =
-      existing_value.size() <
-      config_cached_->timestamp_offset_ + TIMESTAMP_BYTE_SIZE;
 
   const StateType state_type = config_cached_->state_type_;
   const bool value_or_merge =
@@ -151,15 +178,38 @@ CompactionFilter::Decision FlinkCompactionFilter::FilterV2(
   const bool list_entry = state_type == StateType::List && value_or_merge;
   const bool toDecide = value_state || list_entry;
   const bool list_filter = list_entry && list_element_filter_;
+  Status s;
+  bool no_meta = list_filter || value_meta == nullptr || value_meta.empty();
+  if (no_meta) {
+    s = existing_lazy_value.fetch();
+    if (!s.ok()) {
+      new_value->reset(std::move(s));
+      return CompactionFilter::Decision::kKeep;
+    }
+  }
+  const Slice& existing_value =
+      no_meta ? existing_lazy_value.slice() : value_meta;
+  const char* data = existing_value.data();
+  Debug(logger_.get(),
+        "Call FlinkCompactionFilter::FilterV2 - Key: %s, Data: %s, Value type: "
+        "%d, "
+        "State type: %d, TTL: %" PRIi64 " ms, timestamp_offset: %zd",
+        key.ToString().c_str(), existing_value.ToString(true).c_str(),
+        value_type, config_cached_->state_type_, config_cached_->ttl_,
+        config_cached_->timestamp_offset_);
+  
+  const int real_offset = no_meta ?   config_cached_->timestamp_offset_:0;
+  // too short value to have timestamp at all
+  const bool tooShortValue =
+      existing_value.size() < real_offset + TIMESTAMP_BYTE_SIZE;
 
   Decision decision = Decision::kKeep;
   if (!tooShortValue && toDecide) {
     decision = list_filter ? ListDecide(existing_value, new_value)
                            : Decide(data, config_cached_->ttl_,
-                                    config_cached_->timestamp_offset_,
-                                    current_timestamp_, logger_);
+                             real_offset, current_timestamp_, logger_);
   }
-  Debug(logger_.get(), "Decision: %d", int(decision));
+  Info(logger_.get(), "Decision: %d", int(decision));
   return decision;
 }
 
