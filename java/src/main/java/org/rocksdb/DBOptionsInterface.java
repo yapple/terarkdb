@@ -519,28 +519,6 @@ public interface DBOptionsInterface<T extends DBOptionsInterface> {
   int maxBackgroundCompactions();
 
   /**
-   * This value represents the maximum number of threads that will
-   * concurrently perform a compaction job by breaking it into multiple,
-   * smaller ones that are run simultaneously.
-   * Default: 1 (i.e. no subcompactions)
-   *
-   * @param maxSubcompactions The maximum number of threads that will
-   *     concurrently perform a compaction job
-   */
-  void setMaxSubcompactions(int maxSubcompactions);
-
-  /**
-   * This value represents the maximum number of threads that will
-   * concurrently perform a compaction job by breaking it into multiple,
-   * smaller ones that are run simultaneously.
-   * Default: 1 (i.e. no subcompactions)
-   *
-   * @return The maximum number of threads that will concurrently perform a
-   *     compaction job
-   */
-  int maxSubcompactions();
-
-  /**
    * Specifies the maximum number of concurrent background flush jobs.
    * If you're increasing this, also consider increasing number of threads in
    * HIGH priority thread pool. For more information, see

@@ -535,4 +535,14 @@ public class ColumnFamilyOptionsTest {
           isEqualTo(booleanValue);
     }
   }
+
+  @Test
+  public void maxSubcompactions() {
+    try (final ColumnFamilyOptions opt = new ColumnFamilyOptions()) {
+      final int intValue = rand.nextInt();
+      opt.setMaxSubcompactions(intValue);
+      assertThat(opt.maxSubcompactions()).
+          isEqualTo(intValue);
+    }
+  }
 }

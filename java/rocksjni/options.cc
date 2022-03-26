@@ -729,9 +729,9 @@ void Java_org_rocksdb_Options_setMaxBackgroundCompactions(JNIEnv* /*env*/,
 void Java_org_rocksdb_Options_setMaxSubcompactions(JNIEnv* /*env*/,
                                                    jobject /*jobj*/,
                                                    jlong jhandle, jint max) {
-  // reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)->max_subcompactions
-  // =
-  //     static_cast<int32_t>(max);
+  reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)->max_subcompactions
+  =
+      static_cast<int32_t>(max);
 }
 
 /*
@@ -3306,6 +3306,36 @@ void Java_org_rocksdb_ColumnFamilyOptions_setComparatorHandle__JJB(
 
 /*
  * Class:     org_rocksdb_ColumnFamilyOptions
+ * Method:    setMaxSubcompactions
+ * Signature: (JI)V
+ */
+void Java_org_rocksdb_ColumnFamilyOptions_setMaxSubcompactions(JNIEnv* env,
+                                                     jobject /*jobj*/,
+                                                     jlong jhandle, jint max) {
+  TERARKDB_NAMESPACE::Status s =
+    TERARKDB_NAMESPACE::check_if_jlong_fits_size_t(max);
+  if(s.ok()){
+    reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)->max_subcompactions
+  = static_cast<int32_t>(max);
+  }else{
+    TERARKDB_NAMESPACE::IllegalArgumentExceptionJni::ThrowNew(env, s);
+  }
+}
+
+/*
+ * Class:     org_rocksdb_ColumnFamilyOptions
+ * Method:    maxSubcompactions
+ * Signature: (J)I
+ */
+jint Java_org_rocksdb_ColumnFamilyOptions_maxSubcompactions(JNIEnv* /*env*/,
+                                                  jobject /*jobj*/,
+                                                  jlong jhandle) {
+  return reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
+      ->max_subcompactions;
+}
+
+/*
+ * Class:     org_rocksdb_ColumnFamilyOptions
  * Method:    setBlobSize
  * Signature: (JJ)V
  */
@@ -3402,12 +3432,11 @@ Java_org_rocksdb_ColumnFamilyOptions_setCompactionFilterFactoryHandle(
   auto* flink_value_extrator =
       new TERARKDB_NAMESPACE::flink::FlinkValueExtractorFactory();
   flink_value_extrator->compaction_filter_factory = *cff_factory;
-  // // not only face to flink, contain all the custom of rocksdbjni
-  auto* ve_factory = reinterpret_cast<
-      std::shared_ptr<TERARKDB_NAMESPACE::ValueExtractorFactory>*>(
-      flink_value_extrator);
+  // // not only face to flink, contain all the user of rocksdbjni
+  auto value_extrator = dynamic_cast<TERARKDB_NAMESPACE::ValueExtractorFactory*>(flink_value_extrator);
+  auto ve_factory = std::shared_ptr<TERARKDB_NAMESPACE::ValueExtractorFactory>(value_extrator);
   reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jopt_handle)
-      ->value_meta_extractor_factory = *ve_factory;
+      ->value_meta_extractor_factory = ve_factory;
 
 #endif
 }
@@ -5195,30 +5224,6 @@ jint Java_org_rocksdb_DBOptions_maxBackgroundCompactions(JNIEnv* /*env*/,
                                                          jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
       ->max_background_compactions;
-}
-
-/*
- * Class:     org_rocksdb_DBOptions
- * Method:    setMaxSubcompactions
- * Signature: (JI)V
- */
-void Java_org_rocksdb_DBOptions_setMaxSubcompactions(JNIEnv* /*env*/,
-                                                     jobject /*jobj*/,
-                                                     jlong jhandle, jint max) {
-  // reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)->max_subcompactions
-  // =
-  //     static_cast<int32_t>(max);
-}
-
-/*
- * Class:     org_rocksdb_DBOptions
- * Method:    maxSubcompactions
- * Signature: (J)I
- */
-jint Java_org_rocksdb_DBOptions_maxSubcompactions(JNIEnv* /*env*/,
-                                                  jobject /*jobj*/,
-                                                  jlong jhandle) {
-  return 0;
 }
 
 /*

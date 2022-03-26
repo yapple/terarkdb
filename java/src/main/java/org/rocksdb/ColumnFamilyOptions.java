@@ -798,6 +798,20 @@ public class ColumnFamilyOptions extends RocksObject
     return forceConsistencyChecks(nativeHandle_);
   }
 
+  @Override
+  public void setMaxSubcompactions(final int maxSubcompactions) {
+    assert(isOwningHandle());
+    setMaxSubcompactions(nativeHandle_, maxSubcompactions);
+  }
+
+  @Override
+  public int maxSubcompactions() {
+    assert(isOwningHandle());
+    return maxSubcompactions(nativeHandle_);
+  }
+
+  private native void setMaxSubcompactions(long handle, int maxSubcompactions);
+  private native int maxSubcompactions(long handle);
   private static native long getColumnFamilyOptionsFromProps(
       String optString);
 

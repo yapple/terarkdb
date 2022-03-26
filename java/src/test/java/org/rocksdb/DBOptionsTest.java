@@ -235,16 +235,6 @@ public class DBOptionsTest {
   }
 
   @Test
-  public void maxSubcompactions() {
-    try (final DBOptions opt = new DBOptions()) {
-      final int intValue = rand.nextInt();
-      opt.setMaxSubcompactions(intValue);
-      assertThat(opt.maxSubcompactions()).
-          isEqualTo(intValue);
-    }
-  }
-
-  @Test
   public void maxBackgroundFlushes() {
     try(final DBOptions opt = new DBOptions()) {
       final int intValue = rand.nextInt();
