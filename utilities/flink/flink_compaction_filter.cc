@@ -130,6 +130,11 @@ CompactionFilter::Decision FlinkCompactionFilter::FilterV2(
     int /*level*/, const Slice& key, ValueType value_type,
     const Slice& value_meta, const LazyBuffer& existing_lazy_value,
     LazyBuffer* new_value, std::string* /*skip_until*/) const {
+
+  InitConfigIfNotYet();
+  CreateListElementFilterIfNull();
+  UpdateCurrentTimestampIfStale();
+
   const StateType state_type = config_cached_->state_type_;
   const bool value_or_merge =
       value_type == ValueType::kValue || value_type == ValueType::kMergeOperand;
@@ -139,7 +144,7 @@ CompactionFilter::Decision FlinkCompactionFilter::FilterV2(
   const bool toDecide = value_state || list_entry;
   const bool list_filter = list_entry && list_element_filter_;
   Status s;
-  bool no_meta = list_filter || value_meta == nullptr;
+  bool no_meta = list_filter || value_meta == nullptr || value_meta.empty();
   if (no_meta) {
     s = existing_lazy_value.fetch();
     if (!s.ok()) {
@@ -149,11 +154,6 @@ CompactionFilter::Decision FlinkCompactionFilter::FilterV2(
   }
   const Slice& existing_value =
       no_meta ? existing_lazy_value.slice() : value_meta;
-
-  InitConfigIfNotYet();
-  CreateListElementFilterIfNull();
-  UpdateCurrentTimestampIfStale();
-
   const char* data = existing_value.data();
 
   Debug(logger_.get(),

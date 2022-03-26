@@ -12,6 +12,7 @@
 #include <string>
 #include <utility>
 
+#include "db/dbformat.h"
 #include "rocksdb/compaction_filter.h"
 #include "rocksdb/lazy_buffer.h"
 #include "rocksdb/slice.h"
@@ -145,8 +146,11 @@ class FlinkCompactionFilter : public CompactionFilter, public ValueExtractor {
 
   Status Extract(const Slice& key, const Slice& value,
                  std::string* output) const override;
+  
 
   bool IgnoreSnapshots() const override { return true; }
+
+
 
  private:
   inline void InitConfigIfNotYet() const;
@@ -203,15 +207,20 @@ class FlinkValueExtractorFactory : public ValueExtractorFactory {
   }
   explicit FlinkValueExtractorFactory(){};
   std::shared_ptr<CompactionFilterFactory> compaction_filter_factory = nullptr;
+  std::unique_ptr<FlinkCompactionFilter> compaction_filter = nullptr;
   CompactionFilter::Context compaction_filter_context_;
   std::unique_ptr<ValueExtractor> CreateValueExtractor(
       const Context& context) const override {
     if (compaction_filter_factory != nullptr) {
-      return std::unique_ptr<ValueExtractor>(
-          dynamic_cast<ValueExtractor*>(dynamic_cast<FlinkCompactionFilter*>(
-              compaction_filter_factory
-                  ->CreateCompactionFilter(compaction_filter_context_)
-                  .get())));
+      std::unique_ptr<ValueExtractor> value_meta_ptr;
+      std::unique_ptr<CompactionFilter> cff_ptr = compaction_filter_factory->CreateCompactionFilter(compaction_filter_context_);
+      CompactionFilter *cff = cff_ptr.get();
+      auto* flink_value_extractor = dynamic_cast<ValueExtractor*>(dynamic_cast<FlinkCompactionFilter*>(cff));
+      if(flink_value_extractor != nullptr){
+        cff_ptr.release();
+        value_meta_ptr.reset(flink_value_extractor);
+      }
+      return value_meta_ptr;
     }
     return nullptr;
   };
