@@ -3429,15 +3429,13 @@ Java_org_rocksdb_ColumnFamilyOptions_setCompactionFilterFactoryHandle(
   reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jopt_handle)
       ->compaction_filter_factory = *cff_factory;
 #ifdef FLINK
-  auto* flink_value_extrator =
-      new TERARKDB_NAMESPACE::flink::FlinkValueExtractorFactory();
+  auto flink_value_extrator = std::make_shared<TERARKDB_NAMESPACE::flink::FlinkValueExtractorFactory>();
   flink_value_extrator->compaction_filter_factory = *cff_factory;
-  // // not only face to flink, contain all the user of rocksdbjni
-  auto value_extrator = dynamic_cast<TERARKDB_NAMESPACE::ValueExtractorFactory*>(flink_value_extrator);
-  auto ve_factory = std::shared_ptr<TERARKDB_NAMESPACE::ValueExtractorFactory>(value_extrator);
   reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jopt_handle)
-      ->value_meta_extractor_factory = ve_factory;
-
+      ->value_meta_extractor_factory = flink_value_extrator;
+  reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jopt_handle)
+      ->ttl_extractor_factory = flink_value_extrator;
+  reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jopt_handle)->ttl_gc_ratio = 0.1;
 #endif
 }
 

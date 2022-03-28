@@ -18,6 +18,7 @@
 #include "rocksdb/slice.h"
 #include "rocksdb/terark_namespace.h"
 #include "rocksdb/value_extractor.h"
+#include "rocksdb/ttl_extractor.h"
 
 namespace TERARKDB_NAMESPACE {
 namespace flink {
@@ -34,7 +35,7 @@ static const std::size_t JAVA_MAX_SIZE = static_cast<std::size_t>(0x7fffffff);
  * Note: this compaction filter is a special implementation, designed for usage
  * only in Apache Flink project.
  */
-class FlinkCompactionFilter : public CompactionFilter, public ValueExtractor {
+class FlinkCompactionFilter : public CompactionFilter, public ValueExtractor, public TtlExtractor {
  public:
   enum StateType {
     // WARNING!!! Do not change the order of enum entries as it is important for
@@ -137,6 +138,10 @@ class FlinkCompactionFilter : public CompactionFilter, public ValueExtractor {
                                  std::unique_ptr<TimeProvider> time_provider,
                                  std::shared_ptr<Logger> logger);
 
+  int64_t current(){
+    current_timestamp_ = time_provider_->CurrentTimestamp();
+    return current_timestamp_ / 1000;
+  }
   const char* Name() const override;
 
   Decision FilterV2(int level, const Slice& key, ValueType value_type,
@@ -146,6 +151,10 @@ class FlinkCompactionFilter : public CompactionFilter, public ValueExtractor {
 
   Status Extract(const Slice& key, const Slice& value,
                  std::string* output) const override;
+  
+  Status Extract(EntryType entry_type,const Slice& user_key,
+                  const Slice& value_or_meta, bool* has_ttl,
+                  uint64_t* ttl_time_point) const override;
   
 
   bool IgnoreSnapshots() const override { return true; }
@@ -200,14 +209,14 @@ static const FlinkCompactionFilter::Config DISABLED_CONFIG =
                                   std::numeric_limits<int64_t>::max(),
                                   std::numeric_limits<int64_t>::max(), nullptr};
 
-class FlinkValueExtractorFactory : public ValueExtractorFactory {
+class FlinkValueExtractorFactory : public ValueExtractorFactory, public TtlExtractorFactory {
  public:
   const char* Name() const override {
     return "flink.ValueTimeStampExtractorFactory";
   }
   explicit FlinkValueExtractorFactory(){};
   std::shared_ptr<CompactionFilterFactory> compaction_filter_factory = nullptr;
-  std::unique_ptr<FlinkCompactionFilter> compaction_filter = nullptr;
+  mutable std::unique_ptr<FlinkCompactionFilter> flink_compaction_filter_;
   CompactionFilter::Context compaction_filter_context_;
   std::unique_ptr<ValueExtractor> CreateValueExtractor(
       const Context& context) const override {
@@ -224,6 +233,40 @@ class FlinkValueExtractorFactory : public ValueExtractorFactory {
     }
     return nullptr;
   };
+
+  std::unique_ptr<TtlExtractor> CreateTtlExtractor(
+      const TtlExtractorContext& /*context*/) const override{
+    if (compaction_filter_factory != nullptr) {
+      std::unique_ptr<TtlExtractor> ttl_extractor;
+      std::unique_ptr<CompactionFilter> cff_ptr = compaction_filter_factory->CreateCompactionFilter(compaction_filter_context_);
+      CompactionFilter *cff = cff_ptr.get();
+      auto* flink_ttl_extractor = dynamic_cast<TtlExtractor*>(dynamic_cast<FlinkCompactionFilter*>(cff));
+      if(flink_ttl_extractor != nullptr){
+        cff_ptr.release();
+        ttl_extractor.reset(flink_ttl_extractor);
+      }
+      return ttl_extractor;
+    }
+    return nullptr;
+  }
+  // create a compaction filter to return the newest timestamp
+  uint64_t Now() const override{
+    if(flink_compaction_filter_ != nullptr){
+      return flink_compaction_filter_->current();
+    }
+    if (compaction_filter_factory != nullptr && flink_compaction_filter_ == nullptr) {
+      std::unique_ptr<TtlExtractor> ttl_extractor;
+      std::unique_ptr<CompactionFilter> cff_ptr = compaction_filter_factory->CreateCompactionFilter(compaction_filter_context_);
+      auto* fcff = dynamic_cast<FlinkCompactionFilter*>(cff_ptr.get());
+      cff_ptr.release();
+      flink_compaction_filter_.reset(fcff);
+      if(flink_compaction_filter_ != nullptr){
+        return flink_compaction_filter_->current();
+      }
+    }
+    return 0;
+  };
+
 };
 
 }  // namespace flink

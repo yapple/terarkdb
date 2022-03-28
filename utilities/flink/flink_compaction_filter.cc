@@ -15,6 +15,7 @@
 namespace TERARKDB_NAMESPACE {
 namespace flink {
 
+// million seconds
 int64_t DeserializeTimestamp(const char* src, std::size_t offset) {
   uint64_t result = 0;
   for (unsigned long i = 0; i < sizeof(uint64_t); i++) {
@@ -124,6 +125,33 @@ Status FlinkCompactionFilter::Extract(const Slice& key, const Slice& value,
   return Status::OK();
 } catch (const std::exception& e) {
   return Status::Corruption(e.what());
+}
+
+Status FlinkCompactionFilter::Extract(EntryType entry_type,const Slice& user_key,
+                  const Slice& value_or_meta, bool* has_ttl,
+                  uint64_t* ttl_time_point) const{
+    const StateType state_type = config_cached_->state_type_;
+    if(state_type == StateType::List ){
+      *has_ttl = false;
+      return Status::OK();
+    }
+    uint64_t insert_ms = 0;
+    if (entry_type == EntryType::kEntryPut) {
+      // value_or_meta is value
+      insert_ms = DeserializeTimestamp(value_or_meta.data(), config_cached_->timestamp_offset_);
+    } else if (entry_type == EntryType::kEntryValueIndex) {
+      if(value_or_meta.size() < TIMESTAMP_BYTE_SIZE){
+        *has_ttl = false;
+        return Status::OK();
+      }
+      // value_or_meta is meta
+      insert_ms = DeserializeTimestamp(value_or_meta.data(), 0);
+    }
+    if ((*has_ttl = insert_ms > 0)) {
+      // flink timestamp is insert time, not the expired time
+      *ttl_time_point = ((std::max((uint64_t)current_timestamp_, insert_ms + config_cached_->ttl_) - (uint64_t)current_timestamp_)) /1000; 
+    }
+    return Status::OK();
 }
 
 CompactionFilter::Decision FlinkCompactionFilter::FilterV2(
