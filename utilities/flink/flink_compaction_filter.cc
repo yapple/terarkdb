@@ -115,6 +115,7 @@ inline void FlinkCompactionFilter::InitConfigIfNotYet() const {
 }
 Status FlinkCompactionFilter::Extract(const Slice& key, const Slice& value,
                                       std::string* output) const try {
+  InitConfigIfNotYet();
   const StateType state_type = config_cached_->state_type_;
   const bool tooShortValue =
       value.size() < config_cached_->timestamp_offset_ + TIMESTAMP_BYTE_SIZE;
@@ -130,6 +131,7 @@ Status FlinkCompactionFilter::Extract(const Slice& key, const Slice& value,
 Status FlinkCompactionFilter::Extract(EntryType entry_type,const Slice& user_key,
                   const Slice& value_or_meta, bool* has_ttl,
                   uint64_t* ttl_time_point) const{
+    InitConfigIfNotYet();
     const StateType state_type = config_cached_->state_type_;
     if(state_type == StateType::List ){
       *has_ttl = false;
@@ -149,7 +151,8 @@ Status FlinkCompactionFilter::Extract(EntryType entry_type,const Slice& user_key
     }
     if ((*has_ttl = insert_ms > 0)) {
       // flink timestamp is insert time, not the expired time
-      *ttl_time_point = ((std::max((uint64_t)current_timestamp_, insert_ms + config_cached_->ttl_) - (uint64_t)current_timestamp_)) /1000; 
+      *ttl_time_point = ((std::max((uint64_t)current_timestamp_, insert_ms + config_cached_->ttl_))) /1000; 
+      Debug(logger_.get(),"Call FlinkCompactionFilter::TTLExtract current_timestamp_: %ld,insert_ms:%ld, ttl_time_point:%ld,config_cached_->ttl_:%ld",current_timestamp_,insert_ms,*ttl_time_point,config_cached_->ttl_);
     }
     return Status::OK();
 }
