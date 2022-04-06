@@ -1050,6 +1050,15 @@ void DBImpl::ScheduleTtlGC() {
         if (meta->being_compacted) {
           continue;
         }
+        auto max_to_zero = [](uint64_t v) {
+          return v == port::kMaxUint64 ? 0 : v;
+        };
+        ROCKS_LOG_BUFFER(
+          &log_buffer_info,
+          "SST #%" PRIu64 " ttl schedule debug info @L%d , property: (%" PRIu64
+          " , %" PRIu64 ") now: %" PRIu64 " deleted key: %" PRIu64,
+          meta->fd.GetNumber(), l, max_to_zero(meta->prop.earliest_time_begin_compact),
+          max_to_zero(meta->prop.latest_time_end_compact), now, meta->prop.num_deletions);
         ++total_count;
         bool marked =
             !!(meta->marked_for_compaction & FileMetaData::kMarkedFromTTL);

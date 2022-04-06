@@ -137,7 +137,7 @@ Status FlinkCompactionFilter::Extract(EntryType entry_type,const Slice& user_key
       *has_ttl = false;
       return Status::OK();
     }
-    uint64_t insert_ms = 0;
+    int64_t insert_ms = 0;
     if (entry_type == EntryType::kEntryPut) {
       // value_or_meta is value
       insert_ms = DeserializeTimestamp(value_or_meta.data(), config_cached_->timestamp_offset_);
@@ -149,10 +149,14 @@ Status FlinkCompactionFilter::Extract(EntryType entry_type,const Slice& user_key
       // value_or_meta is meta
       insert_ms = DeserializeTimestamp(value_or_meta.data(), 0);
     }
+    const int64_t ttlWithoutOverflow =
+      insert_ms > 0 ? std::min(JAVA_MAX_LONG - insert_ms, config_cached_->ttl_) : config_cached_->ttl_;
+
     if ((*has_ttl = insert_ms > 0)) {
       // flink timestamp is insert time, not the expired time
-      *ttl_time_point = ((std::max((uint64_t)current_timestamp_, insert_ms + config_cached_->ttl_))) /1000; 
+      *ttl_time_point = (current_timestamp_, insert_ms + ttlWithoutOverflow ) /1000; 
       Debug(logger_.get(),"Call FlinkCompactionFilter::TTLExtract current_timestamp_: %ld,insert_ms:%ld, ttl_time_point:%ld,config_cached_->ttl_:%ld",current_timestamp_,insert_ms,*ttl_time_point,config_cached_->ttl_);
+
     }
     return Status::OK();
 }
@@ -186,7 +190,6 @@ CompactionFilter::Decision FlinkCompactionFilter::FilterV2(
   const Slice& existing_value =
       no_meta ? existing_lazy_value.slice() : value_meta;
   const char* data = existing_value.data();
-
   Debug(logger_.get(),
         "Call FlinkCompactionFilter::FilterV2 - Key: %s, Data: %s, Value type: "
         "%d, "
@@ -194,20 +197,19 @@ CompactionFilter::Decision FlinkCompactionFilter::FilterV2(
         key.ToString().c_str(), existing_value.ToString(true).c_str(),
         value_type, config_cached_->state_type_, config_cached_->ttl_,
         config_cached_->timestamp_offset_);
-
+  
+  const int real_offset = no_meta ?   config_cached_->timestamp_offset_:0;
   // too short value to have timestamp at all
   const bool tooShortValue =
-      existing_value.size() <
-      config_cached_->timestamp_offset_ + TIMESTAMP_BYTE_SIZE;
+      existing_value.size() < real_offset + TIMESTAMP_BYTE_SIZE;
 
   Decision decision = Decision::kKeep;
   if (!tooShortValue && toDecide) {
     decision = list_filter ? ListDecide(existing_value, new_value)
                            : Decide(data, config_cached_->ttl_,
-                                    config_cached_->timestamp_offset_,
-                                    current_timestamp_, logger_);
+                             real_offset, current_timestamp_, logger_);
   }
-  Debug(logger_.get(), "Decision: %d", int(decision));
+  Info(logger_.get(), "Decision: %d", int(decision));
   return decision;
 }
 
