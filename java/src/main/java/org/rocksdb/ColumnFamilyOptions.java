@@ -484,6 +484,18 @@ public class ColumnFamilyOptions extends RocksObject
   }
 
   @Override
+  public ColumnFamilyOptions setTargetBlobFileSize(
+      final long targetBlobFileSize) {
+    setTargetBlobFileSize(nativeHandle_, targetBlobFileSize);
+    return this;
+  }
+
+  @Override
+  public long targetBlobFileSize() {
+    return targetBlobFileSize(nativeHandle_);
+  }
+
+  @Override
   public ColumnFamilyOptions setBlobSize(
       final long blobSize) {
     setBlobSize(nativeHandle_, blobSize);
@@ -896,6 +908,8 @@ public class ColumnFamilyOptions extends RocksObject
   private native boolean disableAutoCompactions(long handle);
   private native void setBlobSize(long handle, long blobSize);
   private native long blobSize(long handle);
+  private native void setTargetBlobFileSize(long handle, long targetBlobFileSize);
+  private native long targetBlobFileSize(long handle);
   private native void setCompactionStyle(long handle, byte compactionStyle);
   private native byte compactionStyle(long handle);
    private native void setMaxTableFilesSizeFIFO(

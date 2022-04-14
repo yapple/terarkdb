@@ -160,4 +160,8 @@ public interface MutableColumnFamilyOptionsInterface
   T setBlobSize(long blobSize);
   
   long blobSize();
+
+  T setTargetBlobFileSize(long blobSize);
+  
+  long targetBlobFileSize();
 }

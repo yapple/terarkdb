@@ -2478,6 +2478,36 @@ void Java_org_rocksdb_Options_setArenaBlockSize(JNIEnv* env, jobject /*jobj*/,
 
 /*
  * Class:     org_rocksdb_Options
+ * Method:    setTargetBlobFileSize
+ * Signature: (JJ)V
+ */
+void Java_org_rocksdb_Options_setTargetBlobFileSize(JNIEnv* env, jobject /*jobj*/,
+                                                jlong jhandle,
+                                                jlong jtarget_blob_file_size) {
+  TERARKDB_NAMESPACE::Status s =
+      TERARKDB_NAMESPACE::check_if_jlong_fits_size_t(jtarget_blob_file_size);
+  if (s.ok()) {
+    reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)->target_blob_file_size =
+        jtarget_blob_file_size;
+  } else {
+    TERARKDB_NAMESPACE::IllegalArgumentExceptionJni::ThrowNew(env, s);
+  }
+}
+
+
+/*
+ * Class:     org_rocksdb_Options
+ * Method:    targetBlobFileSize
+ * Signature: (J)J
+ */
+jlong Java_org_rocksdb_Options_targetBlobFileSize(JNIEnv* /*env*/, jobject /*jobj*/,
+                                              jlong jhandle) {
+  return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
+      ->target_blob_file_size;
+}
+
+/*
+ * Class:     org_rocksdb_Options
  * Method:    setBlobSize
  * Signature: (JJ)V
  */
