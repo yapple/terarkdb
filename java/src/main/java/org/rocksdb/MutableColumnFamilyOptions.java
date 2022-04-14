@@ -149,6 +149,8 @@ public class MutableColumnFamilyOptions {
     level0_slowdown_writes_trigger(ValueType.INT),
     level0_stop_writes_trigger(ValueType.INT),
     max_compaction_bytes(ValueType.LONG),
+    blob_size(ValueType.LONG),
+    target_blob_file_size(ValueType.LONG),
     target_file_size_base(ValueType.LONG),
     target_file_size_multiplier(ValueType.INT),
     max_bytes_for_level_base(ValueType.LONG),
@@ -804,6 +806,32 @@ public class MutableColumnFamilyOptions {
     public long inplaceUpdateNumLocks() {
       return getLong(MemtableOption.inplace_update_num_locks);
     }
+
+    @Override
+    public MutableColumnFamilyOptionsBuilder setBlobSize(
+        final long blobSize) {
+      return setLong(CompactionOption.blob_size,
+          blobSize);
+    }
+
+    @Override
+    public long blobSize(){
+      return getLong(CompactionOption.blob_size);
+    }
+
+
+    @Override
+    public long targetBlobFileSize(){
+      return getLong(CompactionOption.target_blob_file_size);
+    }
+
+    @Override
+    public MutableColumnFamilyOptionsBuilder setTargetBlobFileSize(
+        final long targetBlobFileSize) {
+      return setLong(CompactionOption.target_blob_file_size,
+          targetBlobFileSize);
+    }
+
 
     @Override
     public MutableColumnFamilyOptionsBuilder setDisableAutoCompactions(
