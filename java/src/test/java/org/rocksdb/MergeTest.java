@@ -6,6 +6,7 @@
 package org.rocksdb;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
@@ -46,13 +47,13 @@ public class MergeTest {
   }
 
   private byte[] longToByteArray(long l) {
-    ByteBuffer buf = ByteBuffer.allocate(Long.BYTES);
+    ByteBuffer buf = ByteBuffer.allocate(Long.SIZE/ Byte.SIZE).order(ByteOrder.LITTLE_ENDIAN);
     buf.putLong(l);
     return buf.array();
   }
 
   private long longFromByteArray(byte[] a) {
-    ByteBuffer buf = ByteBuffer.allocate(Long.BYTES);
+    ByteBuffer buf = ByteBuffer.allocate(Long.SIZE/ Byte.SIZE).order(ByteOrder.LITTLE_ENDIAN);
     buf.put(a);
     buf.flip();
     return buf.getLong();

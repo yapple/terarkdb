@@ -15,10 +15,10 @@ public class NativeLibraryLoader {
   private static final NativeLibraryLoader instance = new NativeLibraryLoader();
   private static boolean initialized = false;
 
-  private static final String sharedLibraryName = Environment.getSharedLibraryName("rocksdb");
-  private static final String jniLibraryName = Environment.getJniLibraryName("rocksdb");
-  private static final String jniLibraryFileName = Environment.getJniLibraryFileName("rocksdb");
-  private static final String tempFilePrefix = "librocksdbjni";
+  private static final String sharedLibraryName = Environment.getSharedLibraryName("terarkdb");
+  private static final String jniLibraryName = Environment.getJniLibraryName("terarkdb");
+  private static final String jniLibraryFileName = Environment.getJniLibraryFileName("terarkdb");
+  private static final String tempFilePrefix = "libterarkdbjni";
   private static final String tempFileSuffix = Environment.getJniLibraryExtension();
 
   /**

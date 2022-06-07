@@ -17,9 +17,9 @@ This command will build RocksDB natively on OSX, and will then spin up two Vagra
 
 You can find all native binaries and JARs in the java/target directory upon completion:
 
-    librocksdbjni-linux32.so
-    librocksdbjni-linux64.so
-    librocksdbjni-osx.jnilib
+    libterarkdbjni-linux32.so
+    libterarkdbjni-linux64.so
+    libterarkdbjni-osx.jnilib
     rocksdbjni-3.5.0-javadoc.jar
     rocksdbjni-3.5.0-linux32.jar
     rocksdbjni-3.5.0-linux64.jar

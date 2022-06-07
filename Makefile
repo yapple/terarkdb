@@ -598,7 +598,7 @@ TOOLS = \
 	trace_analyzer \
 
 TEST_LIBS = \
-	librocksdb_env_basic_test.a
+	libterarkdb_env_basic_test.a
 
 # TODO: add back forward_iterator_bench, after making it build in all environemnts.
 BENCHMARKS = db_bench table_reader_bench cache_bench memtablerep_bench column_aware_encoding_exp persistent_cache_bench range_del_aggregator_bench
@@ -607,9 +607,9 @@ BENCHMARKS = db_bench table_reader_bench cache_bench memtablerep_bench column_aw
 ifeq ($(LIBNAME),)
 # we should only run rocksdb in production with DEBUG_LEVEL 0
 ifeq ($(DEBUG_LEVEL),0)
-        LIBNAME=librocksdb
+        LIBNAME=libterarkdb
 else
-        LIBNAME=librocksdb_debug
+        LIBNAME=libterarkdb_debug
 endif
 endif
 LIBRARY = ${LIBNAME}.a
@@ -1031,13 +1031,29 @@ unity_test: db/db_test.o db/db_test_util.o $(TESTHARNESS) $(TOOLLIBOBJECTS) unit
 rocksdb.h rocksdb.cc: build_tools/amalgamate.py Makefile $(LIB_SOURCES) unity.cc
 	build_tools/amalgamate.py -I. -i./include unity.cc -x include/rocksdb/c.h -H rocksdb.h -o rocksdb.cc
 
-clean:
-	rm -f $(BENCHMARKS) $(TOOLS) $(TESTS) $(LIBRARY) $(SHARED)
+clean: clean-ext-libraries-all clean-rocks clean-rocksjava
+clean-not-downloaded: clean-ext-libraries-bin clean-rocks clean-not-downloaded-rocksjava
+
+clean-rocks:
+	echo shared=$(ALL_SHARED_LIBS)
+	echo static=$(ALL_STATIC_LIBS)
+	rm -f $(BENCHMARKS) $(TOOLS) $(TESTS) $(PARALLEL_TEST) $(ALL_STATIC_LIBS) $(ALL_SHARED_LIBS)
 	rm -rf $(CLEAN_FILES) ios-x86 ios-arm scan_build_report
 	$(FIND) . -name "*.[oda]" -exec rm -f {} \;
-	$(FIND) . -type f -regex ".*\.\(\(gcda\)\|\(gcno\)\)" -exec rm {} \;
+	$(FIND) . -type f -regex ".*\.\(\(gcda\)\|\(gcno\)\)" -exec rm -f {} \;
+
+clean-rocksjava:
+	rm -rf jl jls
+	cd java && $(MAKE) clean
+
+clean-not-downloaded-rocksjava:
+	cd java && $(MAKE) clean-not-downloaded
+
+clean-ext-libraries-all:
 	rm -rf bzip2* snappy* zlib* lz4* zstd*
-	cd java; $(MAKE) clean
+
+clean-ext-libraries-bin:
+	find . -maxdepth 1 -type d \( -name bzip2\* -or -name snappy\* -or -name zlib\* -or -name lz4\* -or -name zstd\* \) -prune -exec rm -rf {} \;
 
 tags:
 	ctags -R .
@@ -1627,14 +1643,14 @@ else
 endif
 
 ifeq (,$(findstring ppc,$(MACHINE)))
-        ROCKSDBJNILIB = librocksdbjni-linux$(ARCH).so
+        ROCKSDBJNILIB = libterarkdbjni-linux$(ARCH).so
 else
-        ROCKSDBJNILIB = librocksdbjni-linux-$(MACHINE).so
+        ROCKSDBJNILIB = libterarkdbjni-linux-$(MACHINE).so
 endif
-ROCKSDB_JAR = rocksdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH)-linux$(ARCH).jar
-ROCKSDB_JAR_ALL = rocksdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH).jar
-ROCKSDB_JAVADOCS_JAR = rocksdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH)-javadoc.jar
-ROCKSDB_SOURCES_JAR = rocksdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH)-sources.jar
+ROCKSDB_JAR = terarkdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH)-linux$(ARCH).jar
+ROCKSDB_JAR_ALL = terarkdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH).jar
+ROCKSDB_JAVADOCS_JAR = terarkdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH)-javadoc.jar
+ROCKSDB_SOURCES_JAR = terarkdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH)-sources.jar
 SHA256_CMD = sha256sum
 
 ZLIB_VER ?= 1.2.12
@@ -1646,17 +1662,17 @@ BZIP2_DOWNLOAD_BASE ?= https://sourceware.org/pub/bzip2
 SNAPPY_VER ?= 1.1.4
 SNAPPY_SHA256 ?= 134bfe122fd25599bb807bb8130e7ba6d9bdb851e0b16efcb83ac4f5d0b70057
 SNAPPY_DOWNLOAD_BASE ?= https://github.com/google/snappy/releases/download
-LZ4_VER ?= 1.8.0
-LZ4_SHA256 ?= 2ca482ea7a9bb103603108b5a7510b7592b90158c151ff50a28f1ca8389fccf6
+LZ4_VER ?= 1.9.3
+LZ4_SHA256 ?= 030644df4611007ff7dc962d981f390361e6c97a34e5cbc393ddfbe019ffe2c1
 LZ4_DOWNLOAD_BASE ?= https://github.com/lz4/lz4/archive
-ZSTD_VER ?= 1.3.3
-ZSTD_SHA256 ?= a77c47153ee7de02626c5b2a097005786b71688be61e9fb81806a011f90b297b
+ZSTD_VER ?= 1.4.9
+ZSTD_SHA256 ?= acf714d98e3db7b876e5b540cbf6dee298f60eb3c0723104f6d3f065cd60d6a8
 ZSTD_DOWNLOAD_BASE ?= https://github.com/facebook/zstd/archive
 CURL_SSL_OPTS ?= --tlsv1
 
 ifeq ($(PLATFORM), OS_MACOSX)
-	ROCKSDBJNILIB = librocksdbjni-osx.jnilib
-	ROCKSDB_JAR = rocksdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH)-osx.jar
+	ROCKSDBJNILIB = libterarkdbjni-osx.jnilib
+	ROCKSDB_JAR = terarkdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH)-osx.jar
 	SHA256_CMD = openssl sha256 -r
 ifneq ("$(wildcard $(JAVA_HOME)/include/darwin)","")
 	JAVA_INCLUDE = -I$(JAVA_HOME)/include -I $(JAVA_HOME)/include/darwin
@@ -1666,25 +1682,25 @@ endif
 endif
 ifeq ($(PLATFORM), OS_FREEBSD)
 	JAVA_INCLUDE = -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/freebsd
-	ROCKSDBJNILIB = librocksdbjni-freebsd$(ARCH).so
-	ROCKSDB_JAR = rocksdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH)-freebsd$(ARCH).jar
+	ROCKSDBJNILIB = libterarkdbjni-freebsd$(ARCH).so
+	ROCKSDB_JAR = terarkdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH)-freebsd$(ARCH).jar
 endif
 ifeq ($(PLATFORM), OS_SOLARIS)
-	ROCKSDBJNILIB = librocksdbjni-solaris$(ARCH).so
-	ROCKSDB_JAR = rocksdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH)-solaris$(ARCH).jar
+	ROCKSDBJNILIB = libterarkdbjni-solaris$(ARCH).so
+	ROCKSDB_JAR = terarkdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH)-solaris$(ARCH).jar
 	JAVA_INCLUDE = -I$(JAVA_HOME)/include/ -I$(JAVA_HOME)/include/solaris
 	SHA256_CMD = digest -a sha256
 endif
 ifeq ($(PLATFORM), OS_AIX)
 	JAVA_INCLUDE = -I$(JAVA_HOME)/include/ -I$(JAVA_HOME)/include/aix
-	ROCKSDBJNILIB = librocksdbjni-aix.so
+	ROCKSDBJNILIB = libterarkdbjni-aix.so
 	EXTRACT_SOURCES = gunzip < TAR_GZ | tar xvf -
 	SNAPPY_MAKE_TARGET = libsnappy.la
 endif
 ifeq ($(PLATFORM), OS_OPENBSD)
         JAVA_INCLUDE = -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/openbsd
-	ROCKSDBJNILIB = librocksdbjni-openbsd$(ARCH).so
-        ROCKSDB_JAR = rocksdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH)-openbsd$(ARCH).jar
+	ROCKSDBJNILIB = libterarkdbjni-openbsd$(ARCH).so
+        ROCKSDB_JAR = terarkdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH)-openbsd$(ARCH).jar
 endif
 
 libz.a:
@@ -1796,7 +1812,10 @@ rocksdbjavastatic: $(java_static_all_libobjects)
 	cd java/target/classes;jar -uf ../$(ROCKSDB_JAR) org/rocksdb/*.class org/rocksdb/util/*.class
 	cd java/target/apidocs;jar -cf ../$(ROCKSDB_JAVADOCS_JAR) *
 	cd java/src/main/java;jar -cf ../../../target/$(ROCKSDB_SOURCES_JAR) org
-
+	openssl sha1 java/target/$(ROCKSDB_JAR) | sed 's/.*= \([0-9a-f]*\)/\1/' > java/target/$(ROCKSDB_JAR).sha1
+	openssl sha1 java/target/$(ROCKSDB_JAVADOCS_JAR) | sed 's/.*= \([0-9a-f]*\)/\1/' > java/target/$(ROCKSDB_JAVADOCS_JAR).sha1
+	openssl sha1 java/target/$(ROCKSDB_SOURCES_JAR) | sed 's/.*= \([0-9a-f]*\)/\1/' > java/target/$(ROCKSDB_SOURCES_JAR).sha1
+	
 	mkdir -p java/target/META-INF
 	cp LICENSE.Apache java/target/META-INF/LICENSE
 	cd java/target;jar -uf $(ROCKSDB_JAR) META-INF/LICENSE
@@ -1805,7 +1824,7 @@ rocksdbjavastaticrelease: rocksdbjavastatic
 	cd java/crossbuild && vagrant destroy -f && vagrant up linux32 && vagrant halt linux32 && vagrant up linux64 && vagrant halt linux64
 	cd java;jar -cf target/$(ROCKSDB_JAR_ALL) HISTORY*.md
 	jar -uf java/target/$(ROCKSDB_JAR_ALL) HISTORY*.md
-	cd java/target;jar -uf $(ROCKSDB_JAR_ALL) librocksdbjni-*.so librocksdbjni-*.jnilib librocksdbjni-win64.dll
+	cd java/target;jar -uf $(ROCKSDB_JAR_ALL) libterarkdbjni-*.so libterarkdbjni-*.jnilib libterarkdbjni-win64.dll
 	cd java/target/classes;jar -uf ../$(ROCKSDB_JAR_ALL) org/rocksdb/*.class org/rocksdb/util/*.class
 
 frocksdbjavastaticrelease: rocksdbjavastaticrelease
@@ -1815,7 +1834,7 @@ frocksdbjavastaticrelease: rocksdbjavastaticrelease
 	cd java/target;jar -uf $(ROCKSDB_JAR_ALL) META-INF/LICENSE
 
 	# platform jars
-	$(eval JAR_PREF=rocksdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH))
+	$(eval JAR_PREF=terarkdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH))
 	$(eval JAR_DOCS=$(JAR_PREF)-javadoc.jar)
 	$(eval JAR_SOURCES=$(JAR_PREF)-sources.jar)
 	$(eval OSX_JAR=$(JAR_PREF)-osx.jar)
@@ -1824,14 +1843,14 @@ frocksdbjavastaticrelease: rocksdbjavastaticrelease
 	$(eval LINUX64_JAR=$(JAR_PREF)-linux64.jar)
 
 	# update windows jar
-	cd java/target;cp rocksdbjni_classes.jar $(WIN_JAR)
+	cd java/target;cp terarkdbjni_classes.jar $(WIN_JAR)
 	cd java;jar -uf target/$(WIN_JAR) HISTORY*.md
 	jar -uf java/target/$(WIN_JAR) HISTORY*.md
-	cd java/target;jar -uf $(WIN_JAR) librocksdbjni-win64.dll
+	cd java/target;jar -uf $(WIN_JAR) libterarkdbjni-win64.dll
 	cd java/target;jar -uf $(WIN_JAR) META-INF/LICENSE
 
 	# update linux 64 jar with ppc64 lib
-	cd java/target;jar -uf $(LINUX64_JAR) librocksdbjni-linux-ppc64le.so
+	cd java/target;jar -uf $(LINUX64_JAR) libterarkdbjni-linux-ppc64le.so
 
 	cd java/target;jar -uf $(JAR_DOCS) META-INF/LICENSE
 	cd java/target;jar -uf $(JAR_SOURCES) META-INF/LICENSE
@@ -1839,7 +1858,7 @@ frocksdbjavastaticrelease: rocksdbjavastaticrelease
 	# prepare frocksdb release
 	cd java/target;mkdir -p frocksdb-release
 
-	$(eval FJAR_PREF=frocksdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH)-artisans-$(FROCKSDB_VERSION))
+	$(eval FJAR_PREF=fterarkdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH)-bytedance-$(FROCKSDB_VERSION))
 	$(eval FJAR=$(FJAR_PREF).jar)
 	$(eval FJAR_DOCS=$(FJAR_PREF)-javadoc.jar)
 	$(eval FJAR_SOURCES=$(FJAR_PREF)-sources.jar)
@@ -1852,19 +1871,19 @@ frocksdbjavastaticrelease: rocksdbjavastaticrelease
 	cd java/target;cp $(JAR_DOCS) frocksdb-release/$(FJAR_DOCS)
 	cd java/target;cp $(JAR_SOURCES) frocksdb-release/$(FJAR_SOURCES)
 	cd java/target;cp $(OSX_JAR) frocksdb-release/$(OSX_FJAR)
-	cd java/target;cp $(WIN_JAR) frocksdb-release/$(WIN_FJAR)
-	cd java/target;cp $(LINUX32_JAR) frocksdb-release/$(LINUX32_FJAR)
+	#cd java/target;cp $(WIN_JAR) frocksdb-release/$(WIN_FJAR)
+	#cd java/target;cp $(LINUX32_JAR) frocksdb-release/$(LINUX32_FJAR)
 	cd java/target;cp $(LINUX64_JAR) frocksdb-release/$(LINUX64_FJAR)
 	cd java;cp rocksjni.pom target/frocksdb-release/$(FJAR_PREF).pom
 
-rocksdbjavastaticreleasedocker: rocksdbjavastatic rocksdbjavastaticdockerx86 rocksdbjavastaticdockerx86_64
+rocksdbjavastaticreleasedocker: rocksdbjavastatic  rocksdbjavastaticdockerx86_64
 	cd java;jar -cf target/$(ROCKSDB_JAR_ALL) HISTORY*.md
-	cd java/target;jar -uf $(ROCKSDB_JAR_ALL) librocksdbjni-*.so librocksdbjni-*.jnilib
+	cd java/target;jar -uf $(ROCKSDB_JAR_ALL) libterarkdbjni-*.so libterarkdbjni-*.jnilib
 	cd java/target/classes;jar -uf ../$(ROCKSDB_JAR_ALL) org/rocksdb/*.class org/rocksdb/util/*.class
 
 fterark:rocksdbjavastatic
 	cd java;jar -cf target/$(ROCKSDB_JAR_ALL) HISTORY*.md
-	cd java/target;jar -uf $(ROCKSDB_JAR_ALL) librocksdbjni-*.so librocksdbjni-*
+	cd java/target;jar -uf $(ROCKSDB_JAR_ALL) libterarkdbjni-*.so libterarkdbjni-*
 	cd java/target/classes;jar -uf ../$(ROCKSDB_JAR_ALL) org/rocksdb/*.class org/rocksdb/util/*.class
 
 	# update apache license
@@ -1873,7 +1892,7 @@ fterark:rocksdbjavastatic
 	cd java/target;jar -uf $(ROCKSDB_JAR_ALL) META-INF/LICENSE
 
 	# jars to be released
-	$(eval JAR_PREF=rocksdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH))
+	$(eval JAR_PREF=terarkdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH))
 	$(eval JAR_DOCS=$(JAR_PREF)-javadoc.jar)
 	$(eval JAR_SOURCES=$(JAR_PREF)-sources.jar)
 
@@ -1884,8 +1903,8 @@ fterark:rocksdbjavastatic
 	# prepare frocksdb release
 	cd java/target;mkdir -p frocksdb-release
 
-	$(eval FROCKSDB_JAVA_VERSION=$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH)-artisans-$(FROCKSDB_VERSION))
-	$(eval FJAR_PREF=frocksdbjni-$(FROCKSDB_JAVA_VERSION))
+	$(eval FROCKSDB_JAVA_VERSION=$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH)-bytedance-$(FROCKSDB_VERSION))
+	$(eval FJAR_PREF=fterarkdbjni-$(FROCKSDB_JAVA_VERSION))
 	$(eval FJAR=$(FJAR_PREF).jar)
 	$(eval FJAR_DOCS=$(FJAR_PREF)-javadoc.jar)
 	$(eval FJAR_SOURCES=$(FJAR_PREF)-sources.jar)
@@ -1905,7 +1924,7 @@ frocksdbjavastaticreleasedocker: rocksdbjavastaticreleasedocker
 	cd java/target;jar -uf $(ROCKSDB_JAR_ALL) META-INF/LICENSE
 
 	# jars to be released
-	$(eval JAR_PREF=rocksdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH))
+	$(eval JAR_PREF=terarkdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH))
 	$(eval JAR_DOCS=$(JAR_PREF)-javadoc.jar)
 	$(eval JAR_SOURCES=$(JAR_PREF)-sources.jar)
 
@@ -1916,8 +1935,8 @@ frocksdbjavastaticreleasedocker: rocksdbjavastaticreleasedocker
 	# prepare frocksdb release
 	cd java/target;mkdir -p frocksdb-release
 
-	$(eval FROCKSDB_JAVA_VERSION=$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH)-artisans-$(FROCKSDB_VERSION))
-	$(eval FJAR_PREF=frocksdbjni-$(FROCKSDB_JAVA_VERSION))
+	$(eval FROCKSDB_JAVA_VERSION=$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH)-bytedance-$(FROCKSDB_VERSION))
+	$(eval FJAR_PREF=fterarkdbjni-$(FROCKSDB_JAVA_VERSION))
 	$(eval FJAR=$(FJAR_PREF).jar)
 	$(eval FJAR_DOCS=$(FJAR_PREF)-javadoc.jar)
 	$(eval FJAR_SOURCES=$(FJAR_PREF)-sources.jar)
@@ -1931,19 +1950,11 @@ frocksdbjavastaticreleasedocker: rocksdbjavastaticreleasedocker
 
 rocksdbjavastaticdockerx86:
 	mkdir -p java/target
-	DOCKER_LINUX_X86_CONTAINER=`docker ps -aqf name=rocksdb_linux_x86-be`; \
-	if [ -z "$$DOCKER_LINUX_X86_CONTAINER" ]; then \
-		docker container create --attach stdin --attach stdout --attach stderr --volume `pwd`:/rocksdb-host --name rocksdb_linux_x86-be evolvedbinary/rocksjava:centos6_x86-be /rocksdb-host/java/crossbuild/docker-build-linux-centos.sh; \
-	fi
-	docker start -a rocksdb_linux_x86-be
+	docker run --rm --name rocksdb_linux_x86-be --platform linux/386 --attach stdin --attach stdout --attach stderr --volume $(HOME)/.m2:/root/.m2:ro --volume `pwd`:/rocksdb-host:ro --volume /rocksdb-local-build --volume `pwd`/java/target:/rocksdb-java-target --env DEBUG_LEVEL=$(DEBUG_LEVEL) evolvedbinary/rocksjava:centos7_x86-be /rocksdb-host/java/crossbuild/docker-build-linux-centos.sh
 
 rocksdbjavastaticdockerx86_64:
 	mkdir -p java/target
-	DOCKER_LINUX_X64_CONTAINER=`docker ps -aqf name=rocksdb_linux_x64-be`; \
-	if [ -z "$$DOCKER_LINUX_X64_CONTAINER" ]; then \
-		docker container create --attach stdin --attach stdout --attach stderr --volume `pwd`:/rocksdb-host --name rocksdb_linux_x64-be evolvedbinary/rocksjava:centos6_x64-be /rocksdb-host/java/crossbuild/docker-build-linux-centos.sh; \
-	fi
-	docker start -a rocksdb_linux_x64-be
+	docker run --rm --name rocksdb_linux_x64-be --attach stdin --attach stdout --attach stderr --volume $(HOME)/.m2:/root/.m2:ro --volume `pwd`:/rocksdb-host:ro --volume /rocksdb-local-build --volume `pwd`/java/target:/rocksdb-java-target --env DEBUG_LEVEL=$(DEBUG_LEVEL) terarkjava:centos7_x64-be /rocksdb-host/java/crossbuild/docker-build-linux-centos.sh
 
 rocksdbjavastaticdockerppc64le:
 	mkdir -p java/target
@@ -1958,13 +1969,13 @@ rocksdbjavastaticpublish: rocksdbjavastaticrelease rocksdbjavastaticpublishcentr
 rocksdbjavastaticpublishdocker: rocksdbjavastaticreleasedocker rocksdbjavastaticpublishcentral
 
 rocksdbjavastaticpublishcentral:
-	mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=java/rocksjni.pom -Dfile=java/target/rocksdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH)-javadoc.jar -Dclassifier=javadoc
-	mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=java/rocksjni.pom -Dfile=java/target/rocksdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH)-sources.jar -Dclassifier=sources
-	mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=java/rocksjni.pom -Dfile=java/target/rocksdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH)-linux64.jar -Dclassifier=linux64
-	mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=java/rocksjni.pom -Dfile=java/target/rocksdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH)-linux32.jar -Dclassifier=linux32
-	mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=java/rocksjni.pom -Dfile=java/target/rocksdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH)-osx.jar -Dclassifier=osx
-	mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=java/rocksjni.pom -Dfile=java/target/rocksdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH)-win64.jar -Dclassifier=win64
-	mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=java/rocksjni.pom -Dfile=java/target/rocksdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH).jar
+	mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=java/rocksjni.pom -Dfile=java/target/terarkdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH)-javadoc.jar -Dclassifier=javadoc
+	mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=java/rocksjni.pom -Dfile=java/target/terarkdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH)-sources.jar -Dclassifier=sources
+	mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=java/rocksjni.pom -Dfile=java/target/terarkdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH)-linux64.jar -Dclassifier=linux64
+	mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=java/rocksjni.pom -Dfile=java/target/terarkdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH)-linux32.jar -Dclassifier=linux32
+	mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=java/rocksjni.pom -Dfile=java/target/terarkdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH)-osx.jar -Dclassifier=osx
+	mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=java/rocksjni.pom -Dfile=java/target/terarkdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH)-win64.jar -Dclassifier=win64
+	mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=java/rocksjni.pom -Dfile=java/target/terarkdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH).jar
 
 # A version of each $(LIBOBJECTS) compiled with -fPIC
 ifeq ($(HAVE_POWER8),1)
@@ -2010,7 +2021,7 @@ frocksdbjava: rocksdbjava
 	cp LICENSE.Apache java/target/META-INF/LICENSE
 
 	# platform jars
-	$(eval JAR_PREF=rocksdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH))
+	$(eval JAR_PREF=terarkdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH))
 	$(eval JAR_DOCS=$(JAR_PREF)-javadoc.jar)
 	$(eval JAR_SOURCES=$(JAR_PREF)-sources.jar)
 	$(eval LINUX64_JAR=$(JAR_PREF)-linux64.jar)
@@ -2021,7 +2032,7 @@ frocksdbjava: rocksdbjava
 	# prepare frocksdb release
 	cd java/target;mkdir -p frocksdb-release
 
-	$(eval FJAR_PREF=frocksdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH)-artisans-$(FROCKSDB_VERSION))
+	$(eval FJAR_PREF=fterarkdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH)-bytedance-$(FROCKSDB_VERSION))
 	$(eval FJAR=$(FJAR_PREF).jar)
 	$(eval FJAR_DOCS=$(FJAR_PREF)-javadoc.jar)
 	$(eval FJAR_SOURCES=$(FJAR_PREF)-sources.jar)

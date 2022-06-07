@@ -1898,9 +1898,9 @@ else
 endif
 
 ifeq (,$(findstring ppc,$(MACHINE)))
-        ROCKSDBJNILIB = librocksdbjni-linux$(ARCH).so
+        ROCKSDBJNILIB = libterarkdbjni-linux$(ARCH).so
 else
-        ROCKSDBJNILIB = librocksdbjni-linux-$(MACHINE).so
+        ROCKSDBJNILIB = libterarkdbjni-linux-$(MACHINE).so
 endif
 ROCKSDB_JAR = rocksdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH)-linux$(ARCH).jar
 ROCKSDB_JAR_ALL = rocksdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH).jar
@@ -1926,7 +1926,7 @@ ZSTD_DOWNLOAD_BASE ?= https://github.com/facebook/zstd/archive
 CURL_SSL_OPTS ?= --tlsv1
 
 ifeq ($(PLATFORM), OS_MACOSX)
-	ROCKSDBJNILIB = librocksdbjni-osx.jnilib
+	ROCKSDBJNILIB = libterarkdbjni-osx.jnilib
 	ROCKSDB_JAR = rocksdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH)-osx.jar
 	SHA256_CMD = openssl sha256 -r
 ifneq ("$(wildcard $(JAVA_HOME)/include/darwin)","")
@@ -1937,24 +1937,24 @@ endif
 endif
 ifeq ($(PLATFORM), OS_FREEBSD)
 	JAVA_INCLUDE = -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/freebsd
-	ROCKSDBJNILIB = librocksdbjni-freebsd$(ARCH).so
+	ROCKSDBJNILIB = libterarkdbjni-freebsd$(ARCH).so
 	ROCKSDB_JAR = rocksdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH)-freebsd$(ARCH).jar
 endif
 ifeq ($(PLATFORM), OS_SOLARIS)
-	ROCKSDBJNILIB = librocksdbjni-solaris$(ARCH).so
+	ROCKSDBJNILIB = libterarkdbjni-solaris$(ARCH).so
 	ROCKSDB_JAR = rocksdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH)-solaris$(ARCH).jar
 	JAVA_INCLUDE = -I$(JAVA_HOME)/include/ -I$(JAVA_HOME)/include/solaris
 	SHA256_CMD = digest -a sha256
 endif
 ifeq ($(PLATFORM), OS_AIX)
 	JAVA_INCLUDE = -I$(JAVA_HOME)/include/ -I$(JAVA_HOME)/include/aix
-	ROCKSDBJNILIB = librocksdbjni-aix.so
+	ROCKSDBJNILIB = libterarkdbjni-aix.so
 	EXTRACT_SOURCES = gunzip < TAR_GZ | tar xvf -
 	SNAPPY_MAKE_TARGET = libsnappy.la
 endif
 ifeq ($(PLATFORM), OS_OPENBSD)
         JAVA_INCLUDE = -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/openbsd
-	ROCKSDBJNILIB = librocksdbjni-openbsd$(ARCH).so
+	ROCKSDBJNILIB = libterarkdbjni-openbsd$(ARCH).so
         ROCKSDB_JAR = rocksdbjni-$(ROCKSDB_MAJOR).$(ROCKSDB_MINOR).$(ROCKSDB_PATCH)-openbsd$(ARCH).jar
 endif
 
@@ -2107,7 +2107,7 @@ rocksdbjavastaticrelease: rocksdbjavastatic
 	jar -uf java/target/$(ROCKSDB_JAR_ALL) HISTORY*.md
 
 	# Enable crossbuild again(guokuankuan)
-	# cd java/target;jar -uf $(ROCKSDB_JAR_ALL) librocksdbjni-*.so librocksdbjni-*.jnilib librocksdbjni-win64.dll
+	# cd java/target;jar -uf $(ROCKSDB_JAR_ALL) libterarkdbjni-*.so libterarkdbjni-*.jnilib libterarkdbjni-win64.dll
 	cd java/target;jar -uf $(ROCKSDB_JAR_ALL) *.so
 	cd java/target/classes;jar -uf ../$(ROCKSDB_JAR_ALL) org/rocksdb/*.class org/rocksdb/util/*.class
 
@@ -2130,11 +2130,11 @@ frocksdbjavastaticrelease: rocksdbjavastaticrelease
 	# cd java/target;cp rocksdbjni_classes.jar $(WIN_JAR)
 	# cd java;jar -uf target/$(WIN_JAR) HISTORY*.md
 	# jar -uf java/target/$(WIN_JAR) HISTORY*.md
-	# cd java/target;jar -uf $(WIN_JAR) librocksdbjni-win64.dll
+	# cd java/target;jar -uf $(WIN_JAR) libterarkdbjni-win64.dll
 	# cd java/target;jar -uf $(WIN_JAR) META-INF/LICENSE
 
 	# update linux 64 jar with ppc64 lib
-	# cd java/target;jar -uf $(LINUX64_JAR) librocksdbjni-linux-ppc64le.so
+	# cd java/target;jar -uf $(LINUX64_JAR) libterarkdbjni-linux-ppc64le.so
 
 	cd java/target;jar -uf $(JAR_DOCS) META-INF/LICENSE
 	cd java/target;jar -uf $(JAR_SOURCES) META-INF/LICENSE
@@ -2162,7 +2162,7 @@ frocksdbjavastaticrelease: rocksdbjavastaticrelease
 
 rocksdbjavastaticreleasedocker: rocksdbjavastatic rocksdbjavastaticdockerx86 rocksdbjavastaticdockerx86_64
 	cd java;jar -cf target/$(ROCKSDB_JAR_ALL) HISTORY*.md
-	cd java/target;jar -uf $(ROCKSDB_JAR_ALL) librocksdbjni-*.so librocksdbjni-*.jnilib
+	cd java/target;jar -uf $(ROCKSDB_JAR_ALL) libterarkdbjni-*.so libterarkdbjni-*.jnilib
 	cd java/target/classes;jar -uf ../$(ROCKSDB_JAR_ALL) org/rocksdb/*.class org/rocksdb/util/*.class
 
 rocksdbjavastaticdockerx86:

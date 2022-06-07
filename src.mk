@@ -366,7 +366,6 @@ MAIN_SOURCES =                                                          \
   memtable/inlineskiplist_test.cc                                       \
   memtable/memtablerep_bench.cc                                         \
   memtable/skiplist_test.cc                                             \
-  memtable/terark_zip_entry_index.cc                                    \
   memtable/write_buffer_manager_test.cc                                 \
   monitoring/histogram_test.cc                                          \
   monitoring/iostats_context_test.cc                                    \
@@ -384,10 +383,6 @@ MAIN_SOURCES =                                                          \
   table/sst_file_reader_test.cc                                         \
   table/table_reader_bench.cc                                           \
   table/table_test.cc                                                   \
-  table/terark_zip_config.cc                                            \
-  table/terark_zip_table_builder.cc                                     \
-  table/terark_zip_table_reader.cc                                      \
-  table/terark_zip_table.cc                                             \
   third-party/gtest-1.7.0/fused-src/gtest/gtest-all.cc                  \
   tools/db_bench.cc                                                     \
   tools/db_bench_tool_test.cc                                           \
