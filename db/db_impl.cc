@@ -1039,11 +1039,14 @@ void DBImpl::ScheduleTtlGC() {
     uint64_t new_mark_count = 0;
     uint64_t old_mark_count = 0;
     uint64_t total_count = 0;
-    if (!cfd->initialized() || cfd->IsDropped() ||
-        cfd->ioptions()->ttl_extractor_factory == nullptr) {
+    bool has_ttl = cfd->ioptions()->ttl_extractor_factory != nullptr;
+    if (!cfd->initialized() || cfd->IsDropped()) {
       continue;
     }
-    uint64_t now = cfd->ioptions()->ttl_extractor_factory->Now();
+    uint64_t now = 0;
+    if (has_ttl) {
+      now = cfd->ioptions()->ttl_extractor_factory->Now();
+    }
     VersionStorageInfo* vstorage = cfd->current()->storage_info();
     for (int l = 0; l < vstorage->num_non_empty_levels(); l++) {
       for (auto meta : vstorage->LevelFiles(l)) {
@@ -1073,7 +1076,7 @@ void DBImpl::ScheduleTtlGC() {
             !!(meta->marked_for_compaction & FileMetaData::kMarkedFromTTL);
         old_mark_count += marked;
         TEST_SYNC_POINT("DBImpl:Exist-SST");
-        if (!marked &&
+        if (!marked && has_ttl &&
             should_marked_for_compacted(
                 l, meta->fd.GetNumber(), meta->prop.earliest_time_begin_compact,
                 meta->prop.latest_time_end_compact, now)) {
