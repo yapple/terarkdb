@@ -81,6 +81,97 @@ int DBImpl::IsFileDeletionsEnabled() const {
   return !disable_delete_obsolete_files_;
 }
 
+Status DBImpl::UndoFakeFlush() {
+  mutex_.Lock();
+  autovector<ColumnFamilyData*> cfds;
+  for (auto cfd : *versions_->GetColumnFamilySet()) {
+    if (cfd->IsDropped()) {
+      continue;
+    }
+    cfd->Ref();
+    cfds.push_back(cfd);
+  }
+  mutex_.Unlock();
+  Status status;
+  for (auto cfd : cfds) {
+    auto iter = version_edits_.find(cfd->GetID());
+    if (iter == version_edits_.end()) continue;
+    VersionEdit* edit = &iter->second;
+    VersionEdit edit_del;
+    for (auto f : edit->GetNewFiles()) {
+      edit_del.DeleteFile(0, f.second.fd.GetNumber());
+    }
+    edit_del.set_check_point(true);
+    mutex_.Lock();
+    status = versions_->LogAndApply(cfd, *cfd->GetLatestMutableCFOptions(),
+                                    &edit_del, &mutex_);
+    mutex_.Unlock();
+    if (!status.ok()) {
+      break;
+    }
+  }
+
+  mutex_.Lock();
+  for (auto cfd : cfds) {
+    cfd->Unref();
+  }
+  mutex_.Unlock();
+
+  return status;
+}
+
+Status DBImpl::FakeFlush(std::vector<std::string>& ret) {
+  Status status;
+  mutex_.Lock();
+  autovector<ColumnFamilyData*> cfds;
+  for (auto cfd : *versions_->GetColumnFamilySet()) {
+    if (cfd->IsDropped()) {
+      continue;
+    }
+    cfd->Ref();
+    cfds.push_back(cfd);
+  }
+  mutex_.Unlock();
+  version_edits_.clear();
+
+  for (auto cfd : cfds) {
+    VersionEdit edit;
+    edit.SetColumnFamily(cfd->GetID());
+    version_edits_.insert({cfd->GetID(), edit});
+  }
+  for (auto cfd : cfds) {
+    auto iter = version_edits_.find(cfd->GetID());
+    int job_id = next_job_id_.fetch_add(1);
+    VersionEdit* edit = &iter->second;
+    status = WriteLevel0TableForRecovery(job_id, cfd, cfd->mem(), edit);
+    edit->set_check_point(true);
+    if (status.ok()) {
+      mutex_.Lock();
+      status = versions_->LogAndApply(cfd, *cfd->GetLatestMutableCFOptions(),
+                                      edit, &mutex_);
+      mutex_.Unlock();
+      if (!status.ok()) {
+        break;
+      }
+    }
+  }
+  mutex_.Lock();
+  for (auto cfd : cfds) {
+    cfd->Unref();
+  }
+  mutex_.Unlock();
+
+  if (status.ok()) {
+    for (auto iter : version_edits_) {
+      VersionEdit* edit = &iter.second;
+      int cf_id = iter.first;
+      for (auto f : edit->GetNewFiles()) {
+        ret.push_back(MakeTableFileName("", f.second.fd.GetNumber()));
+      }
+    }
+  }
+  return status;
+}
 Status DBImpl::GetLiveFiles(std::vector<std::string>& ret,
                             uint64_t* manifest_file_size, bool flush_memtable) {
   *manifest_file_size = 0;

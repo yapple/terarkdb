@@ -411,6 +411,9 @@ class VersionEdit {
   std::string DebugString(bool hex_key = false) const;
   std::string DebugJSON(int edit_num, bool hex_key = false) const;
 
+  bool check_point() { return for_checkpoint_; }
+  void set_check_point(bool b) { for_checkpoint_ = b; }
+
  private:
   friend class VersionSet;
   friend class Version;
@@ -450,6 +453,7 @@ class VersionEdit {
   bool is_column_family_add_;
   std::string column_family_name_;
 
+  bool for_checkpoint_;
   bool is_open_db_;
   bool is_in_atomic_group_;
   uint32_t remaining_entries_;

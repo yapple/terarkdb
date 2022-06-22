@@ -276,6 +276,11 @@ class DBImpl : public DB {
   virtual Status DisableFileDeletions() override;
   virtual Status EnableFileDeletions(bool force) override;
   virtual int IsFileDeletionsEnabled() const;
+
+  virtual Status FakeFlush(std::vector<std::string>&) override;
+
+  virtual Status UndoFakeFlush() override;
+
   // All the returned filenames start with "/"
   virtual Status GetLiveFiles(std::vector<std::string>&,
                               uint64_t* manifest_file_size,
@@ -1826,6 +1831,8 @@ class DBImpl : public DB {
   bool closed_;
 
   ErrorHandler error_handler_;
+
+  std::unordered_map<int, VersionEdit> version_edits_;
 
   // Conditional variable to coordinate installation of atomic flush results.
   // With atomic flush, each bg thread installs the result of flushing multiple

@@ -204,7 +204,12 @@ Status CheckpointImpl::CreateCustomCheckpoint(
     }
 
     // this will return live_files prefixed with "/"
-    s = db_->GetLiveFiles(live_files, &manifest_file_size, flush_memtable);
+    if(db_options.check_point_fake_flush){
+      s = db_->FakeFlush(live_files);
+      s = db_->GetLiveFiles(live_files, &manifest_file_size, false);
+    }else{
+      s = db_->GetLiveFiles(live_files, &manifest_file_size, flush_memtable);
+    }
 
     if (s.ok() && db_options.allow_2pc) {
       // If 2PC is enabled, we need to get minimum log number after the flush.
@@ -322,6 +327,11 @@ Status CheckpointImpl::CreateCustomCheckpoint(
                          kLogFile);
       }
     }
+  }
+
+  if(db_options.check_point_fake_flush){
+    // Write Manifest
+    db_->UndoFakeFlush();
   }
 
   return s;
