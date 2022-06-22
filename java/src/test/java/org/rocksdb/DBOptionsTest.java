@@ -675,4 +675,11 @@ public class DBOptionsTest {
       assertThat(stats).isNotNull();
     }
   }
+  @Test
+  public void fakeflush() {
+    try(final DBOptions options = new DBOptions()) {
+      final boolean booleanValue = true;
+      options.setCheckPointFakeFlush(booleanValue);
+    }
+  }
 }

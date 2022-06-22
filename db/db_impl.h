@@ -276,6 +276,11 @@ class DBImpl : public DB {
   virtual Status DisableFileDeletions() override;
   virtual Status EnableFileDeletions(bool force) override;
   virtual int IsFileDeletionsEnabled() const;
+
+  virtual Status FakeFlush(std::vector<std::string>&) override;
+
+  virtual Status UndoFakeFlush() override;
+
   // All the returned filenames start with "/"
   virtual Status GetLiveFiles(std::vector<std::string>&,
                               uint64_t* manifest_file_size,

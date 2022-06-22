@@ -85,6 +85,8 @@ const char* GetFlushReasonString(FlushReason flush_reason) {
       return "Error Recovery";
     case FlushReason::kInstallTimeout:
       return "Install Timeout";
+    case FlushReason::kFakeFlush:
+      return "Fake Flush";
     default:
       return "Invalid";
   }

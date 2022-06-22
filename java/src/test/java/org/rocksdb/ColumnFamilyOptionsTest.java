@@ -25,6 +25,14 @@ public class ColumnFamilyOptionsTest {
       getPlatformSpecificRandomFactory();
 
   @Test
+  public void gcratio() {
+    try (final ColumnFamilyOptions opt = new ColumnFamilyOptions()) {
+        final double gc_ratio = 0.1;
+        opt.setBlobGcRatio(gc_ratio);
+      }
+    }
+
+  @Test
   public void copyConstructor() {
     ColumnFamilyOptions origOpts = new ColumnFamilyOptions();
     origOpts.setNumLevels(rand.nextInt(8));

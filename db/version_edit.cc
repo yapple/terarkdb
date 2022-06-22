@@ -124,6 +124,7 @@ void VersionEdit::Clear() {
   is_open_db_ = false;
   is_in_atomic_group_ = false;
   remaining_entries_ = 0;
+  for_checkpoint_ = false;
 }
 
 bool VersionEdit::EncodeTo(std::string* dst) const {

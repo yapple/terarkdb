@@ -877,7 +877,11 @@ bool VersionBuilder::CheckConsistencyForNumLevels() {
   return rep_->CheckConsistencyForNumLevels();
 }
 
-void VersionBuilder::Apply(VersionEdit* edit) { rep_->Apply(edit); }
+void VersionBuilder::Apply(VersionEdit* edit) {
+  // not change the current state
+  if(edit->check_point()) return;
+  rep_->Apply(edit);
+}
 
 void VersionBuilder::SaveTo(VersionStorageInfo* vstorage,
                             double maintainer_job_ratio) {

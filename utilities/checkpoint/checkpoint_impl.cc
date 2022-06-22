@@ -170,6 +170,7 @@ Status CheckpointImpl::CreateCustomCheckpoint(
     uint64_t* sequence_number, uint64_t log_size_for_flush) {
   Status s;
   std::vector<std::string> live_files;
+  std::vector<std::string> fake_flush_files;
   uint64_t manifest_file_size = 0;
   uint64_t min_log_num = port::kMaxUint64;
   *sequence_number = db_->GetLatestSequenceNumber();
@@ -202,9 +203,19 @@ Status CheckpointImpl::CreateCustomCheckpoint(
         live_wal_files.clear();
       }
     }
-
     // this will return live_files prefixed with "/"
-    s = db_->GetLiveFiles(live_files, &manifest_file_size, flush_memtable);
+    if (db_options.check_point_fake_flush) {
+      s = db_->FakeFlush(fake_flush_files);
+      if (s.ok()) {
+        s = db_->GetLiveFiles(live_files, &manifest_file_size, false);
+      }
+      if (s.ok()) {
+        live_files.insert(live_files.end(), fake_flush_files.begin(),
+                          fake_flush_files.end());
+      }
+    } else {
+      s = db_->GetLiveFiles(live_files, &manifest_file_size, flush_memtable);
+    }
 
     if (s.ok() && db_options.allow_2pc) {
       // If 2PC is enabled, we need to get minimum log number after the flush.
@@ -238,7 +249,7 @@ Status CheckpointImpl::CreateCustomCheckpoint(
     db_->FlushWAL(false /* sync */);
   }
   // if we have more than one column family, we need to also get WAL files
-  if (s.ok()) {
+  if (s.ok() && !db_options.check_point_fake_flush ) {
     s = db_->GetSortedWalFiles(live_wal_files);
   }
   if (!s.ok()) {
@@ -322,6 +333,16 @@ Status CheckpointImpl::CreateCustomCheckpoint(
                          kLogFile);
       }
     }
+  }
+
+  if(s.ok() && db_options.check_point_fake_flush){
+    // Write Manifest
+    s = db_->UndoFakeFlush();
+  }
+
+  if (!s.ok()) {
+    ROCKS_LOG_INFO(db_options.info_log, "CheckPoint Failed %",
+                   s.ToString().c_str());
   }
 
   return s;

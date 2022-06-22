@@ -507,6 +507,16 @@ public class ColumnFamilyOptions extends RocksObject
     return blobSize(nativeHandle_);
   }
 
+  public ColumnFamilyOptions setBlobGcRatio(
+      final double blobGcRatio) {
+    setBlobGcRatio(nativeHandle_, blobGcRatio);
+    return this;
+  }
+
+  public double blobGcRatio() {
+    return blobGcRatio(nativeHandle_);
+  }
+
   @Override
   public ColumnFamilyOptions setCompactionStyle(
       final CompactionStyle compactionStyle) {
@@ -908,6 +918,8 @@ public class ColumnFamilyOptions extends RocksObject
   private native boolean disableAutoCompactions(long handle);
   private native void setBlobSize(long handle, long blobSize);
   private native long blobSize(long handle);
+  private native void setBlobGcRatio(long handle, double blobGcRatio);
+  private native double blobGcRatio(long handle);
   private native void setTargetBlobFileSize(long handle, long targetBlobFileSize);
   private native long targetBlobFileSize(long handle);
   private native void setCompactionStyle(long handle, byte compactionStyle);

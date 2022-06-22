@@ -231,7 +231,265 @@ class CheckpointTest : public testing::Test {
     return result;
   }
 };
+TEST_F(CheckpointTest, FakeFlushAfterBufferFull) {
+  std::atomic<int> buffer_full(0);
+  std::atomic<int> snapshot_flag(false);
+  Checkpoint* checkpoint;
+  TERARKDB_NAMESPACE::port::Thread t1;
+  Options options;
+  SyncPoint::GetInstance()->SetCallBack("DBImpl::BufferFull", [&](void* arg) {
+    buffer_full.fetch_add(1);
+    std::cout << "buffer_full : " << buffer_full.load() << std::endl;
+    snapshot_flag.store(true);
+    t1 = TERARKDB_NAMESPACE::port::Thread([&]() {
+      std::cout << "snapshot start" << std::endl;
+      ASSERT_OK(checkpoint->CreateCheckpoint(snapshot_name_));
+      ASSERT_OK(DestroyDB(snapshot_name_, options));
+      std::cout << "snapshot finished" << std::endl;
+      snapshot_flag.store(false);
+      TEST_SYNC_POINT("CheckpointTest::finishCheckPoint");
+    });
+  });
+  TERARKDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
 
+  DB* snapshotDB;
+  ReadOptions roptions;
+  std::string result;
+
+  options = CurrentOptions();
+  delete db_;
+  db_ = nullptr;
+  ASSERT_OK(DestroyDB(dbname_, options));
+  // Create a database
+  Status s;
+  options.create_if_missing = true;
+  options.write_buffer_size = 256 << 10;
+  ASSERT_OK(DB::Open(options, dbname_, &db_));
+  ASSERT_OK(Checkpoint::Create(db_, &checkpoint));
+  std::string key = std::string("foo");
+  WriteOptions wo = WriteOptions();
+  wo.disableWAL = true;
+  for (int i = 0;; i++) {
+    while (snapshot_flag.load()) {
+      t1.join();
+    }
+    if (buffer_full.load() == 10) break;
+    std::string k = key;
+    k.push_back('a' + i);
+    ASSERT_OK(db_->Put(wo, key, "v1"));
+  }
+
+  reinterpret_cast<DBImpl*>(db_)->TEST_WaitForFlushMemTable();
+
+  delete db_;
+  db_ = nullptr;
+  ASSERT_OK(DestroyDB(dbname_, options));
+  delete checkpoint;
+}
+
+TEST_F(CheckpointTest, FakeFlush) {
+  TERARKDB_NAMESPACE::SyncPoint::GetInstance()->LoadDependency(
+      {{"DBImpl::FakeFlush:1", "CheckpointTest::Flush1"},
+       {"CheckpointTest::Flush2", "DBImpl::FakeFlush:2"}});
+  TERARKDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  Options options;
+  DB* snapshotDB;
+  ReadOptions roptions;
+  std::string result;
+  Checkpoint* checkpoint;
+
+  options = CurrentOptions();
+  delete db_;
+  db_ = nullptr;
+  ASSERT_OK(DestroyDB(dbname_, options));
+  // Create a database
+  Status s;
+  options.create_if_missing = true;
+  options.write_buffer_size = 256 << 20;
+  ASSERT_OK(DB::Open(options, dbname_, &db_));
+  std::string key = std::string("foo");
+
+  for (int i = 0; i < 256; i++) {
+    std::string k = key;
+    k.push_back('a' + i);
+    ASSERT_OK(Put(key, "v1"));
+  }
+  ASSERT_OK(Checkpoint::Create(db_, &checkpoint));
+  TERARKDB_NAMESPACE::port::Thread t1([&]() {
+    ASSERT_OK(checkpoint->CreateCheckpoint(snapshot_name_));
+    std::cout << "snapshot finished" << std::endl;
+  });
+  TERARKDB_NAMESPACE::port::Thread t2([&]() {
+    TEST_SYNC_POINT("CheckpointTest::Flush1");
+    std::cout << "flush started" << std::endl;
+    ASSERT_OK(Flush());
+    std::cout << "flush finished" << std::endl;
+    TEST_SYNC_POINT("CheckpointTest::Flush2");
+  });
+  t1.join();
+  t2.join();
+  delete db_;
+  db_ = nullptr;
+  ASSERT_OK(DestroyDB(dbname_, options));
+  delete checkpoint;
+}
+
+TEST_F(CheckpointTest, GetSnapshotLinkAndFlush) {
+  for (uint64_t log_size_for_flush : {1000000}) {
+    Options options;
+    DB* snapshotDB;
+    ReadOptions roptions;
+    std::string result;
+    Checkpoint* checkpoint;
+
+    options = CurrentOptions();
+    delete db_;
+    db_ = nullptr;
+    ASSERT_OK(DestroyDB(dbname_, options));
+
+    // Create a database
+    Status s;
+    options.create_if_missing = true;
+    ASSERT_OK(DB::Open(options, dbname_, &db_));
+    std::string key = std::string("foo");
+    ASSERT_OK(Put(key, "v1"));
+    // Take a snapshot
+    ASSERT_OK(Checkpoint::Create(db_, &checkpoint));
+    for (int i = 0; i < 100; i++) {
+      std::string snap_shot = snapshot_name_;
+      for (int k = 0; k < i; k++) {
+        snap_shot.push_back('a');
+      }
+      TERARKDB_NAMESPACE::port::Thread t([&]() {
+        ASSERT_OK(checkpoint->CreateCheckpoint(snap_shot));
+        std::cout << "snapshot finished" << std::endl;
+      });
+      for (int i = 0; i < 100; i++) {
+        ASSERT_OK(Put(key, "v1"));
+        ASSERT_OK(Flush());
+      }
+      std::cout << "flush finished" << std::endl;
+      t.join();
+      // Open snapshot and verify contents while DB is running
+      options.create_if_missing = false;
+      ASSERT_OK(DB::Open(options, snap_shot, &snapshotDB));
+      delete snapshotDB;
+      snapshotDB = nullptr;
+    }
+
+    delete db_;
+    db_ = nullptr;
+    // Open snapshot and verify contents
+    options.create_if_missing = false;
+    ASSERT_OK(DB::Open(options, dbname_, &db_));
+    ASSERT_EQ("v1", Get(key));
+    delete db_;
+    db_ = nullptr;
+    //    ASSERT_OK(DestroyDB(dbname_, options));
+
+    delete checkpoint;
+    // Restore DB name
+    dbname_ = test::PerThreadDBPath(env_, "db_test");
+  }
+}
+TEST_F(CheckpointTest, RepeatWriteSnapShot) {
+  Options options;
+  DB* snapshotDB;
+  ReadOptions roptions;
+  std::string result;
+  Checkpoint* checkpoint;
+
+  options = CurrentOptions();
+  delete db_;
+  db_ = nullptr;
+  ASSERT_OK(DestroyDB(dbname_, options));
+
+  // Create a database
+  Status s;
+  options.create_if_missing = true;
+  options.compression = CompressionType::kNoCompression;
+  options.write_buffer_size = 64 * 1024 * 1024;
+  ASSERT_OK(DB::Open(options, dbname_, &db_));
+  ASSERT_OK(Checkpoint::Create(db_, &checkpoint));
+  std::string key = std::string("foo");
+  std::string value(1024, 'a');
+
+  WriteOptions wo;
+  wo.disableWAL = true;
+
+  for (int i = 0;; i++) {
+    std::string tmp = key;
+    tmp.insert(tmp.begin(), 'a' + (i % 26));
+    for (int j = 0; j < 32 * 1024; j++) {
+      std::string k = tmp;
+      k.append(std::string(j / 26, j % 26));
+      db_->Put(wo, k, value);
+    }
+    ASSERT_OK(checkpoint->CreateCheckpoint(snapshot_name_));
+    //    options.create_if_missing = false;
+    //    ASSERT_OK(DB::Open(options, snapshot_name_, &snapshotDB));
+    //    delete snapshotDB;
+    //    snapshotDB = nullptr;
+    ASSERT_OK(DestroyDB(snapshot_name_, options));
+  }
+}
+TEST_F(CheckpointTest, RepeatGetSnapshotLink) {
+  for (uint64_t log_size_for_flush : {1000000}) {
+    Options options;
+    DB* snapshotDB;
+    ReadOptions roptions;
+    std::string result;
+    Checkpoint* checkpoint;
+
+    options = CurrentOptions();
+    delete db_;
+    db_ = nullptr;
+    ASSERT_OK(DestroyDB(dbname_, options));
+
+    // Create a database
+    Status s;
+    options.create_if_missing = true;
+    ASSERT_OK(DB::Open(options, dbname_, &db_));
+    std::string key = std::string("foo");
+    ASSERT_OK(Put(key, "v1"));
+    // Take a snapshot
+    for (int i = 0; i < 100; i++) {
+      ASSERT_OK(Checkpoint::Create(db_, &checkpoint));
+      std::string snap_shot = snapshot_name_;
+      for (int k = 0; k < i; k++) {
+        snap_shot.push_back('a');
+      }
+      std::cout << snap_shot << " " << i << std::endl;
+      ASSERT_OK(checkpoint->CreateCheckpoint(snap_shot, log_size_for_flush));
+      ASSERT_OK(Put(key, "v2"));
+      ASSERT_EQ("v2", Get(key));
+      ASSERT_OK(Flush());
+      ASSERT_EQ("v2", Get(key));
+      ASSERT_OK(Put(key, "v1"));
+      // Open snapshot and verify contents while DB is running
+      options.create_if_missing = false;
+      ASSERT_OK(DB::Open(options, snap_shot, &snapshotDB));
+      ASSERT_OK(snapshotDB->Get(roptions, key, &result));
+      ASSERT_EQ("v1", result);
+      delete snapshotDB;
+      snapshotDB = nullptr;
+      ASSERT_OK(DestroyDB(snap_shot, options));
+    }
+
+    delete db_;
+    db_ = nullptr;
+    // Open snapshot and verify contents
+    options.create_if_missing = false;
+    ASSERT_OK(DB::Open(options, dbname_, &db_));
+    ASSERT_EQ("v1", Get(key));
+    delete db_;
+    db_ = nullptr;
+    ASSERT_OK(DestroyDB(dbname_, options));
+    delete checkpoint;
+    // Restore DB name
+    dbname_ = test::PerThreadDBPath(env_, "db_test");
+  }
+}
 TEST_F(CheckpointTest, GetSnapshotLink) {
   for (uint64_t log_size_for_flush : {0, 1000000}) {
     Options options;
@@ -283,6 +541,38 @@ TEST_F(CheckpointTest, GetSnapshotLink) {
 
     // Restore DB name
     dbname_ = test::PerThreadDBPath(env_, "db_test");
+  }
+}
+TEST_F(CheckpointTest, CheckpointCFFakeFlush) {
+  Options options = CurrentOptions();
+  options.max_background_flushes = 1;
+  int cf_nums = 10;
+  CreateAndReopenWithCF({"one", "two", "three", "four", "five", "six", "seven",
+                         "eight", "nine", "ten"},
+                        options);
+  std::string key = std::string("foo");
+  std::string value(1024, 'a');
+  WriteOptions wo;
+  wo.disableWAL = true;
+  Checkpoint* checkpoint;
+  ASSERT_OK(Checkpoint::Create(db_, &checkpoint));
+  for (int i = 0;; i++) {
+    std::string tmp = key;
+    tmp.insert(tmp.begin(), 'a' + (i % 26));
+    for (int j = 0; j < 32 * 1024; j++) {
+      std::string k = tmp;
+      k.append(std::string(j / 26, j % 26));
+      for (int l = 0; l < cf_nums; l++) {
+        db_->Put(wo, handles_[l], k, value);
+      }
+    }
+    ASSERT_OK(checkpoint->CreateCheckpoint(snapshot_name_));
+    //    options.create_if_missing = false;
+    //    ASSERT_OK(DB::Open(options, snapshot_name_, &snapshotDB));
+    //    delete snapshotDB;
+    //    snapshotDB = nullptr;
+    ASSERT_OK(DestroyDB(snapshot_name_, options));
+    std::cout << i << std::endl;
   }
 }
 

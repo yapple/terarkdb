@@ -159,6 +159,7 @@ enum class FlushReason : int {
   kManualFlush = 0x0a,
   kErrorRecovery = 0xb,
   kInstallTimeout = 0xc,
+  kFakeFlush = 0xd,
 };
 
 enum class BackgroundErrorReason {

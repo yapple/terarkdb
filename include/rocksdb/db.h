@@ -1042,6 +1042,15 @@ class DB {
   // threads call EnableFileDeletions()
   virtual Status EnableFileDeletions(bool force = true) = 0;
 
+
+  virtual Status FakeFlush(std::vector<std::string>&){
+    return Status::NotSupported("FakeFlush not implemented");
+  }
+
+  virtual Status UndoFakeFlush(){
+    return Status::NotSupported("UndoFakeFlush not implemented");
+  }
+
   // GetLiveFiles followed by GetSortedWalFiles can generate a lossless backup
 
   // Retrieve the list of all files in the database. The files are
@@ -1058,6 +1067,8 @@ class DB {
   // you still need to call GetSortedWalFiles after GetLiveFiles to compensate
   // for new data that arrived to already-flushed column families while other
   // column families were flushing
+
+
   virtual Status GetLiveFiles(std::vector<std::string>&,
                               uint64_t* manifest_file_size,
                               bool flush_memtable = true) = 0;

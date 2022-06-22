@@ -107,6 +107,7 @@ DBOptions BuildDBOptions(const ImmutableDBOptions& immutable_db_options,
   options.zenfs_low_gc_ratio = mutable_db_options.zenfs_low_gc_ratio;
   options.zenfs_high_gc_ratio = mutable_db_options.zenfs_high_gc_ratio;
   options.zenfs_force_gc_ratio = mutable_db_options.zenfs_force_gc_ratio;
+  options.check_point_fake_flush = mutable_db_options.check_point_fake_flush;
   options.random_access_max_buffer_size =
       immutable_db_options.random_access_max_buffer_size;
   options.writable_file_max_buffer_size =
