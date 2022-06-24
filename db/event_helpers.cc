@@ -169,7 +169,8 @@ void EventHelpers::LogAndNotifyTableFileDeletion(
     EventLogger* event_logger, int job_id, uint64_t file_number,
     const std::string& file_path, const Status& status,
     const std::string& dbname,
-    const std::vector<std::shared_ptr<EventListener>>& listeners) {
+    const std::vector<std::shared_ptr<EventListener>>& listeners,
+    const std::string cf_name, const TableProperties& table_properties) {
   JSONWriter jwriter;
   AppendCurrentTime(&jwriter);
 
@@ -190,6 +191,8 @@ void EventHelpers::LogAndNotifyTableFileDeletion(
   info.job_id = job_id;
   info.file_path = file_path;
   info.status = status;
+  info.cf_name = cf_name;
+  info.table_properties = table_properties;
   for (auto& listener : listeners) {
     listener->OnTableFileDeleted(info);
   }
