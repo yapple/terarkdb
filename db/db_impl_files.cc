@@ -334,9 +334,24 @@ void DBImpl::DeleteObsoleteFileImpl(int job_id, const std::string& fname,
                     file_deletion_status.ToString().c_str());
   }
   if (type == kTableFile) {
+
+    auto iter = delete_info_map_.find(number);
+    assert(iter != delete_info_map_.end());
+    DeleteFileInfo* fileinfo = &iter->second;
+    FileMetaData* f = fileinfo->file_meta;
+    std::shared_ptr<TableCache> table_cache = fileinfo->table_cache;
+    std::shared_ptr<const TableProperties> tp;
+    Status s = table_cache->GetTableProperties(env_options_,*f,&tp, nullptr);
+
+    if (f->table_reader_handle) {
+      table_cache_->Release(f->table_reader_handle);
+    }
+
     EventHelpers::LogAndNotifyTableFileDeletion(
         &event_logger_, job_id, number, fname, file_deletion_status, GetName(),
-        immutable_db_options_.listeners);
+        immutable_db_options_.listeners, fileinfo->cf, *tp);
+
+    delete_info_map_.erase(number);
   }
 }
 
@@ -373,13 +388,13 @@ void DBImpl::PurgeObsoleteFiles(JobContext& state, bool schedule_only) {
   // We may ignore the dbname when generating the file names.
   const char* kDumbDbName = "";
   for (auto& file : state.sst_delete_files) {
+    delete_info_map_.emplace(
+        file.metadata->fd.GetNumber(),
+        DeleteFileInfo{file.metadata, file.table_cache, file.cf});
+
     candidate_files.emplace_back(JobContext::CandidateFileInfo{
         MakeTableFileName(kDumbDbName, file.metadata->fd.GetNumber()),
         state.PushPath(file.path)});
-    if (file.metadata->table_reader_handle) {
-      table_cache_->Release(file.metadata->table_reader_handle);
-    }
-    file.DeleteMetadata();
   }
 
   for (auto file_num : state.log_delete_files) {

@@ -848,10 +848,14 @@ class Version : public SeparateHelper, private LazyBufferState {
 struct ObsoleteFileInfo {
   FileMetaData* metadata;
   std::string path;
+  std::string cf;
+  std::shared_ptr<TableCache> table_cache;
 
   ObsoleteFileInfo() noexcept : metadata(nullptr) {}
-  ObsoleteFileInfo(FileMetaData* f, const std::string& file_path)
-      : metadata(f), path(file_path) {}
+  ObsoleteFileInfo(FileMetaData* f, const std::string& file_path,
+                   const std::string& cf_name_,
+                   std::shared_ptr<TableCache>& _table_cache)
+      : metadata(f), path(file_path), cf(cf_name_), table_cache(_table_cache) {}
 
   ObsoleteFileInfo(const ObsoleteFileInfo&) = delete;
   ObsoleteFileInfo& operator=(const ObsoleteFileInfo&) = delete;
@@ -864,6 +868,7 @@ struct ObsoleteFileInfo {
     path = std::move(rhs.path);
     metadata = rhs.metadata;
     rhs.metadata = nullptr;
+    table_cache = std::move(rhs.table_cache);
 
     return *this;
   }

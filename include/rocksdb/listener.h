@@ -196,6 +196,8 @@ struct TableFileDeletionInfo {
   int job_id;
   // The status indicating whether the deletion was successful or not.
   Status status;
+  std::string cf_name;
+  TableProperties table_properties;
 };
 
 struct FileOperationInfo {

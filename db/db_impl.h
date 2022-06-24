@@ -1862,6 +1862,17 @@ class DBImpl : public DB {
 
   ThroughputReporter write_throughput_reporter_;
   DistributionReporter write_batch_size_reporter_;
+
+  struct DeleteFileInfo{
+    FileMetaData* file_meta;
+    std::shared_ptr<TableCache> table_cache;
+    std::string cf;
+    ~DeleteFileInfo(){
+      delete file_meta;
+    }
+  };
+
+  std::unordered_map<uint64_t, DeleteFileInfo> delete_info_map_;
 };
 
 extern Options SanitizeOptions(const std::string& db, const Options& src);
