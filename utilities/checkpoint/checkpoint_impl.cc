@@ -170,6 +170,7 @@ Status CheckpointImpl::CreateCustomCheckpoint(
     uint64_t* sequence_number, uint64_t log_size_for_flush) {
   Status s;
   std::vector<std::string> live_files;
+  std::vector<std::string> fake_flush_files;
   uint64_t manifest_file_size = 0;
   uint64_t min_log_num = port::kMaxUint64;
   *sequence_number = db_->GetLatestSequenceNumber();
@@ -205,8 +206,10 @@ Status CheckpointImpl::CreateCustomCheckpoint(
 
     // this will return live_files prefixed with "/"
     if(db_options.check_point_fake_flush){
-      s = db_->FakeFlush(live_files);
+      s = db_->FakeFlush(fake_flush_files);
       s = db_->GetLiveFiles(live_files, &manifest_file_size, false);
+      live_files.insert(live_files.end(), fake_flush_files.begin(),
+                        fake_flush_files.end());
     }else{
       s = db_->GetLiveFiles(live_files, &manifest_file_size, flush_memtable);
     }

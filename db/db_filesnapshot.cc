@@ -163,7 +163,8 @@ Status DBImpl::FakeFlush(std::vector<std::string>& ret) {
       VersionEdit* edit = &iter.second;
       int cf_id = iter.first;
       for (auto f : edit->GetNewFiles()) {
-        ret.push_back(MakeTableFileName("", f.second.fd.GetNumber()));
+        ret.push_back(MakeTableFileName("",
+                                        f.second.fd.GetNumber()));
       }
     }
   }
