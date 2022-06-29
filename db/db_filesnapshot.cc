@@ -131,7 +131,6 @@ Status DBImpl::FakeFlush(std::vector<std::string>& ret) {
     cfd->Ref();
     cfds.push_back(cfd);
   }
-  mutex_.Unlock();
   version_edits_.clear();
 
   for (auto cfd : cfds) {
@@ -146,16 +145,14 @@ Status DBImpl::FakeFlush(std::vector<std::string>& ret) {
     status = WriteLevel0TableForRecovery(job_id, cfd, cfd->mem(), edit);
     edit->set_check_point(true);
     if (status.ok()) {
-      mutex_.Lock();
+
       status = versions_->LogAndApply(cfd, *cfd->GetLatestMutableCFOptions(),
                                       edit, &mutex_);
-      mutex_.Unlock();
       if (!status.ok()) {
         break;
       }
     }
   }
-  mutex_.Lock();
   for (auto cfd : cfds) {
     cfd->Unref();
   }
