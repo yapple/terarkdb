@@ -82,6 +82,7 @@ int DBImpl::IsFileDeletionsEnabled() const {
 }
 
 Status DBImpl::UndoFakeFlush() {
+  ReleaseFileNumberFromPendingOutputs(pending_output_elem_);
   mutex_.Lock();
   autovector<ColumnFamilyData*> cfds;
   for (auto cfd : *versions_->GetColumnFamilySet()) {
@@ -121,6 +122,7 @@ Status DBImpl::UndoFakeFlush() {
 }
 
 Status DBImpl::FakeFlush(std::vector<std::string>& ret) {
+  pending_output_elem_ = CaptureCurrentFileNumberInPendingOutputs();
   Status status;
   mutex_.Lock();
   autovector<ColumnFamilyData*> cfds;
@@ -144,7 +146,7 @@ Status DBImpl::FakeFlush(std::vector<std::string>& ret) {
     VersionEdit* edit = &iter->second;
     autovector<MemTable*> mems;
     cfd->imm()->PickMemtablesToFlush(nullptr,&mems);
-    for(auto m: mems){
+    for(auto& m: mems){
       status = WriteLevel0TableForRecovery(job_id, cfd, m , edit);
       if(!status.ok()) break;
     }

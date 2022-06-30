@@ -203,7 +203,6 @@ Status CheckpointImpl::CreateCustomCheckpoint(
         live_wal_files.clear();
       }
     }
-
     // this will return live_files prefixed with "/"
     if (db_options.check_point_fake_flush) {
       s = db_->FakeFlush(fake_flush_files);
