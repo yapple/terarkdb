@@ -246,7 +246,7 @@ Status CheckpointImpl::CreateCustomCheckpoint(
     db_->FlushWAL(false /* sync */);
   }
   // if we have more than one column family, we need to also get WAL files
-  if (s.ok()) {
+  if (s.ok() && !db_options.check_point_fake_flush ) {
     s = db_->GetSortedWalFiles(live_wal_files);
   }
   if (!s.ok()) {

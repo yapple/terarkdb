@@ -157,6 +157,8 @@ Status DBImpl::FakeFlush(std::vector<std::string>& ret) {
     cfd->Unref();
   }
   mutex_.Unlock();
+  TEST_SYNC_POINT("DBImpl::GetLiveFiles:1");
+  TEST_SYNC_POINT("DBImpl::GetLiveFiles:2");
 
   if (status.ok()) {
     for (auto iter : version_edits_) {
