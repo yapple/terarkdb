@@ -411,7 +411,7 @@ class VersionEdit {
   std::string DebugString(bool hex_key = false) const;
   std::string DebugJSON(int edit_num, bool hex_key = false) const;
 
-  bool check_point() { return for_checkpoint_; }
+  bool check_point() const { return for_checkpoint_; }
   void set_check_point(bool b) { for_checkpoint_ = b; }
 
  private:

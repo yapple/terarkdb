@@ -205,12 +205,16 @@ Status CheckpointImpl::CreateCustomCheckpoint(
     }
 
     // this will return live_files prefixed with "/"
-    if(db_options.check_point_fake_flush){
+    if (db_options.check_point_fake_flush) {
       s = db_->FakeFlush(fake_flush_files);
-      s = db_->GetLiveFiles(live_files, &manifest_file_size, false);
-      live_files.insert(live_files.end(), fake_flush_files.begin(),
-                        fake_flush_files.end());
-    }else{
+      if (s.ok()) {
+        s = db_->GetLiveFiles(live_files, &manifest_file_size, false);
+      }
+      if (s.ok()) {
+        live_files.insert(live_files.end(), fake_flush_files.begin(),
+                          fake_flush_files.end());
+      }
+    } else {
       s = db_->GetLiveFiles(live_files, &manifest_file_size, flush_memtable);
     }
 
