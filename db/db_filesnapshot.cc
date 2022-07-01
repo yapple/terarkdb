@@ -98,10 +98,10 @@ Status DBImpl::UndoFakeFlush() {
     if (iter == version_edits_.end()) continue;
     VersionEdit* edit = &iter->second;
     VersionEdit edit_del;
-    for (auto f : edit->GetNewFiles()) {
-      edit_del.DeleteFile(0, f.second.fd.GetNumber());
-    }
-    edit_del.set_check_point(true);
+//    for (auto f : edit->GetNewFiles()) {
+//      edit_del.DeleteFile(0, f.second.fd.GetNumber());
+//    }
+//    edit_del.set_check_point(true);
     mutex_.Lock();
     status = versions_->LogAndApply(cfd, *cfd->GetLatestMutableCFOptions(),
                                     &edit_del, &mutex_, nullptr, true);
