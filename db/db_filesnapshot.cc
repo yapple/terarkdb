@@ -82,7 +82,6 @@ int DBImpl::IsFileDeletionsEnabled() const {
 }
 
 Status DBImpl::UndoFakeFlush() {
-  ReleaseFileNumberFromPendingOutputs(pending_output_elem_);
   mutex_.Lock();
   autovector<ColumnFamilyData*> cfds;
   for (auto cfd : *versions_->GetColumnFamilySet()) {
@@ -105,7 +104,7 @@ Status DBImpl::UndoFakeFlush() {
     edit_del.set_check_point(true);
     mutex_.Lock();
     status = versions_->LogAndApply(cfd, *cfd->GetLatestMutableCFOptions(),
-                                    &edit_del, &mutex_);
+                                    &edit_del, &mutex_, nullptr, true);
     mutex_.Unlock();
     if (!status.ok()) {
       break;
@@ -117,7 +116,7 @@ Status DBImpl::UndoFakeFlush() {
     cfd->Unref();
   }
   mutex_.Unlock();
-
+  ReleaseFileNumberFromPendingOutputs(pending_output_elem_);
   return status;
 }
 
