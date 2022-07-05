@@ -335,9 +335,14 @@ Status CheckpointImpl::CreateCustomCheckpoint(
     }
   }
 
-  if(db_options.check_point_fake_flush){
+  if(s.ok() && db_options.check_point_fake_flush){
     // Write Manifest
-    db_->UndoFakeFlush();
+    s = db_->UndoFakeFlush();
+  }
+
+  if (!s.ok()) {
+    ROCKS_LOG_INFO(db_options.info_log, "CheckPoint Failed %",
+                   s.ToString().c_str());
   }
 
   return s;

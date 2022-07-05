@@ -1832,9 +1832,6 @@ class DBImpl : public DB {
 
   ErrorHandler error_handler_;
 
-  std::unordered_map<int, VersionEdit> version_edits_;
-  std::list<uint64_t>::iterator pending_output_elem_;
-
   // Conditional variable to coordinate installation of atomic flush results.
   // With atomic flush, each bg thread installs the result of flushing multiple
   // column families, and different threads can flush different column

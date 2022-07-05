@@ -91,37 +91,22 @@ Status DBImpl::UndoFakeFlush() {
     cfd->Ref();
     cfds.push_back(cfd);
   }
-  mutex_.Unlock();
   Status status;
-  for (auto cfd : cfds) {
-    auto iter = version_edits_.find(cfd->GetID());
-    if (iter == version_edits_.end()) continue;
-    VersionEdit* edit = &iter->second;
+  if (cfds.size() > 0) {
+    auto& cfd = cfds[0];
     VersionEdit edit_del;
-//    for (auto f : edit->GetNewFiles()) {
-//      edit_del.DeleteFile(0, f.second.fd.GetNumber());
-//    }
-//    edit_del.set_check_point(true);
-    mutex_.Lock();
     status = versions_->LogAndApply(cfd, *cfd->GetLatestMutableCFOptions(),
                                     &edit_del, &mutex_, nullptr, true);
-    mutex_.Unlock();
-    if (!status.ok()) {
-      break;
-    }
   }
-
-  mutex_.Lock();
   for (auto cfd : cfds) {
     cfd->Unref();
   }
   mutex_.Unlock();
-  ReleaseFileNumberFromPendingOutputs(pending_output_elem_);
   return status;
 }
 
 Status DBImpl::FakeFlush(std::vector<std::string>& ret) {
-  pending_output_elem_ = CaptureCurrentFileNumberInPendingOutputs();
+  std::unordered_map<int, VersionEdit> version_edits;
   Status status;
   mutex_.Lock();
   autovector<ColumnFamilyData*> cfds;
@@ -132,15 +117,15 @@ Status DBImpl::FakeFlush(std::vector<std::string>& ret) {
     cfd->Ref();
     cfds.push_back(cfd);
   }
-  version_edits_.clear();
+  version_edits.clear();
 
   for (auto cfd : cfds) {
     VersionEdit edit;
     edit.SetColumnFamily(cfd->GetID());
-    version_edits_.insert({cfd->GetID(), edit});
+    version_edits.insert({cfd->GetID(), edit});
   }
   for (auto cfd : cfds) {
-    auto iter = version_edits_.find(cfd->GetID());
+    auto iter = version_edits.find(cfd->GetID());
     int job_id = next_job_id_.fetch_add(1);
     VersionEdit* edit = &iter->second;
     autovector<MemTable*> mems;
@@ -175,7 +160,7 @@ Status DBImpl::FakeFlush(std::vector<std::string>& ret) {
   TEST_SYNC_POINT("DBImpl::GetLiveFiles:2");
 
   if (status.ok()) {
-    for (auto iter : version_edits_) {
+    for (auto iter : version_edits) {
       VersionEdit* edit = &iter.second;
       int cf_id = iter.first;
       for (auto f : edit->GetNewFiles()) {
