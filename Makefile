@@ -1883,7 +1883,8 @@ rocksdbjavastaticreleasedocker: rocksdbjavastatic  rocksdbjavastaticdockerx86_64
 
 fterark:rocksdbjavastatic
 	cd java;jar -cf target/$(ROCKSDB_JAR_ALL) HISTORY*.md
-	cd java/target;jar -uf $(ROCKSDB_JAR_ALL) libterarkdbjni-*.so libterarkdbjni-*
+	cd java/target;jar -uf $(ROCKSDB_JAR_ALL) libterarkdbjni-*
+	#cd java/target;jar -uf $(ROCKSDB_JAR_ALL) libterarkdbjni-*.so libterarkdbjni-*
 	cd java/target/classes;jar -uf ../$(ROCKSDB_JAR_ALL) org/rocksdb/*.class org/rocksdb/util/*.class
 
 	# update apache license

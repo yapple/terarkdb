@@ -145,9 +145,14 @@ Status DBImpl::FakeFlush(std::vector<std::string>& ret) {
     VersionEdit* edit = &iter->second;
     autovector<MemTable*> mems;
     cfd->imm()->PickMemtablesToFlush(nullptr,&mems);
-    for(auto& m: mems){
-      status = WriteLevel0TableForRecovery(job_id, cfd, m , edit);
-      if(!status.ok()) break;
+    if (!mems.empty()) {
+      cfd->imm()->RollbackMemtableFlush(mems, 0, status);
+    }
+    if (status.ok()) {
+      for (auto& m : mems) {
+        status = WriteLevel0TableForRecovery(job_id, cfd, m, edit);
+        if (!status.ok()) break;
+      }
     }
     if(status.ok()){
       status = WriteLevel0TableForRecovery(job_id, cfd, cfd->mem(), edit);
