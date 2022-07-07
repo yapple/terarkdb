@@ -286,7 +286,48 @@ TEST_F(CheckpointTest, GetSnapshotLinkAndFlush) {
     dbname_ = test::PerThreadDBPath(env_, "db_test");
   }
 }
+TEST_F(CheckpointTest, RepeatWriteSnapShot){
+  Options options;
+  DB* snapshotDB;
+  ReadOptions roptions;
+  std::string result;
+  Checkpoint* checkpoint;
 
+  options = CurrentOptions();
+  delete db_;
+  db_ = nullptr;
+  ASSERT_OK(DestroyDB(dbname_, options));
+
+  // Create a database
+  Status s;
+  options.create_if_missing = true;
+  options.compression = CompressionType::kNoCompression;
+  options.write_buffer_size = 64 * 1024* 1024;
+  ASSERT_OK(DB::Open(options, dbname_, &db_));
+  ASSERT_OK(Checkpoint::Create(db_, &checkpoint));
+  std::string key = std::string("foo");
+  std::string value(1024,'a');
+
+  WriteOptions wo;
+  wo.disableWAL = true;
+
+  for(int i = 0;;i++){
+    std::string tmp = key;
+    tmp.insert(tmp.begin(),'a'+( i % 26));
+    for(int j = 0;j < 32*1024;j++){
+      std::string k = tmp;
+      k.append(std::string(j / 26,j%26));
+      db_->Put(wo,k,value);
+    }
+    ASSERT_OK(checkpoint->CreateCheckpoint(snapshot_name_));
+    options.create_if_missing = false;
+    ASSERT_OK(DB::Open(options, snapshot_name_, &snapshotDB));
+    delete snapshotDB;
+    snapshotDB = nullptr;
+    ASSERT_OK(DestroyDB(snapshot_name_, options));
+  }
+
+}
 TEST_F(CheckpointTest, RepeatGetSnapshotLink) {
   for (uint64_t log_size_for_flush : {1000000}) {
     Options options;
