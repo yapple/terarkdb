@@ -90,6 +90,11 @@ Status BuildTable(
     std::vector<TableProperties>* table_properties_vec, int level,
     double compaction_load, const uint64_t creation_time,
     const uint64_t oldest_key_time, Env::WriteLifeTimeHint write_hint) {
+
+  if(reason == TableFileCreationReason::kRecovery){
+    TEST_SYNC_POINT("DBImpl::FakeFlush:2");
+  }
+
   assert((column_family_id ==
           TablePropertiesCollectorFactory::Context::kUnknownColumnFamily) ==
          column_family_name.empty());

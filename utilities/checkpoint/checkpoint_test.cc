@@ -231,6 +231,53 @@ class CheckpointTest : public testing::Test {
     return result;
   }
 };
+TEST_F(CheckpointTest, FakeFlush) {
+  TERARKDB_NAMESPACE::SyncPoint::GetInstance()->LoadDependency(
+      {{"DBImpl::FakeFlush:1", "CheckpointTest::Flush1"},
+       {"CheckpointTest::Flush2","DBImpl::FakeFlush:2" }});
+  TERARKDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  Options options;
+  DB* snapshotDB;
+  ReadOptions roptions;
+  std::string result;
+  Checkpoint* checkpoint;
+
+  options = CurrentOptions();
+  delete db_;
+  db_ = nullptr;
+  ASSERT_OK(DestroyDB(dbname_, options));
+  // Create a database
+  Status s;
+  options.create_if_missing = true;
+  options.write_buffer_size = 256 << 20;
+  ASSERT_OK(DB::Open(options, dbname_, &db_));
+  std::string key = std::string("foo");
+
+  for(int i = 0;i < 256;i++){
+    std::string k = key;
+    k.push_back('a' + i);
+    ASSERT_OK(Put(key, "v1"));
+  }
+  ASSERT_OK(Checkpoint::Create(db_, &checkpoint));
+  TERARKDB_NAMESPACE::port::Thread t1([&]() {
+    ASSERT_OK(checkpoint->CreateCheckpoint(snapshot_name_));
+    std::cout << "snapshot finished" << std::endl;
+  });
+  TERARKDB_NAMESPACE::port::Thread t2([&]() {
+    TEST_SYNC_POINT("CheckpointTest::Flush1");
+    std::cout << "flush started" << std::endl;
+    ASSERT_OK(Flush());
+    std::cout << "flush finished" << std::endl;
+    TEST_SYNC_POINT("CheckpointTest::Flush2");
+  });
+  t1.join();
+  t2.join();
+  delete db_;
+  db_ = nullptr;
+  ASSERT_OK(DestroyDB(dbname_, options));
+  delete checkpoint;
+}
+
 TEST_F(CheckpointTest, GetSnapshotLinkAndFlush) {
   for (uint64_t log_size_for_flush : {1000000}) {
     Options options;
@@ -269,6 +316,9 @@ TEST_F(CheckpointTest, GetSnapshotLinkAndFlush) {
       t.join();
       // Open snapshot and verify contents while DB is running
       options.create_if_missing = false;
+      ASSERT_OK(DB::Open(options, snap_shot, &snapshotDB));
+      delete snapshotDB;
+      snapshotDB = nullptr;
     }
 
     delete db_;
@@ -320,10 +370,10 @@ TEST_F(CheckpointTest, RepeatWriteSnapShot){
       db_->Put(wo,k,value);
     }
     ASSERT_OK(checkpoint->CreateCheckpoint(snapshot_name_));
-    options.create_if_missing = false;
-    ASSERT_OK(DB::Open(options, snapshot_name_, &snapshotDB));
-    delete snapshotDB;
-    snapshotDB = nullptr;
+//    options.create_if_missing = false;
+//    ASSERT_OK(DB::Open(options, snapshot_name_, &snapshotDB));
+//    delete snapshotDB;
+//    snapshotDB = nullptr;
     ASSERT_OK(DestroyDB(snapshot_name_, options));
   }
 

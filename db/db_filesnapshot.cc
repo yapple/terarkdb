@@ -117,31 +117,64 @@ Status DBImpl::FakeFlush(std::vector<std::string>& ret) {
     cfd->Ref();
     cfds.push_back(cfd);
   }
+  mutex_.Unlock();
   version_edits.clear();
-
+  auto need_force_flush = [](ColumnFamilyData* cfd) {
+    return cfd->ioptions()->atomic_flush_group == nullptr &&
+           cfd->imm()->HasFlushRequested();
+  };
   for (auto cfd : cfds) {
     VersionEdit edit;
     edit.SetColumnFamily(cfd->GetID());
     version_edits.insert({cfd->GetID(), edit});
+    bool flush_needed = true;
+    status = WaitUntilFlushWouldNotStallWrites(cfd, &flush_needed);
+    if(!status.ok()){
+      break;
+    }
+    while(cfd->imm()->IsFlushPending() || need_force_flush(cfd)){
+      bg_cv_.TimedWait(1000);
+    }
   }
+  mutex_.Lock();
   for (auto cfd : cfds) {
     auto iter = version_edits.find(cfd->GetID());
     int job_id = next_job_id_.fetch_add(1);
     VersionEdit* edit = &iter->second;
     autovector<MemTable*> mems;
     cfd->imm()->PickMemtablesToFlush(nullptr,&mems);
-    if (!mems.empty()) {
-      cfd->imm()->RollbackMemtableFlush(mems, 0, status);
+    for (int i = 0; status.ok() && i < mems.size(); i++) {
+      auto& m = mems[i];
+      m->Ref();
+      try {
+        status = WriteLevel0TableForRecovery(job_id, cfd, m, edit);
+      } catch (std::exception e) {
+        ROCKS_LOG_DEBUG(immutable_db_options_.info_log,
+                        "[%s] [WriteLevel0TableForRecovery]"
+                        " memory usage:%" PRIu64 "",
+                        cfd->GetName().c_str(), m->ApproximateMemoryUsage());
+        status = Status::Corruption(
+            "WriteLevel0TableForRecovery immutmemtable Corruption");
+      }
+      m->Unref();
     }
     if (status.ok()) {
-      for (auto& m : mems) {
+      auto m = cfd->mem();
+      m->Ref();
+      try {
+        TEST_SYNC_POINT("DBImpl::FakeFlush:1");
         status = WriteLevel0TableForRecovery(job_id, cfd, m, edit);
-        if (!status.ok()) break;
+      } catch (std::exception e) {
+        ROCKS_LOG_DEBUG(immutable_db_options_.info_log,
+                        "[%s] [WriteLevel0TableForRecovery]"
+                        " memory usage:%" PRIu64 "",
+                        cfd->GetName().c_str(), m->ApproximateMemoryUsage());
+        status = Status::Corruption(
+            "WriteLevel0TableForRecovery memtable Corruption");
       }
+      m->Unref();
     }
-    if(status.ok()){
-      status = WriteLevel0TableForRecovery(job_id, cfd, cfd->mem(), edit);
-    }
+    // TODO wangyi
     edit->set_check_point(true);
     if (status.ok()) {
 
@@ -151,6 +184,15 @@ Status DBImpl::FakeFlush(std::vector<std::string>& ret) {
         break;
       }
     }
+
+    if (!mems.empty()) {
+      cfd->imm()->RollbackMemtableFlush(mems, 0, status);
+      ROCKS_LOG_DEBUG(immutable_db_options_.info_log,
+                      "[%s] [WriteLevel0TableForRecovery] immut table size:%d",
+                      cfd->GetName().c_str(), mems.size());
+      // we should apply the immut table to Manifest
+    }
+
   }
   for (auto cfd : cfds) {
     cfd->Unref();
