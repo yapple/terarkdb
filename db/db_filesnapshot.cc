@@ -119,21 +119,35 @@ Status DBImpl::FakeFlush(std::vector<std::string>& ret) {
   }
   mutex_.Unlock();
   version_edits.clear();
-  auto need_force_flush = [](ColumnFamilyData* cfd) {
-    return cfd->ioptions()->atomic_flush_group == nullptr &&
-           cfd->imm()->HasFlushRequested();
-  };
   for (auto cfd : cfds) {
     VersionEdit edit;
     edit.SetColumnFamily(cfd->GetID());
     version_edits.insert({cfd->GetID(), edit});
-    bool flush_needed = true;
-    status = WaitUntilFlushWouldNotStallWrites(cfd, &flush_needed);
-    if(!status.ok()){
-      break;
-    }
-    while(cfd->imm()->IsFlushPending() || need_force_flush(cfd)){
-      bg_cv_.TimedWait(1000);
+    // bool flush_needed = true;
+    // we don't need to waitFlush because we don't really do flush
+    // status = WaitUntilFlushWouldNotStallWrites(cfd, &flush_needed);
+    int cnt = 0;
+    while (cfd->imm()->IsFlushPending()) {
+      ROCKS_LOG_INFO(
+          immutable_db_options_.info_log,
+          "[%s] isFlushPending, NumNotFlushed: %d, HasFlushRequested: %d",
+          cfd->GetName().c_str(), cfd->imm()->NumNotFlushed(),
+          cfd->imm()->HasFlushRequested());
+      bg_cv_.TimedWait(1000000);
+      cnt++;
+      ROCKS_LOG_INFO(immutable_db_options_.info_log,
+                     "[%s] CheckPoint MaybeScheduleFlushOrCompaction cnt: %d",
+                     cfd->GetName().c_str(), cnt);
+      mutex_.Lock();
+      // the flush will not schedule when the threadpool is busy
+      MaybeScheduleFlushOrCompaction();
+      mutex_.Unlock();
+      if (cnt > 10) {
+        ROCKS_LOG_WARN(immutable_db_options_.info_log,
+                       "[%s] CheckPoint break MaybeScheduleFlushOrCompaction",
+                       cfd->GetName().c_str());
+        break;
+      }
     }
   }
   mutex_.Lock();
@@ -142,17 +156,17 @@ Status DBImpl::FakeFlush(std::vector<std::string>& ret) {
     int job_id = next_job_id_.fetch_add(1);
     VersionEdit* edit = &iter->second;
     autovector<MemTable*> mems;
-    cfd->imm()->PickMemtablesToFlush(nullptr,&mems);
+    cfd->imm()->PickMemtablesToFlush(nullptr, &mems);
     for (int i = 0; status.ok() && i < mems.size(); i++) {
       auto& m = mems[i];
       m->Ref();
       try {
         status = WriteLevel0TableForRecovery(job_id, cfd, m, edit);
       } catch (std::exception e) {
-        ROCKS_LOG_DEBUG(immutable_db_options_.info_log,
-                        "[%s] [WriteLevel0TableForRecovery]"
-                        " memory usage:%" PRIu64 "",
-                        cfd->GetName().c_str(), m->ApproximateMemoryUsage());
+        ROCKS_LOG_WARN(immutable_db_options_.info_log,
+                       "[%s] [WriteLevel0TableForRecovery]"
+                       " memory usage:%" PRIu64 "",
+                       cfd->GetName().c_str(), m->ApproximateMemoryUsage());
         status = Status::Corruption(
             "WriteLevel0TableForRecovery immutmemtable Corruption");
       }
@@ -165,10 +179,10 @@ Status DBImpl::FakeFlush(std::vector<std::string>& ret) {
         TEST_SYNC_POINT("DBImpl::FakeFlush:1");
         status = WriteLevel0TableForRecovery(job_id, cfd, m, edit);
       } catch (std::exception e) {
-        ROCKS_LOG_DEBUG(immutable_db_options_.info_log,
-                        "[%s] [WriteLevel0TableForRecovery]"
-                        " memory usage:%" PRIu64 "",
-                        cfd->GetName().c_str(), m->ApproximateMemoryUsage());
+        ROCKS_LOG_WARN(immutable_db_options_.info_log,
+                       "[%s] [WriteLevel0TableForRecovery]"
+                       " memory usage:%" PRIu64 "",
+                       cfd->GetName().c_str(), m->ApproximateMemoryUsage());
         status = Status::Corruption(
             "WriteLevel0TableForRecovery memtable Corruption");
       }
@@ -177,7 +191,6 @@ Status DBImpl::FakeFlush(std::vector<std::string>& ret) {
     // TODO wangyi
     edit->set_check_point(true);
     if (status.ok()) {
-
       status = versions_->LogAndApply(cfd, *cfd->GetLatestMutableCFOptions(),
                                       edit, &mutex_);
       if (!status.ok()) {
@@ -187,12 +200,11 @@ Status DBImpl::FakeFlush(std::vector<std::string>& ret) {
 
     if (!mems.empty()) {
       cfd->imm()->RollbackMemtableFlush(mems, 0, status);
-      ROCKS_LOG_DEBUG(immutable_db_options_.info_log,
-                      "[%s] [WriteLevel0TableForRecovery] immut table size:%d",
-                      cfd->GetName().c_str(), mems.size());
+      ROCKS_LOG_INFO(immutable_db_options_.info_log,
+                     "[%s] [WriteLevel0TableForRecovery] immut table size:%d",
+                     cfd->GetName().c_str(), mems.size());
       // we should apply the immut table to Manifest
     }
-
   }
   for (auto cfd : cfds) {
     cfd->Unref();
@@ -206,8 +218,7 @@ Status DBImpl::FakeFlush(std::vector<std::string>& ret) {
       VersionEdit* edit = &iter.second;
       int cf_id = iter.first;
       for (auto f : edit->GetNewFiles()) {
-        ret.push_back(MakeTableFileName("",
-                                        f.second.fd.GetNumber()));
+        ret.push_back(MakeTableFileName("", f.second.fd.GetNumber()));
       }
     }
   }
