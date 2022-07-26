@@ -133,7 +133,7 @@ Status DBImpl::FakeFlush(std::vector<std::string>& ret) {
           "[%s] isFlushPending, NumNotFlushed: %d, HasFlushRequested: %d",
           cfd->GetName().c_str(), cfd->imm()->NumNotFlushed(),
           cfd->imm()->HasFlushRequested());
-      bg_cv_.TimedWait(1000000);
+      env_->SleepForMicroseconds(1000000);
       cnt++;
       ROCKS_LOG_INFO(immutable_db_options_.info_log,
                      "[%s] CheckPoint MaybeScheduleFlushOrCompaction cnt: %d",
@@ -193,9 +193,6 @@ Status DBImpl::FakeFlush(std::vector<std::string>& ret) {
     if (status.ok()) {
       status = versions_->LogAndApply(cfd, *cfd->GetLatestMutableCFOptions(),
                                       edit, &mutex_);
-      if (!status.ok()) {
-        break;
-      }
     }
 
     if (!mems.empty()) {
@@ -204,6 +201,9 @@ Status DBImpl::FakeFlush(std::vector<std::string>& ret) {
                      "[%s] [WriteLevel0TableForRecovery] immut table size:%d",
                      cfd->GetName().c_str(), mems.size());
       // we should apply the immut table to Manifest
+    }
+    if (!status.ok()) {
+      break;
     }
   }
   for (auto cfd : cfds) {

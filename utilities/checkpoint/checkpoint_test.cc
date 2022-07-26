@@ -543,6 +543,38 @@ TEST_F(CheckpointTest, GetSnapshotLink) {
     dbname_ = test::PerThreadDBPath(env_, "db_test");
   }
 }
+TEST_F(CheckpointTest, CheckpointCFFakeFlush) {
+  Options options = CurrentOptions();
+  options.max_background_flushes = 1;
+  int cf_nums = 10;
+  CreateAndReopenWithCF({"one", "two", "three", "four", "five", "six", "seven",
+                         "eight", "nine", "ten"},
+                        options);
+  std::string key = std::string("foo");
+  std::string value(1024, 'a');
+  WriteOptions wo;
+  wo.disableWAL = true;
+  Checkpoint* checkpoint;
+  ASSERT_OK(Checkpoint::Create(db_, &checkpoint));
+  for (int i = 0;; i++) {
+    std::string tmp = key;
+    tmp.insert(tmp.begin(), 'a' + (i % 26));
+    for (int j = 0; j < 32 * 1024; j++) {
+      std::string k = tmp;
+      k.append(std::string(j / 26, j % 26));
+      for (int l = 0; l < cf_nums; l++) {
+        db_->Put(wo, handles_[l], k, value);
+      }
+    }
+    ASSERT_OK(checkpoint->CreateCheckpoint(snapshot_name_));
+    //    options.create_if_missing = false;
+    //    ASSERT_OK(DB::Open(options, snapshot_name_, &snapshotDB));
+    //    delete snapshotDB;
+    //    snapshotDB = nullptr;
+    ASSERT_OK(DestroyDB(snapshot_name_, options));
+    std::cout << i << std::endl;
+  }
+}
 
 TEST_F(CheckpointTest, CheckpointCF) {
   Options options = CurrentOptions();
