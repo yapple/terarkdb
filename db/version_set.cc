@@ -1293,6 +1293,10 @@ Status Version::fetch_buffer(LazyBuffer* buffer) const {
                          nullptr, nullptr, nullptr, env_, &context_seq);
   IterKey iter_key;
   iter_key.SetInternalKey(user_key, sequence, kValueTypeForSeek);
+  // TODO wangyi.ywq@bytedance.com
+  // we should store offset information to LazyBuffer context
+  // we need to support Get operation by offset to avoid unnecessary index block
+  // read
   auto s = table_cache_->Get(
       ReadOptions(), cfd_->internal_comparator(), *pair.second,
       storage_info_.dependence_map(), iter_key.GetInternalKey(), &get_context,
@@ -1316,8 +1320,9 @@ Status Version::fetch_buffer(LazyBuffer* buffer) const {
   return Status::OK();
 }
 
+// when compaction, we need to update the newest fileno and offset
 LazyBuffer Version::TransToCombined(const Slice& user_key, uint64_t sequence,
-                                    const LazyBuffer& value) const {
+                                    LazyBuffer& value) const {
   auto s = value.fetch();
   if (!s.ok()) {
     return LazyBuffer(std::move(s));
@@ -1328,11 +1333,33 @@ LazyBuffer Version::TransToCombined(const Slice& user_key, uint64_t sequence,
   if (find == dependence_map.end()) {
     return LazyBuffer(Status::Corruption("Separate value dependence missing"));
   } else {
+    // TODO wangyi.ywq@bytedance.com
+    // we need store the offset info to LazyBuffer context
+    // The TableCache should provide a function to get the value offset through
+    // the key
+    IterKey iter_key;
+    iter_key.SetInternalKey(user_key, sequence, kValueTypeForSeek);
+    bool value_found = false;
+    SequenceNumber context_seq;
+    GetContext get_context(cfd_->internal_comparator().user_comparator(),
+                           nullptr, cfd_->ioptions()->info_log, db_statistics_,
+                           GetContext::kNotFound, user_key, &value,
+                           &value_found, nullptr, nullptr, nullptr, env_,
+                           &context_seq);
+
+    auto ro = ReadOptions();
+    ro.read_handle = true;
+    auto s = table_cache_->Get(
+        ro, cfd_->internal_comparator(), *find->second,
+        storage_info_.dependence_map(), iter_key.GetInternalKey(), &get_context,
+        mutable_cf_options_.prefix_extractor.get(), nullptr, true);
     return LazyBuffer(
         this,
         {reinterpret_cast<uint64_t>(user_key.data()), user_key.size(), sequence,
-         reinterpret_cast<uint64_t>(&*find)},
-        Slice::Invalid(), find->second->fd.GetNumber());
+         reinterpret_cast<uint64_t>(&*find), value.block_offset(),
+         value.block_size()},
+        Slice::Invalid(), find->second->fd.GetNumber(), value.block_offset(),
+        value.block_size());
   }
 }
 

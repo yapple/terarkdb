@@ -490,6 +490,10 @@ Status TableCache::Get(const ReadOptions& options,
       t = GetTableReaderFromHandle(handle);
     }
   }
+  if(options.read_handle){
+    s = t->Get(options, k, get_context, prefix_extractor, skip_filters);
+    return s;
+  }
   if (s.ok()) {
     t->UpdateMaxCoveringTombstoneSeq(options, ExtractUserKey(k),
                                      get_context->max_covering_tombstone_seq());

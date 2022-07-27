@@ -1603,7 +1603,7 @@ void CompactionJob::ProcessKeyValueCompaction(SubcompactionState* sub_compact) {
     }
 
     LazyBuffer TransToCombined(const Slice& user_key, uint64_t sequence,
-                               const LazyBuffer& value) const override {
+                               LazyBuffer& value) const override {
       return separate_helper->TransToCombined(user_key, sequence, value);
     }
   } separate_helper;

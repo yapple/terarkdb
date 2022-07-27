@@ -69,6 +69,14 @@ class GetContext {
   bool SaveValue(const ParsedInternalKey& parsed_key, LazyBuffer&& value,
                  bool* matched);
 
+  void SaveBlockHandle(uint64_t block_offset, uint64_t block_size) {
+    value_handle_.set_offset(block_offset);
+    value_handle_.set_size(block_size);
+  };
+  BlockHandle getBlockHandler(){
+    return value_handle_;
+  }
+
   GetState State() const { return state_; }
   Status&& CorruptReason() && { return std::move(corrupt_); }
 
@@ -122,6 +130,9 @@ class GetContext {
   // For Merge, don't accept key while seq type less than min_seq_type
   uint64_t min_seq_type_;
   ReadCallback* callback_;
+
+  BlockHandle value_handle_;
+
   bool sample_;
   bool is_index_;
   bool is_finished_;

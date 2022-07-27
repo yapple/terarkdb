@@ -2441,6 +2441,27 @@ Status BlockBasedTable::Get(const ReadOptions& read_options, const Slice& key,
 
     bool matched = false;  // if such user key mathced a key in SST
     bool done = false;
+    if (read_options.read_handle) {
+      for (iiter->Seek(key); iiter->Valid() && !done; iiter->Next()) {
+        BlockHandle handle = iiter->value();
+        get_context->SaveBlockHandle(handle.offset(), handle.size());
+        done = true;
+        break;
+      }
+    }
+    if (!done && read_options.read_by_handle) {
+      // TODO wangyi.ywq@bytedance.com
+      // read blob file using block handle
+      BlockHandle handle = get_context->getBlockHandler();
+      DataBlockIter biter;
+      NewDataBlockIterator<DataBlockIter>(rep_, read_options, handle, &biter,
+                                          false, true /* key_includes_seq */,
+                                          get_context);
+      if (!biter.status().ok()) {
+        s = biter.status();
+      }
+
+    }
     for (iiter->Seek(key); iiter->Valid() && !done; iiter->Next()) {
       BlockHandle handle = iiter->value();
 

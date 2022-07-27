@@ -32,7 +32,7 @@ enum class LazyBufferPinLevel {
 };
 
 struct LazyBufferContext {
-  uint64_t data[4];
+  uint64_t data[6];
 };
 
 struct LazyBufferCustomizeBuffer {
@@ -113,6 +113,9 @@ class LazyBuffer {
   const LazyBufferState* state_;
   LazyBufferContext context_;
   uint64_t file_number_;
+  mutable uint64_t block_offset_;
+  mutable uint64_t block_size_;
+  bool should_flush_;
 
   // Call LazyBufferState::destroy if state_ not nullptr
   void destroy();
@@ -162,7 +165,9 @@ class LazyBuffer {
   // Init from customize state
   LazyBuffer(const LazyBufferState* _state, const LazyBufferContext& _context,
              const Slice& _slice = Slice::Invalid(),
-             uint64_t _file_number = uint64_t(-1)) noexcept;
+             uint64_t _file_number = uint64_t(-1),
+             uint64_t _block_offset = uint64_t(-1),
+             uint64_t _block_size = uint64_t(-1)) noexcept;
 
   ~LazyBuffer() { destroy(); }
 
@@ -267,11 +272,15 @@ class LazyBuffer {
 
   // Reset buffer from copying or referring
   void reset(const Slice& _slice, bool _copy = false,
-             uint64_t _file_number = uint64_t(-1));
+             uint64_t _file_number = uint64_t(-1),
+             uint64_t _block_offset = uint64_t(-1),
+             uint64_t _block_size = uint64_t(-1));
 
   // Reset buffer from copying
   void reset(const SliceParts& _slice_parts,
-             uint64_t _file_number = uint64_t(-1));
+             uint64_t _file_number = uint64_t(-1),
+             uint64_t _block_offset = uint64_t(-1),
+             uint64_t _block_size = uint64_t(-1));
 
   // Reset with Status
   void reset(Status&& _status) { assign_error(std::move(_status)); }
@@ -284,12 +293,16 @@ class LazyBuffer {
 
   // Reset cleanup function for slice
   void reset(const Slice& _slice, Cleanable&& _cleanable,
-             uint64_t _file_number = uint64_t(-1));
+             uint64_t _file_number = uint64_t(-1),
+             uint64_t _block_offset = uint64_t(-1),
+             uint64_t _block_size = uint64_t(-1));
 
   // Reset to customize state
   void reset(const LazyBufferState* _state, const LazyBufferContext& _context,
              const Slice& _slice = Slice::Invalid(),
-             uint64_t _file_number = uint64_t(-1));
+             uint64_t _file_number = uint64_t(-1),
+             uint64_t _block_offset = uint64_t(-1),
+             uint64_t _block_size = uint64_t(-1));
 
   // Fetch source and copy it
   void assign(const LazyBuffer& _source);
@@ -302,6 +315,10 @@ class LazyBuffer {
 
   // Return the certain file number of SST, -1 for unknown
   uint64_t file_number() const { return file_number_; }
+
+  uint64_t block_offset() const { return block_offset_; }
+
+  uint64_t block_size() const { return block_size_; }
 
   // Pin this buffer, detach life cycle from some object
   void pin(LazyBufferPinLevel level = LazyBufferPinLevel::DB);
@@ -317,6 +334,15 @@ class LazyBuffer {
 
   // Fetch buffer
   Status fetch() const;
+
+  bool should_flush() const { return should_flush_; }
+
+  bool set_should_flush(bool should_flush) { should_flush_ = should_flush; }
+
+  void set_block_handle(uint64_t _block_offset, uint64_t _block_size) const {
+    block_offset_ = _block_offset;
+    block_size_ = _block_size;
+  }
 
   // For test
   const LazyBufferState* TEST_state() const { return state_; }
@@ -401,12 +427,15 @@ inline LazyBuffer::LazyBuffer(const Slice& _slice, Cleanable&& _cleanable,
 
 inline LazyBuffer::LazyBuffer(const LazyBufferState* _state,
                               const LazyBufferContext& _context,
-                              const Slice& _slice,
-                              uint64_t _file_number) noexcept
+                              const Slice& _slice, uint64_t _file_number,
+                              uint64_t _block_offset,
+                              uint64_t _block_size) noexcept
     : slice_(_slice),
       state_(_state),
       context_(_context),
-      file_number_(_file_number) {
+      file_number_(_file_number),
+      block_offset_(_block_offset),
+      block_size_(_block_size) {
   assert(_state != nullptr);
 }
 
@@ -428,6 +457,8 @@ inline void LazyBuffer::assign_error(Status&& _status) {
     assert(!slice_.valid());
   }
   file_number_ = uint64_t(-1);
+  block_offset_ = uint64_t(-1);
+  block_size_ = uint64_t(-1);
 }
 
 inline void LazyBuffer::clear() {
@@ -437,6 +468,8 @@ inline void LazyBuffer::clear() {
   state_->assign_slice(this, Slice());
   assert(size_ == 0);
   file_number_ = uint64_t(-1);
+  block_offset_ = uint64_t(-1);
+  block_size_ = uint64_t(-1);
 }
 
 inline void LazyBuffer::reset() {
@@ -446,6 +479,8 @@ inline void LazyBuffer::reset() {
   }
   slice_ = Slice::Invalid();
   file_number_ = uint64_t(-1);
+  block_offset_ = uint64_t(-1);
+  block_size_ = uint64_t(-1);
 }
 
 inline void LazyBuffer::reset(LazyBuffer&& _buffer) {
@@ -455,6 +490,9 @@ inline void LazyBuffer::reset(LazyBuffer&& _buffer) {
     state_ = _buffer.state_;
     context_ = _buffer.context_;
     file_number_ = _buffer.file_number_;
+    block_offset_ = _buffer.block_offset_;
+    block_size_ = _buffer.block_size_;
+
     if (state_ == LazyBufferState::light_state() &&
         _buffer.size_ <= sizeof(LazyBufferContext)) {
       fix_light_state(_buffer);
@@ -465,7 +503,8 @@ inline void LazyBuffer::reset(LazyBuffer&& _buffer) {
 }
 
 inline void LazyBuffer::reset(const Slice& _slice, bool _copy,
-                              uint64_t _file_number) {
+                              uint64_t _file_number, uint64_t _block_offset,
+                              uint64_t _block_size) {
   assert(_slice.valid());
   if (_copy) {
     state_->assign_slice(this, _slice);
@@ -476,27 +515,35 @@ inline void LazyBuffer::reset(const Slice& _slice, bool _copy,
     state_ = LazyBufferState::light_state();
   }
   file_number_ = _file_number;
+  block_offset_ = _block_offset;
+  block_size_ = _block_size;
 }
 
 inline void LazyBuffer::reset(const Slice& _slice, Cleanable&& _cleanable,
-                              uint64_t _file_number) {
+                              uint64_t _file_number, uint64_t _block_offset,
+                              uint64_t _block_size) {
   assert(_slice.valid());
   destroy();
   state_ = LazyBufferState::cleanable_state();
   slice_ = _slice;
   new (&context_) Cleanable(std::move(_cleanable));
   file_number_ = _file_number;
+  block_offset_ = _block_offset;
+  block_size_ = _block_size;
 }
 
 inline void LazyBuffer::reset(const LazyBufferState* _state,
                               const LazyBufferContext& _context,
-                              const Slice& _slice, uint64_t _file_number) {
+                              const Slice& _slice, uint64_t _file_number,
+                              uint64_t _block_offset, uint64_t _block_size) {
   assert(_state != nullptr);
   destroy();
   slice_ = _slice;
   state_ = _state;
   context_ = _context;
   file_number_ = _file_number;
+  block_offset_ = _block_offset;
+  block_size_ = _block_size;
 }
 
 inline Status LazyBuffer::fetch() const {

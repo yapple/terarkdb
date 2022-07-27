@@ -280,7 +280,7 @@ class WorkerSeparateHelper : public SeparateHelper, public LazyBufferState {
   }
 
   LazyBuffer TransToCombined(const Slice& user_key, uint64_t sequence,
-                             const LazyBuffer& value) const override {
+                             LazyBuffer& value) const override {
     auto s = value.fetch();
     if (!s.ok()) {
       return LazyBuffer(std::move(s));

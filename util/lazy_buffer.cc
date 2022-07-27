@@ -479,7 +479,8 @@ LazyBuffer::LazyBuffer(std::string* _string) noexcept
 #pragma GCC diagnostic pop
 #endif
 
-void LazyBuffer::reset(const SliceParts& _slice_parts, uint64_t _file_number) {
+void LazyBuffer::reset(const SliceParts& _slice_parts, uint64_t _file_number,
+                       uint64_t _block_offset, uint64_t _block_size) {
   destroy();
   size_t size = 0;
   for (int i = 0; i < _slice_parts.num_parts; ++i) {
@@ -492,8 +493,12 @@ void LazyBuffer::reset(const SliceParts& _slice_parts, uint64_t _file_number) {
       dst += _slice_parts.parts[i].size();
     }
     file_number_ = _file_number;
+    block_offset_ = _block_offset;
+    block_size_ = _block_size;
   } else {
     file_number_ = uint64_t(-1);
+    block_offset_ = uint64_t(-1);
+    block_size_ = uint64_t(-1);
   }
 }
 

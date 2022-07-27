@@ -810,7 +810,8 @@ class SeparateHelper {
   }
 
   static Status TransToSeparate(const Slice& internal_key, LazyBuffer& value,
-                                uint64_t file_number, const Slice& meta,
+                                uint64_t file_number, uint64_t block_offset,
+                                uint64_t block_size, const Slice& meta,
                                 bool is_merge, bool is_index,
                                 const ValueExtractor* value_meta_extractor);
 
@@ -818,7 +819,8 @@ class SeparateHelper {
                                  const Slice& meta, bool is_merge,
                                  bool is_index) {
     assert(value.file_number() != uint64_t(-1));
-    return TransToSeparate(internal_key, value, value.file_number(), meta,
+    return TransToSeparate(internal_key, value, value.file_number(),
+                           value.block_offset(), value.block_size(), meta,
                            is_merge, is_index, nullptr);
   }
 
@@ -828,7 +830,7 @@ class SeparateHelper {
   }
 
   virtual LazyBuffer TransToCombined(const Slice& user_key, uint64_t sequence,
-                                     const LazyBuffer& value) const = 0;
+                                     LazyBuffer& value) const = 0;
 };
 
 extern Slice ArenaPinSlice(const Slice& slice, Arena* arena);

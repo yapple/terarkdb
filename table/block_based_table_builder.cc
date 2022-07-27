@@ -405,9 +405,13 @@ Status BlockBasedTableBuilder::Add(const Slice& key,
   }
 
   auto should_flush = r->flush_block_policy->Update(key, value);
-  if (should_flush) {
+  if (should_flush || lazy_value.should_flush()) {
     assert(!r->data_block.empty());
     Flush();
+    if (lazy_value.should_flush()) {
+      lazy_value.set_block_handle(r->pending_handle.offset(),
+                                  r->pending_handle.size());
+    }
 
     // Add item to index block.
     // We do not emit the index entry for a block until we have seen the first

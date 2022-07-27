@@ -197,19 +197,25 @@ void IterKey::EnlargeBuffer(size_t key_size) {
   buf_ = new char[key_size];
   buf_size_ = key_size;
 }
-
+// TODO wangyi.ywq@bytedance.com
+// how to implement decode metedata
 Status SeparateHelper::TransToSeparate(
     const Slice& internal_key, LazyBuffer& value, uint64_t file_number,
-    const Slice& meta, bool is_merge, bool is_index,
-    const ValueExtractor* value_meta_extractor) {
+    uint64_t block_offset, uint64_t block_size, const Slice& meta,
+    bool is_merge, bool is_index, const ValueExtractor* value_meta_extractor) {
   assert(file_number != uint64_t(-1));
+  assert(block_offset != uint64_t(-1));
+  assert(block_size != uint64_t(-1));
   if (value_meta_extractor == nullptr || is_merge) {
-    value.reset(EncodeFileNumber(file_number), true, file_number);
+    value.reset(EncodeFileNumber(file_number), true, file_number, block_offset,
+                block_size);
     return Status::OK();
   }
   if (is_index) {
-    Slice parts[] = {EncodeFileNumber(file_number), meta};
-    value.reset(SliceParts(parts, 2), file_number);
+    Slice parts[] = {EncodeFileNumber(file_number),
+                     EncodeFileNumber(block_offset),
+                     EncodeFileNumber(block_size), meta};
+    value.reset(SliceParts(parts, 4), file_number, block_offset, block_size);
     return Status::OK();
   } else {
     auto s = value.fetch();
@@ -220,8 +226,10 @@ Status SeparateHelper::TransToSeparate(
     s = value_meta_extractor->Extract(ExtractUserKey(internal_key),
                                       value.slice(), &value_meta);
     if (s.ok()) {
-      Slice parts[] = {EncodeFileNumber(file_number), value_meta};
-      value.reset(SliceParts(parts, 2), file_number);
+      Slice parts[] = {EncodeFileNumber(file_number),
+                       EncodeFileNumber(block_offset),
+                       EncodeFileNumber(block_size), meta};
+      value.reset(SliceParts(parts, 4), file_number, block_offset, block_size);
     }
     return s;
   }
