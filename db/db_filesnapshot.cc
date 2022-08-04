@@ -115,6 +115,7 @@ Status DBImpl::FakeFlush(std::vector<std::string>& ret) {
       continue;
     }
     cfd->Ref();
+    cfd->disableAutoCompaction();
     cfds.push_back(cfd);
   }
   mutex_.Unlock();
@@ -207,6 +208,7 @@ Status DBImpl::FakeFlush(std::vector<std::string>& ret) {
     }
   }
   for (auto cfd : cfds) {
+    cfd->enableAutoCompaction();
     cfd->Unref();
   }
   mutex_.Unlock();
