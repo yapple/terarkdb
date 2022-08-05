@@ -110,6 +110,10 @@ Status DBImpl::FakeFlush(std::vector<std::string>& ret) {
   Status status;
   mutex_.Lock();
   autovector<ColumnFamilyData*> cfds;
+  ROCKS_LOG_INFO(
+      immutable_db_options_.info_log,
+      "[fake-flush] start compaction_queue size: %d garbage_queue size: %d",
+      compaction_queue_.size(), garbage_collection_queue_.size());
   for (auto cfd : *versions_->GetColumnFamilySet()) {
     if (cfd->IsDropped()) {
       continue;
@@ -137,18 +141,20 @@ Status DBImpl::FakeFlush(std::vector<std::string>& ret) {
       env_->SleepForMicroseconds(1000000);
       cnt++;
       ROCKS_LOG_INFO(immutable_db_options_.info_log,
-                     "[%s] CheckPoint MaybeScheduleFlushOrCompaction cnt: %d",
+                     "[%s] CheckPoint Waitting flush pending cnt: %d",
                      cfd->GetName().c_str(), cnt);
-      mutex_.Lock();
-      // the flush will not schedule when the threadpool is busy
-      MaybeScheduleFlushOrCompaction();
-      mutex_.Unlock();
       if (cnt > 10) {
         ROCKS_LOG_WARN(immutable_db_options_.info_log,
                        "[%s] CheckPoint break MaybeScheduleFlushOrCompaction",
                        cfd->GetName().c_str());
         break;
       }
+    }  // while imm isFlushPending
+
+    if (cfd->mem()->ApproximateMemoryUsage() >
+        cfd->GetLatestCFOptions().write_buffer_size * 0.2) {
+      Status status =
+          FlushMemTable({cfd}, FlushOptions(), FlushReason::kFakeFlush);
     }
   }
   mutex_.Lock();
@@ -173,7 +179,7 @@ Status DBImpl::FakeFlush(std::vector<std::string>& ret) {
       }
       m->Unref();
     }
-    if (status.ok()) {
+    if (status.ok() && cfd->mem()->num_entries() > 0) {
       auto m = cfd->mem();
       m->Ref();
       try {
@@ -207,6 +213,10 @@ Status DBImpl::FakeFlush(std::vector<std::string>& ret) {
       break;
     }
   }
+  ROCKS_LOG_INFO(
+      immutable_db_options_.info_log,
+      "[fake-flush] end compaction_queue size: %d garbage_queue size: %d",
+      compaction_queue_.size(), garbage_collection_queue_.size());
   for (auto cfd : cfds) {
     cfd->enableAutoCompaction();
     cfd->Unref();
