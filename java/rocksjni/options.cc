@@ -1807,6 +1807,20 @@ jboolean Java_org_rocksdb_Options_allow2pc(JNIEnv* /*env*/, jobject /*jobj*/,
   return static_cast<jboolean>(opt->allow_2pc);
 }
 
+void Java_org_rocksdb_Options_setCheckPointFakeFlush(
+    JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
+    jboolean jcheck_point_fake_flush) {
+  auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
+  opt->check_point_fake_flush = static_cast<bool>(jcheck_point_fake_flush);
+}
+
+jboolean Java_org_rocksdb_Options_checkPointFakeFlush(JNIEnv* /*env*/,
+                                                  jobject /*jobj*/,
+                                                  jlong jhandle) {
+  auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
+  return static_cast<jboolean>(opt->check_point_fake_flush);
+}
+
 /*
  * Class:     org_rocksdb_Options
  * Method:    setRowCache
@@ -2536,6 +2550,27 @@ jlong Java_org_rocksdb_Options_blobSize(JNIEnv* /*env*/, jobject /*jobj*/,
       ->blob_size;
 }
 
+/*
+ * Class:     org_rocksdb_Options
+ * Method:    setBlobGcRatio
+ * Signature: (JJ)V
+ */
+void Java_org_rocksdb_Options_setBlobGcRatio(JNIEnv* env, jobject /*jobj*/,
+                                             jlong jhandle,
+                                             jdouble jblob_gc_ratio) {
+  reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)->blob_gc_ratio =
+      static_cast<double>(jblob_gc_ratio);
+}
+
+/*
+ * Class:     org_rocksdb_Options
+ * Method:    blobGcRatio
+ * Signature: (J)J
+ */
+jdouble Java_org_rocksdb_Options_blobGcRatio(JNIEnv* /*env*/, jobject /*jobj*/,
+                                           jlong jhandle) {
+  return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)->blob_gc_ratio;
+}
 
 /*
  * Class:     org_rocksdb_Options
@@ -3409,6 +3444,27 @@ void Java_org_rocksdb_ColumnFamilyOptions_setBlobSize(JNIEnv* env, jobject /*job
   }
 }
 
+/*
+ * Class:     org_rocksdb_ColumnFamilyOptions
+ * Method:    blobGcRatio
+ * Signature: (J)J
+ */
+jdouble Java_org_rocksdb_ColumnFamilyOptions_blobGcRatio(JNIEnv* /*env*/,
+                                                         jobject /*jobj*/,
+                                                         jlong jhandle) {
+  return reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
+      ->blob_gc_ratio;
+}
+/*
+ * Class:     org_rocksdb_ColumnFamilyOptions
+ * Method:    setBlobGcRatio
+ * Signature: (JJ)V
+ */
+void Java_org_rocksdb_ColumnFamilyOptions_setBlobGcRatio(
+    JNIEnv* env, jobject /*jobj*/, jlong jhandle, jdouble jblob_gc_ratio) {
+  reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
+      ->blob_gc_ratio = static_cast<double>(jblob_gc_ratio);
+}
 
 /*
  * Class:     org_rocksdb_ColumnFamilyOptions

@@ -1337,6 +1337,15 @@ public class Options extends RocksObject
     return blobSize(nativeHandle_);
   }
 
+  public Options setBlobGcRatio(final double blobGcRatio){
+    setBlobGcRatio(nativeHandle_, blobGcRatio);
+    return this;
+  }
+
+  public double blobGcRatio(){
+    return blobGcRatio(nativeHandle_);
+  }
+
   @Override
   public Options setTargetBlobFileSize(final long targetBlobFileSize){
     setTargetBlobFileSize(nativeHandle_,targetBlobFileSize);
@@ -1598,6 +1607,17 @@ public class Options extends RocksObject
     return forceConsistencyChecks(nativeHandle_);
   }
 
+  @Override
+  public Options setCheckPointFakeFlush(final boolean checkPointFakeFlush) {
+    setCheckPointFakeFlush(nativeHandle_, checkPointFakeFlush);
+    return this;
+  }
+
+  @Override
+  public boolean checkPointFakeFlush(){
+    return  checkPointFakeFlush(nativeHandle_);
+  }
+
   private native static long newOptions();
   private native static long newOptions(long dbOptHandle,
       long cfOptHandle);
@@ -1857,6 +1877,8 @@ public class Options extends RocksObject
   private native boolean disableAutoCompactions(long handle);
   private native void setBlobSize(long handle, long blobSize);
   private native long blobSize(long handle);
+  private native void setBlobGcRatio(long handle, double blobGcRatio);
+  private native double blobGcRatio(long handle);
   private native void setTargetBlobFileSize(long handle, long blobSize);
   private native long targetBlobFileSize(long handle);
   private native void setCompactionStyle(long handle, byte compactionStyle);
@@ -1928,6 +1950,10 @@ public class Options extends RocksObject
   private native void setForceConsistencyChecks(final long handle,
       final boolean forceConsistencyChecks);
   private native boolean forceConsistencyChecks(final long handle);
+  private native void setCheckPointFakeFlush(final long handle,
+        final boolean checkPointFakeFlush);
+  private native boolean checkPointFakeFlush(final long handle);
+
 
   // instance variables
   // NOTE: If you add new member variables, please update the copy constructor above!

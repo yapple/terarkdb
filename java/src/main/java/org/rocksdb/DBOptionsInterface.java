@@ -1597,4 +1597,9 @@ public interface DBOptionsInterface<T extends DBOptionsInterface> {
    * @return true if we should avoid flush during shutdown
    */
   boolean avoidFlushDuringShutdown();
+
+  T setCheckPointFakeFlush(boolean fakeFlush);
+
+  boolean checkPointFakeFlush();
+
 }

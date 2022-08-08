@@ -65,3 +65,23 @@ void Java_org_rocksdb_Checkpoint_createCheckpoint(JNIEnv* env, jobject /*jobj*/,
     TERARKDB_NAMESPACE::RocksDBExceptionJni::ThrowNew(env, s);
   }
 }
+
+void Java_org_rocksdb_Checkpoint_createCheckpoint0(JNIEnv* env, jobject /*jobj*/,
+                                                  jlong jcheckpoint_handle,
+                                                  jstring jcheckpoint_path,
+                                                  jlong jcheckpoint_log_size) {
+  const char* checkpoint_path = env->GetStringUTFChars(jcheckpoint_path, 0);
+  if (checkpoint_path == nullptr) {
+    // exception thrown: OutOfMemoryError
+    return;
+  }
+
+  auto* checkpoint = reinterpret_cast<TERARKDB_NAMESPACE::Checkpoint*>(jcheckpoint_handle);
+  TERARKDB_NAMESPACE::Status s = checkpoint->CreateCheckpoint(checkpoint_path,jcheckpoint_log_size);
+
+  env->ReleaseStringUTFChars(jcheckpoint_path, checkpoint_path);
+
+  if (!s.ok()) {
+    TERARKDB_NAMESPACE::RocksDBExceptionJni::ThrowNew(env, s);
+  }
+}

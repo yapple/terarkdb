@@ -269,7 +269,8 @@ MutableDBOptions::MutableDBOptions()
       compaction_readahead_size(0),
       zenfs_low_gc_ratio(0.25),
       zenfs_high_gc_ratio(0.6),
-      zenfs_force_gc_ratio(0.9) {}
+      zenfs_force_gc_ratio(0.9),
+      check_point_fake_flush(false) {}
 
 MutableDBOptions::MutableDBOptions(const DBOptions& options)
     : max_background_jobs(options.max_background_jobs),
@@ -293,7 +294,8 @@ MutableDBOptions::MutableDBOptions(const DBOptions& options)
       compaction_readahead_size(options.compaction_readahead_size),
       zenfs_low_gc_ratio(options.zenfs_low_gc_ratio),
       zenfs_high_gc_ratio(options.zenfs_high_gc_ratio),
-      zenfs_force_gc_ratio(options.zenfs_force_gc_ratio) {}
+      zenfs_force_gc_ratio(options.zenfs_force_gc_ratio),
+      check_point_fake_flush(options.check_point_fake_flush) {}
 
 void MutableDBOptions::Dump(Logger* log) const {
   ROCKS_LOG_HEADER(log, "                   Options.max_background_jobs: %d",
@@ -342,6 +344,8 @@ void MutableDBOptions::Dump(Logger* log) const {
                    zenfs_high_gc_ratio);
   ROCKS_LOG_HEADER(log, "                      Options.zenfs_force_ratio: %lf",
                    zenfs_force_gc_ratio);
+  ROCKS_LOG_HEADER(log, "                  Options.checkpoint_fake_flush: %lf",
+                   check_point_fake_flush);
 }
 
 }  // namespace TERARKDB_NAMESPACE
