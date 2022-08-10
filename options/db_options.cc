@@ -344,7 +344,7 @@ void MutableDBOptions::Dump(Logger* log) const {
                    zenfs_high_gc_ratio);
   ROCKS_LOG_HEADER(log, "                      Options.zenfs_force_ratio: %lf",
                    zenfs_force_gc_ratio);
-  ROCKS_LOG_HEADER(log, "                  Options.checkpoint_fake_flush: %lf",
+  ROCKS_LOG_HEADER(log, "                  Options.checkpoint_fake_flush: %d",
                    check_point_fake_flush);
 }
 

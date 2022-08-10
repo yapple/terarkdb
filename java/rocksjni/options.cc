@@ -1807,6 +1807,11 @@ jboolean Java_org_rocksdb_Options_allow2pc(JNIEnv* /*env*/, jobject /*jobj*/,
   return static_cast<jboolean>(opt->allow_2pc);
 }
 
+/*
+ * Class:     org_rocksdb_Options
+ * Method:    setCheckPointFakeFlush
+ * Signature: (JZ)V
+ */
 void Java_org_rocksdb_Options_setCheckPointFakeFlush(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean jcheck_point_fake_flush) {
@@ -1814,6 +1819,11 @@ void Java_org_rocksdb_Options_setCheckPointFakeFlush(
   opt->check_point_fake_flush = static_cast<bool>(jcheck_point_fake_flush);
 }
 
+/*
+ * Class:     org_rocksdb_Options
+ * Method:    checkPointFakeFlush
+ * Signature: (J)Z
+ */
 jboolean Java_org_rocksdb_Options_checkPointFakeFlush(JNIEnv* /*env*/,
                                                   jobject /*jobj*/,
                                                   jlong jhandle) {
@@ -4714,6 +4724,29 @@ jboolean Java_org_rocksdb_ColumnFamilyOptions_forceConsistencyChecks(
 
 /////////////////////////////////////////////////////////////////////
 // TERARKDB_NAMESPACE::DBOptions
+/*
+ * Class:     org_rocksdb_DBOptions
+ * Method:    setCheckPointFakeFlush
+ * Signature: (JZ)V
+ */
+void Java_org_rocksdb_DBOptions_setCheckPointFakeFlush(
+    JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
+    jboolean jcheck_point_fake_flush) {
+  auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle);
+  opt->check_point_fake_flush = static_cast<bool>(jcheck_point_fake_flush);
+}
+
+/*
+ * Class:     org_rocksdb_DBOptions
+ * Method:    checkPointFakeFlush
+ * Signature: (J)Z
+ */
+jboolean Java_org_rocksdb_DBOptions_checkPointFakeFlush(JNIEnv* /*env*/,
+                                                      jobject /*jobj*/,
+                                                      jlong jhandle) {
+  auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle);
+  return static_cast<jboolean>(opt->check_point_fake_flush);
+}
 
 /*
  * Class:     org_rocksdb_DBOptions
