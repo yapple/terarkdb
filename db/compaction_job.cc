@@ -582,6 +582,7 @@ struct CompactionJob::SubcompactionState {
     output->blobs.reserve(blob_map.size());
     for (auto& pair : blob_map) {
       auto meta = pair.second.first;
+      if (meta->prop.num_entries == 0) continue;
       uint64_t total_bytes = meta->fd.GetFileSize();
       uint64_t ref_bytes =
           total_bytes * pair.second.second / meta->prop.num_entries;
