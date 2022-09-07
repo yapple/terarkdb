@@ -8,26 +8,26 @@
 
 #include <jni.h>
 
-#include "include/org_rocksdb_IngestExternalFileOptions.h"
+#include "include/org_terarkdb_IngestExternalFileOptions.h"
 #include "rocksdb/options.h"
 
 /*
- * Class:     org_rocksdb_IngestExternalFileOptions
+ * Class:     org_terarkdb_IngestExternalFileOptions
  * Method:    newIngestExternalFileOptions
  * Signature: ()J
  */
-jlong Java_org_rocksdb_IngestExternalFileOptions_newIngestExternalFileOptions__(
+jlong Java_org_terarkdb_IngestExternalFileOptions_newIngestExternalFileOptions__(
     JNIEnv* /*env*/, jclass /*jclazz*/) {
   auto* options = new TERARKDB_NAMESPACE::IngestExternalFileOptions();
   return reinterpret_cast<jlong>(options);
 }
 
 /*
- * Class:     org_rocksdb_IngestExternalFileOptions
+ * Class:     org_terarkdb_IngestExternalFileOptions
  * Method:    newIngestExternalFileOptions
  * Signature: (ZZZZ)J
  */
-jlong Java_org_rocksdb_IngestExternalFileOptions_newIngestExternalFileOptions__ZZZZ(
+jlong Java_org_terarkdb_IngestExternalFileOptions_newIngestExternalFileOptions__ZZZZ(
     JNIEnv* /*env*/, jclass /*jcls*/, jboolean jmove_files,
     jboolean jsnapshot_consistency, jboolean jallow_global_seqno,
     jboolean jallow_blocking_flush) {
@@ -40,11 +40,11 @@ jlong Java_org_rocksdb_IngestExternalFileOptions_newIngestExternalFileOptions__Z
 }
 
 /*
- * Class:     org_rocksdb_IngestExternalFileOptions
+ * Class:     org_terarkdb_IngestExternalFileOptions
  * Method:    moveFiles
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_IngestExternalFileOptions_moveFiles(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_IngestExternalFileOptions_moveFiles(JNIEnv* /*env*/,
                                                               jobject /*jobj*/,
                                                               jlong jhandle) {
   auto* options =
@@ -53,11 +53,11 @@ jboolean Java_org_rocksdb_IngestExternalFileOptions_moveFiles(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_IngestExternalFileOptions
+ * Class:     org_terarkdb_IngestExternalFileOptions
  * Method:    setMoveFiles
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_IngestExternalFileOptions_setMoveFiles(
+void Java_org_terarkdb_IngestExternalFileOptions_setMoveFiles(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle, jboolean jmove_files) {
   auto* options =
       reinterpret_cast<TERARKDB_NAMESPACE::IngestExternalFileOptions*>(jhandle);
@@ -65,11 +65,11 @@ void Java_org_rocksdb_IngestExternalFileOptions_setMoveFiles(
 }
 
 /*
- * Class:     org_rocksdb_IngestExternalFileOptions
+ * Class:     org_terarkdb_IngestExternalFileOptions
  * Method:    snapshotConsistency
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_IngestExternalFileOptions_snapshotConsistency(
+jboolean Java_org_terarkdb_IngestExternalFileOptions_snapshotConsistency(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   auto* options =
       reinterpret_cast<TERARKDB_NAMESPACE::IngestExternalFileOptions*>(jhandle);
@@ -77,11 +77,11 @@ jboolean Java_org_rocksdb_IngestExternalFileOptions_snapshotConsistency(
 }
 
 /*
- * Class:     org_rocksdb_IngestExternalFileOptions
+ * Class:     org_terarkdb_IngestExternalFileOptions
  * Method:    setSnapshotConsistency
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_IngestExternalFileOptions_setSnapshotConsistency(
+void Java_org_terarkdb_IngestExternalFileOptions_setSnapshotConsistency(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean jsnapshot_consistency) {
   auto* options =
@@ -90,11 +90,11 @@ void Java_org_rocksdb_IngestExternalFileOptions_setSnapshotConsistency(
 }
 
 /*
- * Class:     org_rocksdb_IngestExternalFileOptions
+ * Class:     org_terarkdb_IngestExternalFileOptions
  * Method:    allowGlobalSeqNo
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_IngestExternalFileOptions_allowGlobalSeqNo(
+jboolean Java_org_terarkdb_IngestExternalFileOptions_allowGlobalSeqNo(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   auto* options =
       reinterpret_cast<TERARKDB_NAMESPACE::IngestExternalFileOptions*>(jhandle);
@@ -102,11 +102,11 @@ jboolean Java_org_rocksdb_IngestExternalFileOptions_allowGlobalSeqNo(
 }
 
 /*
- * Class:     org_rocksdb_IngestExternalFileOptions
+ * Class:     org_terarkdb_IngestExternalFileOptions
  * Method:    setAllowGlobalSeqNo
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_IngestExternalFileOptions_setAllowGlobalSeqNo(
+void Java_org_terarkdb_IngestExternalFileOptions_setAllowGlobalSeqNo(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean jallow_global_seqno) {
   auto* options =
@@ -115,11 +115,11 @@ void Java_org_rocksdb_IngestExternalFileOptions_setAllowGlobalSeqNo(
 }
 
 /*
- * Class:     org_rocksdb_IngestExternalFileOptions
+ * Class:     org_terarkdb_IngestExternalFileOptions
  * Method:    allowBlockingFlush
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_IngestExternalFileOptions_allowBlockingFlush(
+jboolean Java_org_terarkdb_IngestExternalFileOptions_allowBlockingFlush(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   auto* options =
       reinterpret_cast<TERARKDB_NAMESPACE::IngestExternalFileOptions*>(jhandle);
@@ -127,11 +127,11 @@ jboolean Java_org_rocksdb_IngestExternalFileOptions_allowBlockingFlush(
 }
 
 /*
- * Class:     org_rocksdb_IngestExternalFileOptions
+ * Class:     org_terarkdb_IngestExternalFileOptions
  * Method:    setAllowBlockingFlush
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_IngestExternalFileOptions_setAllowBlockingFlush(
+void Java_org_terarkdb_IngestExternalFileOptions_setAllowBlockingFlush(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean jallow_blocking_flush) {
   auto* options =
@@ -140,11 +140,11 @@ void Java_org_rocksdb_IngestExternalFileOptions_setAllowBlockingFlush(
 }
 
 /*
- * Class:     org_rocksdb_IngestExternalFileOptions
+ * Class:     org_terarkdb_IngestExternalFileOptions
  * Method:    disposeInternal
  * Signature: (J)V
  */
-void Java_org_rocksdb_IngestExternalFileOptions_disposeInternal(
+void Java_org_terarkdb_IngestExternalFileOptions_disposeInternal(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   auto* options =
       reinterpret_cast<TERARKDB_NAMESPACE::IngestExternalFileOptions*>(jhandle);

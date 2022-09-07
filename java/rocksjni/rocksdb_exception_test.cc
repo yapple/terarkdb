@@ -5,49 +5,49 @@
 
 #include <jni.h>
 
-#include "include/org_rocksdb_RocksDBExceptionTest.h"
+#include "include/org_terarkdb_RocksDBExceptionTest.h"
 
 #include "rocksdb/slice.h"
 #include "rocksdb/status.h"
 #include "rocksjni/portal.h"
 
 /*
- * Class:     org_rocksdb_RocksDBExceptionTest
+ * Class:     org_terarkdb_RocksDBExceptionTest
  * Method:    raiseException
  * Signature: ()V
  */
-void Java_org_rocksdb_RocksDBExceptionTest_raiseException(JNIEnv* env,
+void Java_org_terarkdb_RocksDBExceptionTest_raiseException(JNIEnv* env,
                                                           jobject /*jobj*/) {
   TERARKDB_NAMESPACE::RocksDBExceptionJni::ThrowNew(env, std::string("test message"));
 }
 
 /*
- * Class:     org_rocksdb_RocksDBExceptionTest
+ * Class:     org_terarkdb_RocksDBExceptionTest
  * Method:    raiseExceptionWithStatusCode
  * Signature: ()V
  */
-void Java_org_rocksdb_RocksDBExceptionTest_raiseExceptionWithStatusCode(
+void Java_org_terarkdb_RocksDBExceptionTest_raiseExceptionWithStatusCode(
     JNIEnv* env, jobject /*jobj*/) {
   TERARKDB_NAMESPACE::RocksDBExceptionJni::ThrowNew(env, "test message",
                                          TERARKDB_NAMESPACE::Status::NotSupported());
 }
 
 /*
- * Class:     org_rocksdb_RocksDBExceptionTest
+ * Class:     org_terarkdb_RocksDBExceptionTest
  * Method:    raiseExceptionNoMsgWithStatusCode
  * Signature: ()V
  */
-void Java_org_rocksdb_RocksDBExceptionTest_raiseExceptionNoMsgWithStatusCode(
+void Java_org_terarkdb_RocksDBExceptionTest_raiseExceptionNoMsgWithStatusCode(
     JNIEnv* env, jobject /*jobj*/) {
   TERARKDB_NAMESPACE::RocksDBExceptionJni::ThrowNew(env, TERARKDB_NAMESPACE::Status::NotSupported());
 }
 
 /*
- * Class:     org_rocksdb_RocksDBExceptionTest
+ * Class:     org_terarkdb_RocksDBExceptionTest
  * Method:    raiseExceptionWithStatusCodeSubCode
  * Signature: ()V
  */
-void Java_org_rocksdb_RocksDBExceptionTest_raiseExceptionWithStatusCodeSubCode(
+void Java_org_terarkdb_RocksDBExceptionTest_raiseExceptionWithStatusCodeSubCode(
     JNIEnv* env, jobject /*jobj*/) {
   TERARKDB_NAMESPACE::RocksDBExceptionJni::ThrowNew(
       env, "test message",
@@ -55,22 +55,22 @@ void Java_org_rocksdb_RocksDBExceptionTest_raiseExceptionWithStatusCodeSubCode(
 }
 
 /*
- * Class:     org_rocksdb_RocksDBExceptionTest
+ * Class:     org_terarkdb_RocksDBExceptionTest
  * Method:    raiseExceptionNoMsgWithStatusCodeSubCode
  * Signature: ()V
  */
-void Java_org_rocksdb_RocksDBExceptionTest_raiseExceptionNoMsgWithStatusCodeSubCode(
+void Java_org_terarkdb_RocksDBExceptionTest_raiseExceptionNoMsgWithStatusCodeSubCode(
     JNIEnv* env, jobject /*jobj*/) {
   TERARKDB_NAMESPACE::RocksDBExceptionJni::ThrowNew(
       env, TERARKDB_NAMESPACE::Status::TimedOut(TERARKDB_NAMESPACE::Status::SubCode::kLockTimeout));
 }
 
 /*
- * Class:     org_rocksdb_RocksDBExceptionTest
+ * Class:     org_terarkdb_RocksDBExceptionTest
  * Method:    raiseExceptionWithStatusCodeState
  * Signature: ()V
  */
-void Java_org_rocksdb_RocksDBExceptionTest_raiseExceptionWithStatusCodeState(
+void Java_org_terarkdb_RocksDBExceptionTest_raiseExceptionWithStatusCodeState(
     JNIEnv* env, jobject /*jobj*/) {
   TERARKDB_NAMESPACE::Slice state("test state");
   TERARKDB_NAMESPACE::RocksDBExceptionJni::ThrowNew(env, "test message",

@@ -1057,24 +1057,29 @@ void DBImpl::ScheduleTtlGC() {
           return v == port::kMaxUint64 ? 0 : v;
         };
         ROCKS_LOG_BUFFER(
-          &log_buffer_info,
+          &log_buffer_debug,
           "SST #%" PRIu64 " ttl schedule debug info @L%d , property: (%" PRIu64
           " , %" PRIu64 ") now: %" PRIu64 " deleted key: %" PRIu64,
           meta->fd.GetNumber(), l, max_to_zero(meta->prop.earliest_time_begin_compact),
           max_to_zero(meta->prop.latest_time_end_compact), now, meta->prop.num_deletions);
-        if( meta->prop.num_deletions > meta->prop.num_entries * 0.2 ){
-          meta->marked_for_compaction = FileMetaData::kMarkedFromRangeDeletion;
-          ROCKS_LOG_BUFFER(
-            &log_buffer_info,
-            "SST #%" PRIu64 " ttl schedule debug info @L%d , property: (%" PRIu64
-            " , %" PRIu64 ") now: %" PRIu64 " deleted key: %" PRIu64 " marked as range_deletion",
-            meta->fd.GetNumber(), l, max_to_zero(meta->prop.earliest_time_begin_compact),
-            max_to_zero(meta->prop.latest_time_end_compact), now, meta->prop.num_deletions);
-        }
-        ++total_count;
         bool marked =
-            !!(meta->marked_for_compaction & FileMetaData::kMarkedFromTTL);
+            !!(meta->marked_for_compaction & (FileMetaData::kMarkedFromTTL | FileMetaData::kMarkedFromRangeDeletion));
+        ++total_count;
         old_mark_count += marked;
+        if (!marked &&
+            meta->prop.num_deletions > meta->prop.num_entries * 0.2) {
+          meta->marked_for_compaction |= FileMetaData::kMarkedFromRangeDeletion;
+          ROCKS_LOG_BUFFER(&log_buffer_info,
+                           "SST #%" PRIu64
+                           " ttl schedule debug info @L%d , property: (%" PRIu64
+                           " , %" PRIu64 ") now: %" PRIu64
+                           " deleted key: %" PRIu64 " marked as range_deletion",
+                           meta->fd.GetNumber(), l,
+                           max_to_zero(meta->prop.earliest_time_begin_compact),
+                           max_to_zero(meta->prop.latest_time_end_compact), now,
+                           meta->prop.num_deletions);
+          marked = true;
+        }
         TEST_SYNC_POINT("DBImpl:Exist-SST");
         if (!marked && has_ttl &&
             should_marked_for_compacted(

@@ -11,7 +11,7 @@
 #include <memory>
 #include <utility>
 
-#include "include/org_rocksdb_TransactionDB.h"
+#include "include/org_terarkdb_TransactionDB.h"
 
 #include "rocksdb/options.h"
 #include "rocksdb/utilities/transaction.h"
@@ -20,11 +20,11 @@
 #include "rocksjni/portal.h"
 
 /*
- * Class:     org_rocksdb_TransactionDB
+ * Class:     org_terarkdb_TransactionDB
  * Method:    open
  * Signature: (JJLjava/lang/String;)J
  */
-jlong Java_org_rocksdb_TransactionDB_open__JJLjava_lang_String_2(
+jlong Java_org_terarkdb_TransactionDB_open__JJLjava_lang_String_2(
     JNIEnv* env, jclass /*jcls*/, jlong joptions_handle,
     jlong jtxn_db_options_handle, jstring jdb_path) {
   auto* options = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(joptions_handle);
@@ -49,11 +49,11 @@ jlong Java_org_rocksdb_TransactionDB_open__JJLjava_lang_String_2(
 }
 
 /*
- * Class:     org_rocksdb_TransactionDB
+ * Class:     org_terarkdb_TransactionDB
  * Method:    open
  * Signature: (JJLjava/lang/String;[[B[J)[J
  */
-jlongArray Java_org_rocksdb_TransactionDB_open__JJLjava_lang_String_2_3_3B_3J(
+jlongArray Java_org_terarkdb_TransactionDB_open__JJLjava_lang_String_2_3_3B_3J(
     JNIEnv* env, jclass /*jcls*/, jlong jdb_options_handle,
     jlong jtxn_db_options_handle, jstring jdb_path, jobjectArray jcolumn_names,
     jlongArray jcolumn_options_handles) {
@@ -152,11 +152,11 @@ jlongArray Java_org_rocksdb_TransactionDB_open__JJLjava_lang_String_2_3_3B_3J(
 }
 
 /*
- * Class:     org_rocksdb_TransactionDB
+ * Class:     org_terarkdb_TransactionDB
  * Method:    beginTransaction
  * Signature: (JJ)J
  */
-jlong Java_org_rocksdb_TransactionDB_beginTransaction__JJ(
+jlong Java_org_terarkdb_TransactionDB_beginTransaction__JJ(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jwrite_options_handle) {
   auto* txn_db = reinterpret_cast<TERARKDB_NAMESPACE::TransactionDB*>(jhandle);
@@ -167,11 +167,11 @@ jlong Java_org_rocksdb_TransactionDB_beginTransaction__JJ(
 }
 
 /*
- * Class:     org_rocksdb_TransactionDB
+ * Class:     org_terarkdb_TransactionDB
  * Method:    beginTransaction
  * Signature: (JJJ)J
  */
-jlong Java_org_rocksdb_TransactionDB_beginTransaction__JJJ(
+jlong Java_org_terarkdb_TransactionDB_beginTransaction__JJJ(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jwrite_options_handle, jlong jtxn_options_handle) {
   auto* txn_db = reinterpret_cast<TERARKDB_NAMESPACE::TransactionDB*>(jhandle);
@@ -185,11 +185,11 @@ jlong Java_org_rocksdb_TransactionDB_beginTransaction__JJJ(
 }
 
 /*
- * Class:     org_rocksdb_TransactionDB
+ * Class:     org_terarkdb_TransactionDB
  * Method:    beginTransaction_withOld
  * Signature: (JJJ)J
  */
-jlong Java_org_rocksdb_TransactionDB_beginTransaction_1withOld__JJJ(
+jlong Java_org_terarkdb_TransactionDB_beginTransaction_1withOld__JJJ(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jwrite_options_handle, jlong jold_txn_handle) {
   auto* txn_db = reinterpret_cast<TERARKDB_NAMESPACE::TransactionDB*>(jhandle);
@@ -209,11 +209,11 @@ jlong Java_org_rocksdb_TransactionDB_beginTransaction_1withOld__JJJ(
 }
 
 /*
- * Class:     org_rocksdb_TransactionDB
+ * Class:     org_terarkdb_TransactionDB
  * Method:    beginTransaction_withOld
  * Signature: (JJJJ)J
  */
-jlong Java_org_rocksdb_TransactionDB_beginTransaction_1withOld__JJJJ(
+jlong Java_org_terarkdb_TransactionDB_beginTransaction_1withOld__JJJJ(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jwrite_options_handle, jlong jtxn_options_handle,
     jlong jold_txn_handle) {
@@ -235,11 +235,11 @@ jlong Java_org_rocksdb_TransactionDB_beginTransaction_1withOld__JJJJ(
 }
 
 /*
- * Class:     org_rocksdb_TransactionDB
+ * Class:     org_terarkdb_TransactionDB
  * Method:    getTransactionByName
  * Signature: (JLjava/lang/String;)J
  */
-jlong Java_org_rocksdb_TransactionDB_getTransactionByName(JNIEnv* env,
+jlong Java_org_terarkdb_TransactionDB_getTransactionByName(JNIEnv* env,
                                                           jobject /*jobj*/,
                                                           jlong jhandle,
                                                           jstring jname) {
@@ -255,11 +255,11 @@ jlong Java_org_rocksdb_TransactionDB_getTransactionByName(JNIEnv* env,
 }
 
 /*
- * Class:     org_rocksdb_TransactionDB
+ * Class:     org_terarkdb_TransactionDB
  * Method:    getAllPreparedTransactions
  * Signature: (J)[J
  */
-jlongArray Java_org_rocksdb_TransactionDB_getAllPreparedTransactions(
+jlongArray Java_org_terarkdb_TransactionDB_getAllPreparedTransactions(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle) {
   auto* txn_db = reinterpret_cast<TERARKDB_NAMESPACE::TransactionDB*>(jhandle);
   std::vector<TERARKDB_NAMESPACE::Transaction*> txns;
@@ -290,11 +290,11 @@ jlongArray Java_org_rocksdb_TransactionDB_getAllPreparedTransactions(
 }
 
 /*
- * Class:     org_rocksdb_TransactionDB
+ * Class:     org_terarkdb_TransactionDB
  * Method:    getLockStatusData
  * Signature: (J)Ljava/util/Map;
  */
-jobject Java_org_rocksdb_TransactionDB_getLockStatusData(JNIEnv* env,
+jobject Java_org_terarkdb_TransactionDB_getLockStatusData(JNIEnv* env,
                                                          jobject /*jobj*/,
                                                          jlong jhandle) {
   auto* txn_db = reinterpret_cast<TERARKDB_NAMESPACE::TransactionDB*>(jhandle);
@@ -340,11 +340,11 @@ jobject Java_org_rocksdb_TransactionDB_getLockStatusData(JNIEnv* env,
 }
 
 /*
- * Class:     org_rocksdb_TransactionDB
+ * Class:     org_terarkdb_TransactionDB
  * Method:    getDeadlockInfoBuffer
- * Signature: (J)[Lorg/rocksdb/TransactionDB/DeadlockPath;
+ * Signature: (J)[Lorg/terarkdb/TransactionDB/DeadlockPath;
  */
-jobjectArray Java_org_rocksdb_TransactionDB_getDeadlockInfoBuffer(
+jobjectArray Java_org_terarkdb_TransactionDB_getDeadlockInfoBuffer(
     JNIEnv* env, jobject jobj, jlong jhandle) {
   auto* txn_db = reinterpret_cast<TERARKDB_NAMESPACE::TransactionDB*>(jhandle);
   const std::vector<TERARKDB_NAMESPACE::DeadlockPath> deadlock_info_buffer =
@@ -422,11 +422,11 @@ jobjectArray Java_org_rocksdb_TransactionDB_getDeadlockInfoBuffer(
 }
 
 /*
- * Class:     org_rocksdb_TransactionDB
+ * Class:     org_terarkdb_TransactionDB
  * Method:    setDeadlockInfoBufferSize
  * Signature: (JI)V
  */
-void Java_org_rocksdb_TransactionDB_setDeadlockInfoBufferSize(
+void Java_org_terarkdb_TransactionDB_setDeadlockInfoBufferSize(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jint jdeadlock_info_buffer_size) {
   auto* txn_db = reinterpret_cast<TERARKDB_NAMESPACE::TransactionDB*>(jhandle);
@@ -434,11 +434,11 @@ void Java_org_rocksdb_TransactionDB_setDeadlockInfoBufferSize(
 }
 
 /*
- * Class:     org_rocksdb_TransactionDB
+ * Class:     org_terarkdb_TransactionDB
  * Method:    disposeInternal
  * Signature: (J)V
  */
-void Java_org_rocksdb_TransactionDB_disposeInternal(JNIEnv* /*env*/,
+void Java_org_terarkdb_TransactionDB_disposeInternal(JNIEnv* /*env*/,
                                                     jobject /*jobj*/,
                                                     jlong jhandle) {
   delete reinterpret_cast<TERARKDB_NAMESPACE::TransactionDB*>(jhandle);

@@ -8,26 +8,26 @@
 
 #include <jni.h>
 
-#include "include/org_rocksdb_CompressionOptions.h"
+#include "include/org_terarkdb_CompressionOptions.h"
 #include "rocksdb/advanced_options.h"
 
 /*
- * Class:     org_rocksdb_CompressionOptions
+ * Class:     org_terarkdb_CompressionOptions
  * Method:    newCompressionOptions
  * Signature: ()J
  */
-jlong Java_org_rocksdb_CompressionOptions_newCompressionOptions(
+jlong Java_org_terarkdb_CompressionOptions_newCompressionOptions(
     JNIEnv* /*env*/, jclass /*jcls*/) {
   const auto* opt = new TERARKDB_NAMESPACE::CompressionOptions();
   return reinterpret_cast<jlong>(opt);
 }
 
 /*
- * Class:     org_rocksdb_CompressionOptions
+ * Class:     org_terarkdb_CompressionOptions
  * Method:    setWindowBits
  * Signature: (JI)V
  */
-void Java_org_rocksdb_CompressionOptions_setWindowBits(JNIEnv* /*env*/,
+void Java_org_terarkdb_CompressionOptions_setWindowBits(JNIEnv* /*env*/,
                                                        jobject /*jobj*/,
                                                        jlong jhandle,
                                                        jint jwindow_bits) {
@@ -36,11 +36,11 @@ void Java_org_rocksdb_CompressionOptions_setWindowBits(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_CompressionOptions
+ * Class:     org_terarkdb_CompressionOptions
  * Method:    windowBits
  * Signature: (J)I
  */
-jint Java_org_rocksdb_CompressionOptions_windowBits(JNIEnv* /*env*/,
+jint Java_org_terarkdb_CompressionOptions_windowBits(JNIEnv* /*env*/,
                                                     jobject /*jobj*/,
                                                     jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::CompressionOptions*>(jhandle);
@@ -48,11 +48,11 @@ jint Java_org_rocksdb_CompressionOptions_windowBits(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_CompressionOptions
+ * Class:     org_terarkdb_CompressionOptions
  * Method:    setLevel
  * Signature: (JI)V
  */
-void Java_org_rocksdb_CompressionOptions_setLevel(JNIEnv* /*env*/,
+void Java_org_terarkdb_CompressionOptions_setLevel(JNIEnv* /*env*/,
                                                   jobject /*jobj*/,
                                                   jlong jhandle, jint jlevel) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::CompressionOptions*>(jhandle);
@@ -60,11 +60,11 @@ void Java_org_rocksdb_CompressionOptions_setLevel(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_CompressionOptions
+ * Class:     org_terarkdb_CompressionOptions
  * Method:    level
  * Signature: (J)I
  */
-jint Java_org_rocksdb_CompressionOptions_level(JNIEnv* /*env*/,
+jint Java_org_terarkdb_CompressionOptions_level(JNIEnv* /*env*/,
                                                jobject /*jobj*/,
                                                jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::CompressionOptions*>(jhandle);
@@ -72,11 +72,11 @@ jint Java_org_rocksdb_CompressionOptions_level(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_CompressionOptions
+ * Class:     org_terarkdb_CompressionOptions
  * Method:    setStrategy
  * Signature: (JI)V
  */
-void Java_org_rocksdb_CompressionOptions_setStrategy(JNIEnv* /*env*/,
+void Java_org_terarkdb_CompressionOptions_setStrategy(JNIEnv* /*env*/,
                                                      jobject /*jobj*/,
                                                      jlong jhandle,
                                                      jint jstrategy) {
@@ -85,11 +85,11 @@ void Java_org_rocksdb_CompressionOptions_setStrategy(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_CompressionOptions
+ * Class:     org_terarkdb_CompressionOptions
  * Method:    strategy
  * Signature: (J)I
  */
-jint Java_org_rocksdb_CompressionOptions_strategy(JNIEnv* /*env*/,
+jint Java_org_terarkdb_CompressionOptions_strategy(JNIEnv* /*env*/,
                                                   jobject /*jobj*/,
                                                   jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::CompressionOptions*>(jhandle);
@@ -97,11 +97,11 @@ jint Java_org_rocksdb_CompressionOptions_strategy(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_CompressionOptions
+ * Class:     org_terarkdb_CompressionOptions
  * Method:    setMaxDictBytes
  * Signature: (JI)V
  */
-void Java_org_rocksdb_CompressionOptions_setMaxDictBytes(JNIEnv* /*env*/,
+void Java_org_terarkdb_CompressionOptions_setMaxDictBytes(JNIEnv* /*env*/,
                                                          jobject /*jobj*/,
                                                          jlong jhandle,
                                                          jint jmax_dict_bytes) {
@@ -110,11 +110,11 @@ void Java_org_rocksdb_CompressionOptions_setMaxDictBytes(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_CompressionOptions
+ * Class:     org_terarkdb_CompressionOptions
  * Method:    maxDictBytes
  * Signature: (J)I
  */
-jint Java_org_rocksdb_CompressionOptions_maxDictBytes(JNIEnv* /*env*/,
+jint Java_org_terarkdb_CompressionOptions_maxDictBytes(JNIEnv* /*env*/,
                                                       jobject /*jobj*/,
                                                       jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::CompressionOptions*>(jhandle);
@@ -122,11 +122,11 @@ jint Java_org_rocksdb_CompressionOptions_maxDictBytes(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_CompressionOptions
+ * Class:     org_terarkdb_CompressionOptions
  * Method:    setEnabled
  * Signature: (JI)V
  */
-void Java_org_rocksdb_CompressionOptions_setEnabled(JNIEnv* /*env*/,
+void Java_org_terarkdb_CompressionOptions_setEnabled(JNIEnv* /*env*/,
                                                     jobject /*jobj*/,
                                                     jlong jhandle,
                                                     jboolean jenabled) {
@@ -135,22 +135,22 @@ void Java_org_rocksdb_CompressionOptions_setEnabled(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_CompressionOptions
+ * Class:     org_terarkdb_CompressionOptions
  * Method:    Enabled
  * Signature: (J)I
  */
-jint Java_org_rocksdb_CompressionOptions_enabled(JNIEnv* /*env*/,
+jint Java_org_terarkdb_CompressionOptions_enabled(JNIEnv* /*env*/,
                                                  jobject /*jobj*/,
                                                  jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::CompressionOptions*>(jhandle);
   return static_cast<jint>(opt->enabled);
 }
 /*
- * Class:     org_rocksdb_CompressionOptions
+ * Class:     org_terarkdb_CompressionOptions
  * Method:    disposeInternal
  * Signature: (J)V
  */
-void Java_org_rocksdb_CompressionOptions_disposeInternal(JNIEnv* /*env*/,
+void Java_org_terarkdb_CompressionOptions_disposeInternal(JNIEnv* /*env*/,
                                                          jobject /*jobj*/,
                                                          jlong jhandle) {
   delete reinterpret_cast<TERARKDB_NAMESPACE::CompressionOptions*>(jhandle);
