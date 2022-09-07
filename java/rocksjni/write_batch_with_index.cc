@@ -7,28 +7,28 @@
 // calling c++ TERARKDB_NAMESPACE::WriteBatchWithIndex methods from Java side.
 
 #include "rocksdb/utilities/write_batch_with_index.h"
-#include "include/org_rocksdb_WBWIRocksIterator.h"
-#include "include/org_rocksdb_WriteBatchWithIndex.h"
+#include "include/org_terarkdb_WBWIRocksIterator.h"
+#include "include/org_terarkdb_WriteBatchWithIndex.h"
 #include "rocksdb/comparator.h"
 #include "rocksjni/portal.h"
 
 /*
- * Class:     org_rocksdb_WriteBatchWithIndex
+ * Class:     org_terarkdb_WriteBatchWithIndex
  * Method:    newWriteBatchWithIndex
  * Signature: ()J
  */
-jlong Java_org_rocksdb_WriteBatchWithIndex_newWriteBatchWithIndex__(
+jlong Java_org_terarkdb_WriteBatchWithIndex_newWriteBatchWithIndex__(
     JNIEnv* /*env*/, jclass /*jcls*/) {
   auto* wbwi = new TERARKDB_NAMESPACE::WriteBatchWithIndex();
   return reinterpret_cast<jlong>(wbwi);
 }
 
 /*
- * Class:     org_rocksdb_WriteBatchWithIndex
+ * Class:     org_terarkdb_WriteBatchWithIndex
  * Method:    newWriteBatchWithIndex
  * Signature: (Z)J
  */
-jlong Java_org_rocksdb_WriteBatchWithIndex_newWriteBatchWithIndex__Z(
+jlong Java_org_terarkdb_WriteBatchWithIndex_newWriteBatchWithIndex__Z(
     JNIEnv* /*env*/, jclass /*jcls*/, jboolean joverwrite_key) {
   auto* wbwi = new TERARKDB_NAMESPACE::WriteBatchWithIndex(
       TERARKDB_NAMESPACE::BytewiseComparator(), 0, static_cast<bool>(joverwrite_key));
@@ -36,11 +36,11 @@ jlong Java_org_rocksdb_WriteBatchWithIndex_newWriteBatchWithIndex__Z(
 }
 
 /*
- * Class:     org_rocksdb_WriteBatchWithIndex
+ * Class:     org_terarkdb_WriteBatchWithIndex
  * Method:    newWriteBatchWithIndex
  * Signature: (JBIZ)J
  */
-jlong Java_org_rocksdb_WriteBatchWithIndex_newWriteBatchWithIndex__JBIZ(
+jlong Java_org_terarkdb_WriteBatchWithIndex_newWriteBatchWithIndex__JBIZ(
     JNIEnv* /*env*/, jclass /*jcls*/, jlong jfallback_index_comparator_handle,
     jbyte jcomparator_type, jint jreserved_bytes, jboolean joverwrite_key) {
   TERARKDB_NAMESPACE::Comparator* fallback_comparator = nullptr;
@@ -71,11 +71,11 @@ jlong Java_org_rocksdb_WriteBatchWithIndex_newWriteBatchWithIndex__JBIZ(
 }
 
 /*
- * Class:     org_rocksdb_WriteBatchWithIndex
+ * Class:     org_terarkdb_WriteBatchWithIndex
  * Method:    count0
  * Signature: (J)I
  */
-jint Java_org_rocksdb_WriteBatchWithIndex_count0(JNIEnv* /*env*/,
+jint Java_org_terarkdb_WriteBatchWithIndex_count0(JNIEnv* /*env*/,
                                                  jobject /*jobj*/,
                                                  jlong jwbwi_handle) {
   auto* wbwi = reinterpret_cast<TERARKDB_NAMESPACE::WriteBatchWithIndex*>(jwbwi_handle);
@@ -85,11 +85,11 @@ jint Java_org_rocksdb_WriteBatchWithIndex_count0(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_WriteBatchWithIndex
+ * Class:     org_terarkdb_WriteBatchWithIndex
  * Method:    put
  * Signature: (J[BI[BI)V
  */
-void Java_org_rocksdb_WriteBatchWithIndex_put__J_3BI_3BI(
+void Java_org_terarkdb_WriteBatchWithIndex_put__J_3BI_3BI(
     JNIEnv* env, jobject jobj, jlong jwbwi_handle, jbyteArray jkey,
     jint jkey_len, jbyteArray jentry_value, jint jentry_value_len) {
   auto* wbwi = reinterpret_cast<TERARKDB_NAMESPACE::WriteBatchWithIndex*>(jwbwi_handle);
@@ -105,11 +105,11 @@ void Java_org_rocksdb_WriteBatchWithIndex_put__J_3BI_3BI(
 }
 
 /*
- * Class:     org_rocksdb_WriteBatchWithIndex
+ * Class:     org_terarkdb_WriteBatchWithIndex
  * Method:    put
  * Signature: (J[BI[BIJ)V
  */
-void Java_org_rocksdb_WriteBatchWithIndex_put__J_3BI_3BIJ(
+void Java_org_terarkdb_WriteBatchWithIndex_put__J_3BI_3BIJ(
     JNIEnv* env, jobject jobj, jlong jwbwi_handle, jbyteArray jkey,
     jint jkey_len, jbyteArray jentry_value, jint jentry_value_len,
     jlong jcf_handle) {
@@ -128,11 +128,11 @@ void Java_org_rocksdb_WriteBatchWithIndex_put__J_3BI_3BIJ(
 }
 
 /*
- * Class:     org_rocksdb_WriteBatchWithIndex
+ * Class:     org_terarkdb_WriteBatchWithIndex
  * Method:    merge
  * Signature: (J[BI[BI)V
  */
-void Java_org_rocksdb_WriteBatchWithIndex_merge__J_3BI_3BI(
+void Java_org_terarkdb_WriteBatchWithIndex_merge__J_3BI_3BI(
     JNIEnv* env, jobject jobj, jlong jwbwi_handle, jbyteArray jkey,
     jint jkey_len, jbyteArray jentry_value, jint jentry_value_len) {
   auto* wbwi = reinterpret_cast<TERARKDB_NAMESPACE::WriteBatchWithIndex*>(jwbwi_handle);
@@ -148,11 +148,11 @@ void Java_org_rocksdb_WriteBatchWithIndex_merge__J_3BI_3BI(
 }
 
 /*
- * Class:     org_rocksdb_WriteBatchWithIndex
+ * Class:     org_terarkdb_WriteBatchWithIndex
  * Method:    merge
  * Signature: (J[BI[BIJ)V
  */
-void Java_org_rocksdb_WriteBatchWithIndex_merge__J_3BI_3BIJ(
+void Java_org_terarkdb_WriteBatchWithIndex_merge__J_3BI_3BIJ(
     JNIEnv* env, jobject jobj, jlong jwbwi_handle, jbyteArray jkey,
     jint jkey_len, jbyteArray jentry_value, jint jentry_value_len,
     jlong jcf_handle) {
@@ -171,11 +171,11 @@ void Java_org_rocksdb_WriteBatchWithIndex_merge__J_3BI_3BIJ(
 }
 
 /*
- * Class:     org_rocksdb_WriteBatchWithIndex
+ * Class:     org_terarkdb_WriteBatchWithIndex
  * Method:    delete
  * Signature: (J[BI)V
  */
-void Java_org_rocksdb_WriteBatchWithIndex_delete__J_3BI(JNIEnv* env,
+void Java_org_terarkdb_WriteBatchWithIndex_delete__J_3BI(JNIEnv* env,
                                                         jobject jobj,
                                                         jlong jwbwi_handle,
                                                         jbyteArray jkey,
@@ -191,11 +191,11 @@ void Java_org_rocksdb_WriteBatchWithIndex_delete__J_3BI(JNIEnv* env,
 }
 
 /*
- * Class:     org_rocksdb_WriteBatchWithIndex
+ * Class:     org_terarkdb_WriteBatchWithIndex
  * Method:    delete
  * Signature: (J[BIJ)V
  */
-void Java_org_rocksdb_WriteBatchWithIndex_delete__J_3BIJ(
+void Java_org_terarkdb_WriteBatchWithIndex_delete__J_3BIJ(
     JNIEnv* env, jobject jobj, jlong jwbwi_handle, jbyteArray jkey,
     jint jkey_len, jlong jcf_handle) {
   auto* wbwi = reinterpret_cast<TERARKDB_NAMESPACE::WriteBatchWithIndex*>(jwbwi_handle);
@@ -213,11 +213,11 @@ void Java_org_rocksdb_WriteBatchWithIndex_delete__J_3BIJ(
 }
 
 /*
- * Class:     org_rocksdb_WriteBatchWithIndex
+ * Class:     org_terarkdb_WriteBatchWithIndex
  * Method:    singleDelete
  * Signature: (J[BI)V
  */
-void Java_org_rocksdb_WriteBatchWithIndex_singleDelete__J_3BI(
+void Java_org_terarkdb_WriteBatchWithIndex_singleDelete__J_3BI(
     JNIEnv* env, jobject jobj, jlong jwbwi_handle, jbyteArray jkey,
     jint jkey_len) {
   auto* wbwi = reinterpret_cast<TERARKDB_NAMESPACE::WriteBatchWithIndex*>(jwbwi_handle);
@@ -233,11 +233,11 @@ void Java_org_rocksdb_WriteBatchWithIndex_singleDelete__J_3BI(
 }
 
 /*
- * Class:     org_rocksdb_WriteBatchWithIndex
+ * Class:     org_terarkdb_WriteBatchWithIndex
  * Method:    singleDelete
  * Signature: (J[BIJ)V
  */
-void Java_org_rocksdb_WriteBatchWithIndex_singleDelete__J_3BIJ(
+void Java_org_terarkdb_WriteBatchWithIndex_singleDelete__J_3BIJ(
     JNIEnv* env, jobject jobj, jlong jwbwi_handle, jbyteArray jkey,
     jint jkey_len, jlong jcf_handle) {
   auto* wbwi = reinterpret_cast<TERARKDB_NAMESPACE::WriteBatchWithIndex*>(jwbwi_handle);
@@ -255,11 +255,11 @@ void Java_org_rocksdb_WriteBatchWithIndex_singleDelete__J_3BIJ(
 }
 
 /*
- * Class:     org_rocksdb_WriteBatchWithIndex
+ * Class:     org_terarkdb_WriteBatchWithIndex
  * Method:    deleteRange
  * Signature: (J[BI[BI)V
  */
-void Java_org_rocksdb_WriteBatchWithIndex_deleteRange__J_3BI_3BI(
+void Java_org_terarkdb_WriteBatchWithIndex_deleteRange__J_3BI_3BI(
     JNIEnv* env, jobject jobj, jlong jwbwi_handle, jbyteArray jbegin_key,
     jint jbegin_key_len, jbyteArray jend_key, jint jend_key_len) {
   auto* wbwi = reinterpret_cast<TERARKDB_NAMESPACE::WriteBatchWithIndex*>(jwbwi_handle);
@@ -276,11 +276,11 @@ void Java_org_rocksdb_WriteBatchWithIndex_deleteRange__J_3BI_3BI(
 }
 
 /*
- * Class:     org_rocksdb_WriteBatchWithIndex
+ * Class:     org_terarkdb_WriteBatchWithIndex
  * Method:    deleteRange
  * Signature: (J[BI[BIJ)V
  */
-void Java_org_rocksdb_WriteBatchWithIndex_deleteRange__J_3BI_3BIJ(
+void Java_org_terarkdb_WriteBatchWithIndex_deleteRange__J_3BI_3BIJ(
     JNIEnv* env, jobject jobj, jlong jwbwi_handle, jbyteArray jbegin_key,
     jint jbegin_key_len, jbyteArray jend_key, jint jend_key_len,
     jlong jcf_handle) {
@@ -301,11 +301,11 @@ void Java_org_rocksdb_WriteBatchWithIndex_deleteRange__J_3BI_3BIJ(
 }
 
 /*
- * Class:     org_rocksdb_WriteBatchWithIndex
+ * Class:     org_terarkdb_WriteBatchWithIndex
  * Method:    putLogData
  * Signature: (J[BI)V
  */
-void Java_org_rocksdb_WriteBatchWithIndex_putLogData(JNIEnv* env, jobject jobj,
+void Java_org_terarkdb_WriteBatchWithIndex_putLogData(JNIEnv* env, jobject jobj,
                                                      jlong jwbwi_handle,
                                                      jbyteArray jblob,
                                                      jint jblob_len) {
@@ -322,11 +322,11 @@ void Java_org_rocksdb_WriteBatchWithIndex_putLogData(JNIEnv* env, jobject jobj,
 }
 
 /*
- * Class:     org_rocksdb_WriteBatchWithIndex
+ * Class:     org_terarkdb_WriteBatchWithIndex
  * Method:    clear
  * Signature: (J)V
  */
-void Java_org_rocksdb_WriteBatchWithIndex_clear0(JNIEnv* /*env*/,
+void Java_org_terarkdb_WriteBatchWithIndex_clear0(JNIEnv* /*env*/,
                                                  jobject /*jobj*/,
                                                  jlong jwbwi_handle) {
   auto* wbwi = reinterpret_cast<TERARKDB_NAMESPACE::WriteBatchWithIndex*>(jwbwi_handle);
@@ -336,11 +336,11 @@ void Java_org_rocksdb_WriteBatchWithIndex_clear0(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_WriteBatchWithIndex
+ * Class:     org_terarkdb_WriteBatchWithIndex
  * Method:    setSavePoint0
  * Signature: (J)V
  */
-void Java_org_rocksdb_WriteBatchWithIndex_setSavePoint0(JNIEnv* /*env*/,
+void Java_org_terarkdb_WriteBatchWithIndex_setSavePoint0(JNIEnv* /*env*/,
                                                         jobject /*jobj*/,
                                                         jlong jwbwi_handle) {
   auto* wbwi = reinterpret_cast<TERARKDB_NAMESPACE::WriteBatchWithIndex*>(jwbwi_handle);
@@ -350,11 +350,11 @@ void Java_org_rocksdb_WriteBatchWithIndex_setSavePoint0(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_WriteBatchWithIndex
+ * Class:     org_terarkdb_WriteBatchWithIndex
  * Method:    rollbackToSavePoint0
  * Signature: (J)V
  */
-void Java_org_rocksdb_WriteBatchWithIndex_rollbackToSavePoint0(
+void Java_org_terarkdb_WriteBatchWithIndex_rollbackToSavePoint0(
     JNIEnv* env, jobject /*jobj*/, jlong jwbwi_handle) {
   auto* wbwi = reinterpret_cast<TERARKDB_NAMESPACE::WriteBatchWithIndex*>(jwbwi_handle);
   assert(wbwi != nullptr);
@@ -369,11 +369,11 @@ void Java_org_rocksdb_WriteBatchWithIndex_rollbackToSavePoint0(
 }
 
 /*
- * Class:     org_rocksdb_WriteBatchWithIndex
+ * Class:     org_terarkdb_WriteBatchWithIndex
  * Method:    popSavePoint
  * Signature: (J)V
  */
-void Java_org_rocksdb_WriteBatchWithIndex_popSavePoint(JNIEnv* env,
+void Java_org_terarkdb_WriteBatchWithIndex_popSavePoint(JNIEnv* env,
                                                        jobject /*jobj*/,
                                                        jlong jwbwi_handle) {
   auto* wbwi = reinterpret_cast<TERARKDB_NAMESPACE::WriteBatchWithIndex*>(jwbwi_handle);
@@ -389,11 +389,11 @@ void Java_org_rocksdb_WriteBatchWithIndex_popSavePoint(JNIEnv* env,
 }
 
 /*
- * Class:     org_rocksdb_WriteBatchWithIndex
+ * Class:     org_terarkdb_WriteBatchWithIndex
  * Method:    setMaxBytes
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_WriteBatchWithIndex_setMaxBytes(JNIEnv* /*env*/,
+void Java_org_terarkdb_WriteBatchWithIndex_setMaxBytes(JNIEnv* /*env*/,
                                                       jobject /*jobj*/,
                                                       jlong jwbwi_handle,
                                                       jlong jmax_bytes) {
@@ -404,11 +404,11 @@ void Java_org_rocksdb_WriteBatchWithIndex_setMaxBytes(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_WriteBatchWithIndex
+ * Class:     org_terarkdb_WriteBatchWithIndex
  * Method:    getWriteBatch
- * Signature: (J)Lorg/rocksdb/WriteBatch;
+ * Signature: (J)Lorg/terarkdb/WriteBatch;
  */
-jobject Java_org_rocksdb_WriteBatchWithIndex_getWriteBatch(JNIEnv* env,
+jobject Java_org_terarkdb_WriteBatchWithIndex_getWriteBatch(JNIEnv* env,
                                                            jobject /*jobj*/,
                                                            jlong jwbwi_handle) {
   auto* wbwi = reinterpret_cast<TERARKDB_NAMESPACE::WriteBatchWithIndex*>(jwbwi_handle);
@@ -421,11 +421,11 @@ jobject Java_org_rocksdb_WriteBatchWithIndex_getWriteBatch(JNIEnv* env,
 }
 
 /*
- * Class:     org_rocksdb_WriteBatchWithIndex
+ * Class:     org_terarkdb_WriteBatchWithIndex
  * Method:    iterator0
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_WriteBatchWithIndex_iterator0(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_WriteBatchWithIndex_iterator0(JNIEnv* /*env*/,
                                                      jobject /*jobj*/,
                                                      jlong jwbwi_handle) {
   auto* wbwi = reinterpret_cast<TERARKDB_NAMESPACE::WriteBatchWithIndex*>(jwbwi_handle);
@@ -434,11 +434,11 @@ jlong Java_org_rocksdb_WriteBatchWithIndex_iterator0(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_WriteBatchWithIndex
+ * Class:     org_terarkdb_WriteBatchWithIndex
  * Method:    iterator1
  * Signature: (JJ)J
  */
-jlong Java_org_rocksdb_WriteBatchWithIndex_iterator1(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_WriteBatchWithIndex_iterator1(JNIEnv* /*env*/,
                                                      jobject /*jobj*/,
                                                      jlong jwbwi_handle,
                                                      jlong jcf_handle) {
@@ -449,11 +449,11 @@ jlong Java_org_rocksdb_WriteBatchWithIndex_iterator1(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_WriteBatchWithIndex
+ * Class:     org_terarkdb_WriteBatchWithIndex
  * Method:    iteratorWithBase
  * Signature: (JJJ)J
  */
-jlong Java_org_rocksdb_WriteBatchWithIndex_iteratorWithBase(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_WriteBatchWithIndex_iteratorWithBase(JNIEnv* /*env*/,
                                                             jobject /*jobj*/,
                                                             jlong jwbwi_handle,
                                                             jlong jcf_handle,
@@ -466,11 +466,11 @@ jlong Java_org_rocksdb_WriteBatchWithIndex_iteratorWithBase(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_WriteBatchWithIndex
+ * Class:     org_terarkdb_WriteBatchWithIndex
  * Method:    getFromBatch
  * Signature: (JJ[BI)[B
  */
-jbyteArray JNICALL Java_org_rocksdb_WriteBatchWithIndex_getFromBatch__JJ_3BI(
+jbyteArray JNICALL Java_org_terarkdb_WriteBatchWithIndex_getFromBatch__JJ_3BI(
     JNIEnv* env, jobject /*jobj*/, jlong jwbwi_handle, jlong jdbopt_handle,
     jbyteArray jkey, jint jkey_len) {
   auto* wbwi = reinterpret_cast<TERARKDB_NAMESPACE::WriteBatchWithIndex*>(jwbwi_handle);
@@ -484,11 +484,11 @@ jbyteArray JNICALL Java_org_rocksdb_WriteBatchWithIndex_getFromBatch__JJ_3BI(
 }
 
 /*
- * Class:     org_rocksdb_WriteBatchWithIndex
+ * Class:     org_terarkdb_WriteBatchWithIndex
  * Method:    getFromBatch
  * Signature: (JJ[BIJ)[B
  */
-jbyteArray Java_org_rocksdb_WriteBatchWithIndex_getFromBatch__JJ_3BIJ(
+jbyteArray Java_org_terarkdb_WriteBatchWithIndex_getFromBatch__JJ_3BIJ(
     JNIEnv* env, jobject /*jobj*/, jlong jwbwi_handle, jlong jdbopt_handle,
     jbyteArray jkey, jint jkey_len, jlong jcf_handle) {
   auto* wbwi = reinterpret_cast<TERARKDB_NAMESPACE::WriteBatchWithIndex*>(jwbwi_handle);
@@ -504,11 +504,11 @@ jbyteArray Java_org_rocksdb_WriteBatchWithIndex_getFromBatch__JJ_3BIJ(
 }
 
 /*
- * Class:     org_rocksdb_WriteBatchWithIndex
+ * Class:     org_terarkdb_WriteBatchWithIndex
  * Method:    getFromBatchAndDB
  * Signature: (JJJ[BI)[B
  */
-jbyteArray Java_org_rocksdb_WriteBatchWithIndex_getFromBatchAndDB__JJJ_3BI(
+jbyteArray Java_org_terarkdb_WriteBatchWithIndex_getFromBatchAndDB__JJJ_3BI(
     JNIEnv* env, jobject /*jobj*/, jlong jwbwi_handle, jlong jdb_handle,
     jlong jreadopt_handle, jbyteArray jkey, jint jkey_len) {
   auto* wbwi = reinterpret_cast<TERARKDB_NAMESPACE::WriteBatchWithIndex*>(jwbwi_handle);
@@ -524,11 +524,11 @@ jbyteArray Java_org_rocksdb_WriteBatchWithIndex_getFromBatchAndDB__JJJ_3BI(
 }
 
 /*
- * Class:     org_rocksdb_WriteBatchWithIndex
+ * Class:     org_terarkdb_WriteBatchWithIndex
  * Method:    getFromBatchAndDB
  * Signature: (JJJ[BIJ)[B
  */
-jbyteArray Java_org_rocksdb_WriteBatchWithIndex_getFromBatchAndDB__JJJ_3BIJ(
+jbyteArray Java_org_terarkdb_WriteBatchWithIndex_getFromBatchAndDB__JJJ_3BIJ(
     JNIEnv* env, jobject /*jobj*/, jlong jwbwi_handle, jlong jdb_handle,
     jlong jreadopt_handle, jbyteArray jkey, jint jkey_len, jlong jcf_handle) {
   auto* wbwi = reinterpret_cast<TERARKDB_NAMESPACE::WriteBatchWithIndex*>(jwbwi_handle);
@@ -545,11 +545,11 @@ jbyteArray Java_org_rocksdb_WriteBatchWithIndex_getFromBatchAndDB__JJJ_3BIJ(
 }
 
 /*
- * Class:     org_rocksdb_WriteBatchWithIndex
+ * Class:     org_terarkdb_WriteBatchWithIndex
  * Method:    disposeInternal
  * Signature: (J)V
  */
-void Java_org_rocksdb_WriteBatchWithIndex_disposeInternal(JNIEnv* /*env*/,
+void Java_org_terarkdb_WriteBatchWithIndex_disposeInternal(JNIEnv* /*env*/,
                                                           jobject /*jobj*/,
                                                           jlong handle) {
   auto* wbwi = reinterpret_cast<TERARKDB_NAMESPACE::WriteBatchWithIndex*>(handle);
@@ -560,11 +560,11 @@ void Java_org_rocksdb_WriteBatchWithIndex_disposeInternal(JNIEnv* /*env*/,
 /* WBWIRocksIterator below */
 
 /*
- * Class:     org_rocksdb_WBWIRocksIterator
+ * Class:     org_terarkdb_WBWIRocksIterator
  * Method:    disposeInternal
  * Signature: (J)V
  */
-void Java_org_rocksdb_WBWIRocksIterator_disposeInternal(JNIEnv* /*env*/,
+void Java_org_terarkdb_WBWIRocksIterator_disposeInternal(JNIEnv* /*env*/,
                                                         jobject /*jobj*/,
                                                         jlong handle) {
   auto* it = reinterpret_cast<TERARKDB_NAMESPACE::WBWIIterator*>(handle);
@@ -573,64 +573,64 @@ void Java_org_rocksdb_WBWIRocksIterator_disposeInternal(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_WBWIRocksIterator
+ * Class:     org_terarkdb_WBWIRocksIterator
  * Method:    isValid0
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_WBWIRocksIterator_isValid0(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_WBWIRocksIterator_isValid0(JNIEnv* /*env*/,
                                                      jobject /*jobj*/,
                                                      jlong handle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::WBWIIterator*>(handle)->Valid();
 }
 
 /*
- * Class:     org_rocksdb_WBWIRocksIterator
+ * Class:     org_terarkdb_WBWIRocksIterator
  * Method:    seekToFirst0
  * Signature: (J)V
  */
-void Java_org_rocksdb_WBWIRocksIterator_seekToFirst0(JNIEnv* /*env*/,
+void Java_org_terarkdb_WBWIRocksIterator_seekToFirst0(JNIEnv* /*env*/,
                                                      jobject /*jobj*/,
                                                      jlong handle) {
   reinterpret_cast<TERARKDB_NAMESPACE::WBWIIterator*>(handle)->SeekToFirst();
 }
 
 /*
- * Class:     org_rocksdb_WBWIRocksIterator
+ * Class:     org_terarkdb_WBWIRocksIterator
  * Method:    seekToLast0
  * Signature: (J)V
  */
-void Java_org_rocksdb_WBWIRocksIterator_seekToLast0(JNIEnv* /*env*/,
+void Java_org_terarkdb_WBWIRocksIterator_seekToLast0(JNIEnv* /*env*/,
                                                     jobject /*jobj*/,
                                                     jlong handle) {
   reinterpret_cast<TERARKDB_NAMESPACE::WBWIIterator*>(handle)->SeekToLast();
 }
 
 /*
- * Class:     org_rocksdb_WBWIRocksIterator
+ * Class:     org_terarkdb_WBWIRocksIterator
  * Method:    next0
  * Signature: (J)V
  */
-void Java_org_rocksdb_WBWIRocksIterator_next0(JNIEnv* /*env*/, jobject /*jobj*/,
+void Java_org_terarkdb_WBWIRocksIterator_next0(JNIEnv* /*env*/, jobject /*jobj*/,
                                               jlong handle) {
   reinterpret_cast<TERARKDB_NAMESPACE::WBWIIterator*>(handle)->Next();
 }
 
 /*
- * Class:     org_rocksdb_WBWIRocksIterator
+ * Class:     org_terarkdb_WBWIRocksIterator
  * Method:    prev0
  * Signature: (J)V
  */
-void Java_org_rocksdb_WBWIRocksIterator_prev0(JNIEnv* /*env*/, jobject /*jobj*/,
+void Java_org_terarkdb_WBWIRocksIterator_prev0(JNIEnv* /*env*/, jobject /*jobj*/,
                                               jlong handle) {
   reinterpret_cast<TERARKDB_NAMESPACE::WBWIIterator*>(handle)->Prev();
 }
 
 /*
- * Class:     org_rocksdb_WBWIRocksIterator
+ * Class:     org_terarkdb_WBWIRocksIterator
  * Method:    seek0
  * Signature: (J[BI)V
  */
-void Java_org_rocksdb_WBWIRocksIterator_seek0(JNIEnv* env, jobject /*jobj*/,
+void Java_org_terarkdb_WBWIRocksIterator_seek0(JNIEnv* env, jobject /*jobj*/,
                                               jlong handle, jbyteArray jtarget,
                                               jint jtarget_len) {
   auto* it = reinterpret_cast<TERARKDB_NAMESPACE::WBWIIterator*>(handle);
@@ -648,11 +648,11 @@ void Java_org_rocksdb_WBWIRocksIterator_seek0(JNIEnv* env, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_WBWIRocksIterator
+ * Class:     org_terarkdb_WBWIRocksIterator
  * Method:    seekForPrev0
  * Signature: (J[BI)V
  */
-void Java_org_rocksdb_WBWIRocksIterator_seekForPrev0(JNIEnv* env,
+void Java_org_terarkdb_WBWIRocksIterator_seekForPrev0(JNIEnv* env,
                                                      jobject /*jobj*/,
                                                      jlong handle,
                                                      jbyteArray jtarget,
@@ -672,11 +672,11 @@ void Java_org_rocksdb_WBWIRocksIterator_seekForPrev0(JNIEnv* env,
 }
 
 /*
- * Class:     org_rocksdb_WBWIRocksIterator
+ * Class:     org_terarkdb_WBWIRocksIterator
  * Method:    status0
  * Signature: (J)V
  */
-void Java_org_rocksdb_WBWIRocksIterator_status0(JNIEnv* env, jobject /*jobj*/,
+void Java_org_terarkdb_WBWIRocksIterator_status0(JNIEnv* env, jobject /*jobj*/,
                                                 jlong handle) {
   auto* it = reinterpret_cast<TERARKDB_NAMESPACE::WBWIIterator*>(handle);
   TERARKDB_NAMESPACE::Status s = it->status();
@@ -689,11 +689,11 @@ void Java_org_rocksdb_WBWIRocksIterator_status0(JNIEnv* env, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_WBWIRocksIterator
+ * Class:     org_terarkdb_WBWIRocksIterator
  * Method:    entry1
  * Signature: (J)[J
  */
-jlongArray Java_org_rocksdb_WBWIRocksIterator_entry1(JNIEnv* env,
+jlongArray Java_org_terarkdb_WBWIRocksIterator_entry1(JNIEnv* env,
                                                      jobject /*jobj*/,
                                                      jlong handle) {
   auto* it = reinterpret_cast<TERARKDB_NAMESPACE::WBWIIterator*>(handle);
@@ -705,7 +705,7 @@ jlongArray Java_org_rocksdb_WBWIRocksIterator_entry1(JNIEnv* env,
   results[0] = TERARKDB_NAMESPACE::WriteTypeJni::toJavaWriteType(we.type);
 
   // NOTE: key_slice and value_slice will be freed by
-  // org.rocksdb.DirectSlice#close
+  // org.terarkdb.DirectSlice#close
 
   auto* key_slice = new TERARKDB_NAMESPACE::Slice(we.key.data(), we.key.size());
   results[1] = reinterpret_cast<jlong>(key_slice);

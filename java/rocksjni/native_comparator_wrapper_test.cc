@@ -7,7 +7,7 @@
 
 #include <string>
 
-#include "include/org_rocksdb_NativeComparatorWrapperTest_NativeStringComparatorWrapper.h"
+#include "include/org_terarkdb_NativeComparatorWrapperTest_NativeStringComparatorWrapper.h"
 #include "rocksdb/comparator.h"
 #include "rocksdb/slice.h"
 #include "rocksdb/terark_namespace.h"
@@ -33,11 +33,11 @@ class NativeComparatorWrapperTestStringComparator : public Comparator {
 }  // namespace TERARKDB_NAMESPACE
 
 /*
- * Class: org_rocksdb_NativeComparatorWrapperTest_NativeStringComparatorWrapper
+ * Class: org_terarkdb_NativeComparatorWrapperTest_NativeStringComparatorWrapper
  * Method:    newStringComparator
  * Signature: ()J
  */
-jlong Java_org_rocksdb_NativeComparatorWrapperTest_00024NativeStringComparatorWrapper_newStringComparator(
+jlong Java_org_terarkdb_NativeComparatorWrapperTest_00024NativeStringComparatorWrapper_newStringComparator(
     JNIEnv* /*env*/, jobject /*jobj*/) {
   auto* comparator =
       new TERARKDB_NAMESPACE::NativeComparatorWrapperTestStringComparator();

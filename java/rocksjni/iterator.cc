@@ -10,16 +10,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "include/org_rocksdb_RocksIterator.h"
+#include "include/org_terarkdb_RocksIterator.h"
 #include "rocksdb/iterator.h"
 #include "rocksjni/portal.h"
 
 /*
- * Class:     org_rocksdb_RocksIterator
+ * Class:     org_terarkdb_RocksIterator
  * Method:    disposeInternal
  * Signature: (J)V
  */
-void Java_org_rocksdb_RocksIterator_disposeInternal(JNIEnv* /*env*/,
+void Java_org_terarkdb_RocksIterator_disposeInternal(JNIEnv* /*env*/,
                                                     jobject /*jobj*/,
                                                     jlong handle) {
   auto* it = reinterpret_cast<TERARKDB_NAMESPACE::Iterator*>(handle);
@@ -28,64 +28,64 @@ void Java_org_rocksdb_RocksIterator_disposeInternal(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_RocksIterator
+ * Class:     org_terarkdb_RocksIterator
  * Method:    isValid0
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_RocksIterator_isValid0(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_RocksIterator_isValid0(JNIEnv* /*env*/,
                                                  jobject /*jobj*/,
                                                  jlong handle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Iterator*>(handle)->Valid();
 }
 
 /*
- * Class:     org_rocksdb_RocksIterator
+ * Class:     org_terarkdb_RocksIterator
  * Method:    seekToFirst0
  * Signature: (J)V
  */
-void Java_org_rocksdb_RocksIterator_seekToFirst0(JNIEnv* /*env*/,
+void Java_org_terarkdb_RocksIterator_seekToFirst0(JNIEnv* /*env*/,
                                                  jobject /*jobj*/,
                                                  jlong handle) {
   reinterpret_cast<TERARKDB_NAMESPACE::Iterator*>(handle)->SeekToFirst();
 }
 
 /*
- * Class:     org_rocksdb_RocksIterator
+ * Class:     org_terarkdb_RocksIterator
  * Method:    seekToLast0
  * Signature: (J)V
  */
-void Java_org_rocksdb_RocksIterator_seekToLast0(JNIEnv* /*env*/,
+void Java_org_terarkdb_RocksIterator_seekToLast0(JNIEnv* /*env*/,
                                                 jobject /*jobj*/,
                                                 jlong handle) {
   reinterpret_cast<TERARKDB_NAMESPACE::Iterator*>(handle)->SeekToLast();
 }
 
 /*
- * Class:     org_rocksdb_RocksIterator
+ * Class:     org_terarkdb_RocksIterator
  * Method:    next0
  * Signature: (J)V
  */
-void Java_org_rocksdb_RocksIterator_next0(JNIEnv* /*env*/, jobject /*jobj*/,
+void Java_org_terarkdb_RocksIterator_next0(JNIEnv* /*env*/, jobject /*jobj*/,
                                           jlong handle) {
   reinterpret_cast<TERARKDB_NAMESPACE::Iterator*>(handle)->Next();
 }
 
 /*
- * Class:     org_rocksdb_RocksIterator
+ * Class:     org_terarkdb_RocksIterator
  * Method:    prev0
  * Signature: (J)V
  */
-void Java_org_rocksdb_RocksIterator_prev0(JNIEnv* /*env*/, jobject /*jobj*/,
+void Java_org_terarkdb_RocksIterator_prev0(JNIEnv* /*env*/, jobject /*jobj*/,
                                           jlong handle) {
   reinterpret_cast<TERARKDB_NAMESPACE::Iterator*>(handle)->Prev();
 }
 
 /*
- * Class:     org_rocksdb_RocksIterator
+ * Class:     org_terarkdb_RocksIterator
  * Method:    seek0
  * Signature: (J[BI)V
  */
-void Java_org_rocksdb_RocksIterator_seek0(JNIEnv* env, jobject /*jobj*/,
+void Java_org_terarkdb_RocksIterator_seek0(JNIEnv* env, jobject /*jobj*/,
                                           jlong handle, jbyteArray jtarget,
                                           jint jtarget_len) {
   jbyte* target = env->GetByteArrayElements(jtarget, nullptr);
@@ -103,11 +103,11 @@ void Java_org_rocksdb_RocksIterator_seek0(JNIEnv* env, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_RocksIterator
+ * Class:     org_terarkdb_RocksIterator
  * Method:    seekForPrev0
  * Signature: (J[BI)V
  */
-void Java_org_rocksdb_RocksIterator_seekForPrev0(JNIEnv* env, jobject /*jobj*/,
+void Java_org_terarkdb_RocksIterator_seekForPrev0(JNIEnv* env, jobject /*jobj*/,
                                                  jlong handle,
                                                  jbyteArray jtarget,
                                                  jint jtarget_len) {
@@ -126,11 +126,11 @@ void Java_org_rocksdb_RocksIterator_seekForPrev0(JNIEnv* env, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_RocksIterator
+ * Class:     org_terarkdb_RocksIterator
  * Method:    status0
  * Signature: (J)V
  */
-void Java_org_rocksdb_RocksIterator_status0(JNIEnv* env, jobject /*jobj*/,
+void Java_org_terarkdb_RocksIterator_status0(JNIEnv* env, jobject /*jobj*/,
                                             jlong handle) {
   auto* it = reinterpret_cast<TERARKDB_NAMESPACE::Iterator*>(handle);
   TERARKDB_NAMESPACE::Status s = it->status();
@@ -143,11 +143,11 @@ void Java_org_rocksdb_RocksIterator_status0(JNIEnv* env, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_RocksIterator
+ * Class:     org_terarkdb_RocksIterator
  * Method:    key0
  * Signature: (J)[B
  */
-jbyteArray Java_org_rocksdb_RocksIterator_key0(JNIEnv* env, jobject /*jobj*/,
+jbyteArray Java_org_terarkdb_RocksIterator_key0(JNIEnv* env, jobject /*jobj*/,
                                                jlong handle) {
   auto* it = reinterpret_cast<TERARKDB_NAMESPACE::Iterator*>(handle);
   TERARKDB_NAMESPACE::Slice key_slice = it->key();
@@ -164,11 +164,11 @@ jbyteArray Java_org_rocksdb_RocksIterator_key0(JNIEnv* env, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_RocksIterator
+ * Class:     org_terarkdb_RocksIterator
  * Method:    value0
  * Signature: (J)[B
  */
-jbyteArray Java_org_rocksdb_RocksIterator_value0(JNIEnv* env, jobject /*jobj*/,
+jbyteArray Java_org_terarkdb_RocksIterator_value0(JNIEnv* env, jobject /*jobj*/,
                                                  jlong handle) {
   auto* it = reinterpret_cast<TERARKDB_NAMESPACE::Iterator*>(handle);
   TERARKDB_NAMESPACE::Slice value_slice = it->value();

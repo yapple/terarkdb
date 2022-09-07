@@ -8,27 +8,27 @@
 
 #include <jni.h>
 
-#include "include/org_rocksdb_TransactionOptions.h"
+#include "include/org_terarkdb_TransactionOptions.h"
 
 #include "rocksdb/utilities/transaction_db.h"
 
 /*
- * Class:     org_rocksdb_TransactionOptions
+ * Class:     org_terarkdb_TransactionOptions
  * Method:    newTransactionOptions
  * Signature: ()J
  */
-jlong Java_org_rocksdb_TransactionOptions_newTransactionOptions(
+jlong Java_org_terarkdb_TransactionOptions_newTransactionOptions(
     JNIEnv* /*env*/, jclass /*jcls*/) {
   auto* opts = new TERARKDB_NAMESPACE::TransactionOptions();
   return reinterpret_cast<jlong>(opts);
 }
 
 /*
- * Class:     org_rocksdb_TransactionOptions
+ * Class:     org_terarkdb_TransactionOptions
  * Method:    isSetSnapshot
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_TransactionOptions_isSetSnapshot(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_TransactionOptions_isSetSnapshot(JNIEnv* /*env*/,
                                                            jobject /*jobj*/,
                                                            jlong jhandle) {
   auto* opts = reinterpret_cast<TERARKDB_NAMESPACE::TransactionOptions*>(jhandle);
@@ -36,22 +36,22 @@ jboolean Java_org_rocksdb_TransactionOptions_isSetSnapshot(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_TransactionOptions
+ * Class:     org_terarkdb_TransactionOptions
  * Method:    setSetSnapshot
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_TransactionOptions_setSetSnapshot(
+void Java_org_terarkdb_TransactionOptions_setSetSnapshot(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle, jboolean jset_snapshot) {
   auto* opts = reinterpret_cast<TERARKDB_NAMESPACE::TransactionOptions*>(jhandle);
   opts->set_snapshot = jset_snapshot;
 }
 
 /*
- * Class:     org_rocksdb_TransactionOptions
+ * Class:     org_terarkdb_TransactionOptions
  * Method:    isDeadlockDetect
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_TransactionOptions_isDeadlockDetect(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_TransactionOptions_isDeadlockDetect(JNIEnv* /*env*/,
                                                               jobject /*jobj*/,
                                                               jlong jhandle) {
   auto* opts = reinterpret_cast<TERARKDB_NAMESPACE::TransactionOptions*>(jhandle);
@@ -59,11 +59,11 @@ jboolean Java_org_rocksdb_TransactionOptions_isDeadlockDetect(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_TransactionOptions
+ * Class:     org_terarkdb_TransactionOptions
  * Method:    setDeadlockDetect
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_TransactionOptions_setDeadlockDetect(
+void Java_org_terarkdb_TransactionOptions_setDeadlockDetect(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean jdeadlock_detect) {
   auto* opts = reinterpret_cast<TERARKDB_NAMESPACE::TransactionOptions*>(jhandle);
@@ -71,11 +71,11 @@ void Java_org_rocksdb_TransactionOptions_setDeadlockDetect(
 }
 
 /*
- * Class:     org_rocksdb_TransactionOptions
+ * Class:     org_terarkdb_TransactionOptions
  * Method:    getLockTimeout
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_TransactionOptions_getLockTimeout(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_TransactionOptions_getLockTimeout(JNIEnv* /*env*/,
                                                          jobject /*jobj*/,
                                                          jlong jhandle) {
   auto* opts = reinterpret_cast<TERARKDB_NAMESPACE::TransactionOptions*>(jhandle);
@@ -83,11 +83,11 @@ jlong Java_org_rocksdb_TransactionOptions_getLockTimeout(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_TransactionOptions
+ * Class:     org_terarkdb_TransactionOptions
  * Method:    setLockTimeout
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_TransactionOptions_setLockTimeout(JNIEnv* /*env*/,
+void Java_org_terarkdb_TransactionOptions_setLockTimeout(JNIEnv* /*env*/,
                                                         jobject /*jobj*/,
                                                         jlong jhandle,
                                                         jlong jlock_timeout) {
@@ -96,11 +96,11 @@ void Java_org_rocksdb_TransactionOptions_setLockTimeout(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_TransactionOptions
+ * Class:     org_terarkdb_TransactionOptions
  * Method:    getExpiration
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_TransactionOptions_getExpiration(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_TransactionOptions_getExpiration(JNIEnv* /*env*/,
                                                         jobject /*jobj*/,
                                                         jlong jhandle) {
   auto* opts = reinterpret_cast<TERARKDB_NAMESPACE::TransactionOptions*>(jhandle);
@@ -108,11 +108,11 @@ jlong Java_org_rocksdb_TransactionOptions_getExpiration(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_TransactionOptions
+ * Class:     org_terarkdb_TransactionOptions
  * Method:    setExpiration
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_TransactionOptions_setExpiration(JNIEnv* /*env*/,
+void Java_org_terarkdb_TransactionOptions_setExpiration(JNIEnv* /*env*/,
                                                        jobject /*jobj*/,
                                                        jlong jhandle,
                                                        jlong jexpiration) {
@@ -121,22 +121,22 @@ void Java_org_rocksdb_TransactionOptions_setExpiration(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_TransactionOptions
+ * Class:     org_terarkdb_TransactionOptions
  * Method:    getDeadlockDetectDepth
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_TransactionOptions_getDeadlockDetectDepth(
+jlong Java_org_terarkdb_TransactionOptions_getDeadlockDetectDepth(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   auto* opts = reinterpret_cast<TERARKDB_NAMESPACE::TransactionOptions*>(jhandle);
   return opts->deadlock_detect_depth;
 }
 
 /*
- * Class:     org_rocksdb_TransactionOptions
+ * Class:     org_terarkdb_TransactionOptions
  * Method:    setDeadlockDetectDepth
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_TransactionOptions_setDeadlockDetectDepth(
+void Java_org_terarkdb_TransactionOptions_setDeadlockDetectDepth(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jdeadlock_detect_depth) {
   auto* opts = reinterpret_cast<TERARKDB_NAMESPACE::TransactionOptions*>(jhandle);
@@ -144,11 +144,11 @@ void Java_org_rocksdb_TransactionOptions_setDeadlockDetectDepth(
 }
 
 /*
- * Class:     org_rocksdb_TransactionOptions
+ * Class:     org_terarkdb_TransactionOptions
  * Method:    getMaxWriteBatchSize
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_TransactionOptions_getMaxWriteBatchSize(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_TransactionOptions_getMaxWriteBatchSize(JNIEnv* /*env*/,
                                                                jobject /*jobj*/,
                                                                jlong jhandle) {
   auto* opts = reinterpret_cast<TERARKDB_NAMESPACE::TransactionOptions*>(jhandle);
@@ -156,11 +156,11 @@ jlong Java_org_rocksdb_TransactionOptions_getMaxWriteBatchSize(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_TransactionOptions
+ * Class:     org_terarkdb_TransactionOptions
  * Method:    setMaxWriteBatchSize
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_TransactionOptions_setMaxWriteBatchSize(
+void Java_org_terarkdb_TransactionOptions_setMaxWriteBatchSize(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jmax_write_batch_size) {
   auto* opts = reinterpret_cast<TERARKDB_NAMESPACE::TransactionOptions*>(jhandle);
@@ -168,11 +168,11 @@ void Java_org_rocksdb_TransactionOptions_setMaxWriteBatchSize(
 }
 
 /*
- * Class:     org_rocksdb_TransactionOptions
+ * Class:     org_terarkdb_TransactionOptions
  * Method:    disposeInternal
  * Signature: (J)V
  */
-void Java_org_rocksdb_TransactionOptions_disposeInternal(JNIEnv* /*env*/,
+void Java_org_terarkdb_TransactionOptions_disposeInternal(JNIEnv* /*env*/,
                                                          jobject /*jobj*/,
                                                          jlong jhandle) {
   delete reinterpret_cast<TERARKDB_NAMESPACE::TransactionOptions*>(jhandle);

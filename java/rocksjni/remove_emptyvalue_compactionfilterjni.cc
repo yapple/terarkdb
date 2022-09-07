@@ -5,15 +5,15 @@
 
 #include <jni.h>
 
-#include "include/org_rocksdb_RemoveEmptyValueCompactionFilter.h"
+#include "include/org_terarkdb_RemoveEmptyValueCompactionFilter.h"
 #include "utilities/compaction_filters/remove_emptyvalue_compactionfilter.h"
 
 /*
- * Class:     org_rocksdb_RemoveEmptyValueCompactionFilter
+ * Class:     org_terarkdb_RemoveEmptyValueCompactionFilter
  * Method:    createNewRemoveEmptyValueCompactionFilter0
  * Signature: ()J
  */
-jlong Java_org_rocksdb_RemoveEmptyValueCompactionFilter_createNewRemoveEmptyValueCompactionFilter0(
+jlong Java_org_terarkdb_RemoveEmptyValueCompactionFilter_createNewRemoveEmptyValueCompactionFilter0(
     JNIEnv* /*env*/, jclass /*jcls*/) {
   auto* compaction_filter = new TERARKDB_NAMESPACE::RemoveEmptyValueCompactionFilter();
 

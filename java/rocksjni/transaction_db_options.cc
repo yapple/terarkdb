@@ -8,29 +8,29 @@
 
 #include <jni.h>
 
-#include "include/org_rocksdb_TransactionDBOptions.h"
+#include "include/org_terarkdb_TransactionDBOptions.h"
 
 #include "rocksdb/utilities/transaction_db.h"
 
 #include "rocksjni/portal.h"
 
 /*
- * Class:     org_rocksdb_TransactionDBOptions
+ * Class:     org_terarkdb_TransactionDBOptions
  * Method:    newTransactionDBOptions
  * Signature: ()J
  */
-jlong Java_org_rocksdb_TransactionDBOptions_newTransactionDBOptions(
+jlong Java_org_terarkdb_TransactionDBOptions_newTransactionDBOptions(
     JNIEnv* /*env*/, jclass /*jcls*/) {
   TERARKDB_NAMESPACE::TransactionDBOptions* opts = new TERARKDB_NAMESPACE::TransactionDBOptions();
   return reinterpret_cast<jlong>(opts);
 }
 
 /*
- * Class:     org_rocksdb_TransactionDBOptions
+ * Class:     org_terarkdb_TransactionDBOptions
  * Method:    getMaxNumLocks
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_TransactionDBOptions_getMaxNumLocks(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_TransactionDBOptions_getMaxNumLocks(JNIEnv* /*env*/,
                                                            jobject /*jobj*/,
                                                            jlong jhandle) {
   auto* opts = reinterpret_cast<TERARKDB_NAMESPACE::TransactionDBOptions*>(jhandle);
@@ -38,22 +38,22 @@ jlong Java_org_rocksdb_TransactionDBOptions_getMaxNumLocks(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_TransactionDBOptions
+ * Class:     org_terarkdb_TransactionDBOptions
  * Method:    setMaxNumLocks
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_TransactionDBOptions_setMaxNumLocks(
+void Java_org_terarkdb_TransactionDBOptions_setMaxNumLocks(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle, jlong jmax_num_locks) {
   auto* opts = reinterpret_cast<TERARKDB_NAMESPACE::TransactionDBOptions*>(jhandle);
   opts->max_num_locks = jmax_num_locks;
 }
 
 /*
- * Class:     org_rocksdb_TransactionDBOptions
+ * Class:     org_terarkdb_TransactionDBOptions
  * Method:    getNumStripes
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_TransactionDBOptions_getNumStripes(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_TransactionDBOptions_getNumStripes(JNIEnv* /*env*/,
                                                           jobject /*jobj*/,
                                                           jlong jhandle) {
   auto* opts = reinterpret_cast<TERARKDB_NAMESPACE::TransactionDBOptions*>(jhandle);
@@ -61,11 +61,11 @@ jlong Java_org_rocksdb_TransactionDBOptions_getNumStripes(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_TransactionDBOptions
+ * Class:     org_terarkdb_TransactionDBOptions
  * Method:    setNumStripes
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_TransactionDBOptions_setNumStripes(JNIEnv* /*env*/,
+void Java_org_terarkdb_TransactionDBOptions_setNumStripes(JNIEnv* /*env*/,
                                                          jobject /*jobj*/,
                                                          jlong jhandle,
                                                          jlong jnum_stripes) {
@@ -74,22 +74,22 @@ void Java_org_rocksdb_TransactionDBOptions_setNumStripes(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_TransactionDBOptions
+ * Class:     org_terarkdb_TransactionDBOptions
  * Method:    getTransactionLockTimeout
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_TransactionDBOptions_getTransactionLockTimeout(
+jlong Java_org_terarkdb_TransactionDBOptions_getTransactionLockTimeout(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   auto* opts = reinterpret_cast<TERARKDB_NAMESPACE::TransactionDBOptions*>(jhandle);
   return opts->transaction_lock_timeout;
 }
 
 /*
- * Class:     org_rocksdb_TransactionDBOptions
+ * Class:     org_terarkdb_TransactionDBOptions
  * Method:    setTransactionLockTimeout
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_TransactionDBOptions_setTransactionLockTimeout(
+void Java_org_terarkdb_TransactionDBOptions_setTransactionLockTimeout(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jtransaction_lock_timeout) {
   auto* opts = reinterpret_cast<TERARKDB_NAMESPACE::TransactionDBOptions*>(jhandle);
@@ -97,22 +97,22 @@ void Java_org_rocksdb_TransactionDBOptions_setTransactionLockTimeout(
 }
 
 /*
- * Class:     org_rocksdb_TransactionDBOptions
+ * Class:     org_terarkdb_TransactionDBOptions
  * Method:    getDefaultLockTimeout
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_TransactionDBOptions_getDefaultLockTimeout(
+jlong Java_org_terarkdb_TransactionDBOptions_getDefaultLockTimeout(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   auto* opts = reinterpret_cast<TERARKDB_NAMESPACE::TransactionDBOptions*>(jhandle);
   return opts->default_lock_timeout;
 }
 
 /*
- * Class:     org_rocksdb_TransactionDBOptions
+ * Class:     org_terarkdb_TransactionDBOptions
  * Method:    setDefaultLockTimeout
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_TransactionDBOptions_setDefaultLockTimeout(
+void Java_org_terarkdb_TransactionDBOptions_setDefaultLockTimeout(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jdefault_lock_timeout) {
   auto* opts = reinterpret_cast<TERARKDB_NAMESPACE::TransactionDBOptions*>(jhandle);
@@ -120,11 +120,11 @@ void Java_org_rocksdb_TransactionDBOptions_setDefaultLockTimeout(
 }
 
 /*
- * Class:     org_rocksdb_TransactionDBOptions
+ * Class:     org_terarkdb_TransactionDBOptions
  * Method:    getWritePolicy
  * Signature: (J)B
  */
-jbyte Java_org_rocksdb_TransactionDBOptions_getWritePolicy(JNIEnv* /*env*/,
+jbyte Java_org_terarkdb_TransactionDBOptions_getWritePolicy(JNIEnv* /*env*/,
                                                            jobject /*jobj*/,
                                                            jlong jhandle) {
   auto* opts = reinterpret_cast<TERARKDB_NAMESPACE::TransactionDBOptions*>(jhandle);
@@ -133,11 +133,11 @@ jbyte Java_org_rocksdb_TransactionDBOptions_getWritePolicy(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_TransactionDBOptions
+ * Class:     org_terarkdb_TransactionDBOptions
  * Method:    setWritePolicy
  * Signature: (JB)V
  */
-void Java_org_rocksdb_TransactionDBOptions_setWritePolicy(JNIEnv* /*env*/,
+void Java_org_terarkdb_TransactionDBOptions_setWritePolicy(JNIEnv* /*env*/,
                                                           jobject /*jobj*/,
                                                           jlong jhandle,
                                                           jbyte jwrite_policy) {
@@ -147,11 +147,11 @@ void Java_org_rocksdb_TransactionDBOptions_setWritePolicy(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_TransactionDBOptions
+ * Class:     org_terarkdb_TransactionDBOptions
  * Method:    disposeInternal
  * Signature: (J)V
  */
-void Java_org_rocksdb_TransactionDBOptions_disposeInternal(JNIEnv* /*env*/,
+void Java_org_terarkdb_TransactionDBOptions_disposeInternal(JNIEnv* /*env*/,
                                                            jobject /*jobj*/,
                                                            jlong jhandle) {
   delete reinterpret_cast<TERARKDB_NAMESPACE::TransactionDBOptions*>(jhandle);

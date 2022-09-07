@@ -9,7 +9,7 @@
 #include <memory>
 #include <string>
 
-#include "include/org_rocksdb_CassandraValueMergeOperator.h"
+#include "include/org_terarkdb_CassandraValueMergeOperator.h"
 #include "rocksdb/db.h"
 #include "rocksdb/memtablerep.h"
 #include "rocksdb/merge_operator.h"
@@ -21,11 +21,11 @@
 #include "utilities/cassandra/merge_operator.h"
 
 /*
- * Class:     org_rocksdb_CassandraValueMergeOperator
+ * Class:     org_terarkdb_CassandraValueMergeOperator
  * Method:    newSharedCassandraValueMergeOperator
  * Signature: (II)J
  */
-jlong Java_org_rocksdb_CassandraValueMergeOperator_newSharedCassandraValueMergeOperator(
+jlong Java_org_terarkdb_CassandraValueMergeOperator_newSharedCassandraValueMergeOperator(
     JNIEnv* /*env*/, jclass /*jclazz*/, jint gcGracePeriodInSeconds,
     jint operands_limit) {
   auto* op = new std::shared_ptr<TERARKDB_NAMESPACE::MergeOperator>(
@@ -35,11 +35,11 @@ jlong Java_org_rocksdb_CassandraValueMergeOperator_newSharedCassandraValueMergeO
 }
 
 /*
- * Class:     org_rocksdb_CassandraValueMergeOperator
+ * Class:     org_terarkdb_CassandraValueMergeOperator
  * Method:    disposeInternal
  * Signature: (J)V
  */
-void Java_org_rocksdb_CassandraValueMergeOperator_disposeInternal(
+void Java_org_terarkdb_CassandraValueMergeOperator_disposeInternal(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   auto* op =
       reinterpret_cast<std::shared_ptr<TERARKDB_NAMESPACE::MergeOperator>*>(jhandle);

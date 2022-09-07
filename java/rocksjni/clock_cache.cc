@@ -9,14 +9,14 @@
 #include <jni.h>
 
 #include "cache/clock_cache.h"
-#include "include/org_rocksdb_ClockCache.h"
+#include "include/org_terarkdb_ClockCache.h"
 
 /*
- * Class:     org_rocksdb_ClockCache
+ * Class:     org_terarkdb_ClockCache
  * Method:    newClockCache
  * Signature: (JIZ)J
  */
-jlong Java_org_rocksdb_ClockCache_newClockCache(
+jlong Java_org_terarkdb_ClockCache_newClockCache(
     JNIEnv* /*env*/, jclass /*jcls*/, jlong jcapacity, jint jnum_shard_bits,
     jboolean jstrict_capacity_limit) {
   auto* sptr_clock_cache =
@@ -27,11 +27,11 @@ jlong Java_org_rocksdb_ClockCache_newClockCache(
 }
 
 /*
- * Class:     org_rocksdb_ClockCache
+ * Class:     org_terarkdb_ClockCache
  * Method:    disposeInternal
  * Signature: (J)V
  */
-void Java_org_rocksdb_ClockCache_disposeInternal(JNIEnv* /*env*/,
+void Java_org_terarkdb_ClockCache_disposeInternal(JNIEnv* /*env*/,
                                                  jobject /*jobj*/,
                                                  jlong jhandle) {
   auto* sptr_clock_cache =

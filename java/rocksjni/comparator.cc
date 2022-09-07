@@ -12,20 +12,20 @@
 #include <functional>
 #include <string>
 
-#include "include/org_rocksdb_Comparator.h"
-#include "include/org_rocksdb_DirectComparator.h"
-#include "include/org_rocksdb_NativeComparatorWrapper.h"
+#include "include/org_terarkdb_Comparator.h"
+#include "include/org_terarkdb_DirectComparator.h"
+#include "include/org_terarkdb_NativeComparatorWrapper.h"
 #include "rocksjni/comparatorjnicallback.h"
 #include "rocksjni/portal.h"
 
-// <editor-fold desc="org.rocksdb.Comparator>
+// <editor-fold desc="org.terarkdb.Comparator>
 
 /*
- * Class:     org_rocksdb_Comparator
+ * Class:     org_terarkdb_Comparator
  * Method:    createNewComparator0
  * Signature: ()J
  */
-jlong Java_org_rocksdb_Comparator_createNewComparator0(JNIEnv* env,
+jlong Java_org_terarkdb_Comparator_createNewComparator0(JNIEnv* env,
                                                        jobject jobj,
                                                        jlong copt_handle) {
   auto* copt =
@@ -35,14 +35,14 @@ jlong Java_org_rocksdb_Comparator_createNewComparator0(JNIEnv* env,
 }
 // </editor-fold>
 
-// <editor-fold desc="org.rocksdb.DirectComparator>
+// <editor-fold desc="org.terarkdb.DirectComparator>
 
 /*
- * Class:     org_rocksdb_DirectComparator
+ * Class:     org_terarkdb_DirectComparator
  * Method:    createNewDirectComparator0
  * Signature: ()J
  */
-jlong Java_org_rocksdb_DirectComparator_createNewDirectComparator0(
+jlong Java_org_terarkdb_DirectComparator_createNewDirectComparator0(
     JNIEnv* env, jobject jobj, jlong copt_handle) {
   auto* copt =
       reinterpret_cast<TERARKDB_NAMESPACE::ComparatorJniCallbackOptions*>(copt_handle);
@@ -51,11 +51,11 @@ jlong Java_org_rocksdb_DirectComparator_createNewDirectComparator0(
 }
 
 /*
- * Class:     org_rocksdb_NativeComparatorWrapper
+ * Class:     org_terarkdb_NativeComparatorWrapper
  * Method:    disposeInternal
  * Signature: (J)V
  */
-void Java_org_rocksdb_NativeComparatorWrapper_disposeInternal(
+void Java_org_terarkdb_NativeComparatorWrapper_disposeInternal(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jcomparator_handle) {
   auto* comparator = reinterpret_cast<TERARKDB_NAMESPACE::Comparator*>(jcomparator_handle);
   delete comparator;

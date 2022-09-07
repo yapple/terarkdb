@@ -123,7 +123,7 @@ endif
 endif
 
 ifeq (,$(shell $(CXX) -fsyntax-only -faligned-new -xc++ /dev/null 2>&1))
-CXXFLAGS += -ljemalloc -faligned-new -DHAVE_ALIGNED_NEW
+CXXFLAGS += -faligned-new -DHAVE_ALIGNED_NEW
 endif
 
 ifeq (,$(shell $(CXX) -fsyntax-only -maltivec -xc /dev/null 2>&1))
@@ -1809,7 +1809,7 @@ rocksdbjavastatic: $(java_static_all_libobjects)
 	cd java;jar -cf target/$(ROCKSDB_JAR) HISTORY*.md
 	jar -uf java/target/$(ROCKSDB_JAR) HISTORY*.md
 	cd java/target;jar -uf $(ROCKSDB_JAR) $(ROCKSDBJNILIB)
-	cd java/target/classes;jar -uf ../$(ROCKSDB_JAR) org/rocksdb/*.class org/rocksdb/util/*.class
+	cd java/target/classes;jar -uf ../$(ROCKSDB_JAR) org/terarkdb/*.class org/terarkdb/util/*.class
 	cd java/target/apidocs;jar -cf ../$(ROCKSDB_JAVADOCS_JAR) *
 	cd java/src/main/java;jar -cf ../../../target/$(ROCKSDB_SOURCES_JAR) org
 	openssl sha1 java/target/$(ROCKSDB_JAR) | sed 's/.*= \([0-9a-f]*\)/\1/' > java/target/$(ROCKSDB_JAR).sha1
@@ -1825,7 +1825,7 @@ rocksdbjavastaticrelease: rocksdbjavastatic
 	cd java;jar -cf target/$(ROCKSDB_JAR_ALL) HISTORY*.md
 	jar -uf java/target/$(ROCKSDB_JAR_ALL) HISTORY*.md
 	cd java/target;jar -uf $(ROCKSDB_JAR_ALL) libterarkdbjni-*.so libterarkdbjni-*.jnilib libterarkdbjni-win64.dll
-	cd java/target/classes;jar -uf ../$(ROCKSDB_JAR_ALL) org/rocksdb/*.class org/rocksdb/util/*.class
+	cd java/target/classes;jar -uf ../$(ROCKSDB_JAR_ALL) org/terarkdb/*.class org/terarkdb/util/*.class
 
 frocksdbjavastaticrelease: rocksdbjavastaticrelease
 	# update license
@@ -1879,13 +1879,13 @@ frocksdbjavastaticrelease: rocksdbjavastaticrelease
 rocksdbjavastaticreleasedocker: rocksdbjavastatic  rocksdbjavastaticdockerx86_64
 	cd java;jar -cf target/$(ROCKSDB_JAR_ALL) HISTORY*.md
 	cd java/target;jar -uf $(ROCKSDB_JAR_ALL) libterarkdbjni-*.so libterarkdbjni-*.jnilib
-	cd java/target/classes;jar -uf ../$(ROCKSDB_JAR_ALL) org/rocksdb/*.class org/rocksdb/util/*.class
+	cd java/target/classes;jar -uf ../$(ROCKSDB_JAR_ALL) org/terarkdb/*.class org/terarkdb/util/*.class
 
 fterark:rocksdbjavastatic
 	cd java;jar -cf target/$(ROCKSDB_JAR_ALL) HISTORY*.md
 	cd java/target;jar -uf $(ROCKSDB_JAR_ALL) libterarkdbjni-*
 	#cd java/target;jar -uf $(ROCKSDB_JAR_ALL) libterarkdbjni-*.so libterarkdbjni-*
-	cd java/target/classes;jar -uf ../$(ROCKSDB_JAR_ALL) org/rocksdb/*.class org/rocksdb/util/*.class
+	cd java/target/classes;jar -uf ../$(ROCKSDB_JAR_ALL) org/terarkdb/*.class org/terarkdb/util/*.class
 
 	# update apache license
 	mkdir -p java/target/META-INF
@@ -2014,7 +2014,7 @@ rocksdbjava: $(java_all_libobjects)
 	$(AM_V_at)$(CXX) $(CXXFLAGS) -I./java/. $(JAVA_INCLUDE) -shared -fPIC -o ./java/target/$(ROCKSDBJNILIB) $(JNI_NATIVE_SOURCES) $(java_all_libobjects) $(JAVA_LDFLAGS) $(COVERAGEFLAGS)
 	$(AM_V_at)cd java;jar -cf target/$(ROCKSDB_JAR) HISTORY*.md
 	$(AM_V_at)cd java/target;jar -uf $(ROCKSDB_JAR) $(ROCKSDBJNILIB)
-	$(AM_V_at)cd java/target/classes;jar -uf ../$(ROCKSDB_JAR) org/rocksdb/*.class org/rocksdb/util/*.class
+	$(AM_V_at)cd java/target/classes;jar -uf ../$(ROCKSDB_JAR) org/terarkdb/*.class org/terarkdb/util/*.class
 
 frocksdbjava: rocksdbjava
 	# update license

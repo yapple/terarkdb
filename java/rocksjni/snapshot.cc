@@ -9,16 +9,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "include/org_rocksdb_Snapshot.h"
+#include "include/org_terarkdb_Snapshot.h"
 #include "rocksdb/db.h"
 #include "rocksjni/portal.h"
 
 /*
- * Class:     org_rocksdb_Snapshot
+ * Class:     org_terarkdb_Snapshot
  * Method:    getSequenceNumber
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Snapshot_getSequenceNumber(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_Snapshot_getSequenceNumber(JNIEnv* /*env*/,
                                                   jobject /*jobj*/,
                                                   jlong jsnapshot_handle) {
   auto* snapshot = reinterpret_cast<TERARKDB_NAMESPACE::Snapshot*>(jsnapshot_handle);

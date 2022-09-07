@@ -5,16 +5,16 @@
 //
 // This file implements the "bridge" between Java and C++ for RateLimiter.
 
-#include "include/org_rocksdb_RateLimiter.h"
+#include "include/org_terarkdb_RateLimiter.h"
 #include "rocksdb/rate_limiter.h"
 #include "rocksjni/portal.h"
 
 /*
- * Class:     org_rocksdb_RateLimiter
+ * Class:     org_terarkdb_RateLimiter
  * Method:    newRateLimiterHandle
  * Signature: (JJIBZ)J
  */
-jlong Java_org_rocksdb_RateLimiter_newRateLimiterHandle(
+jlong Java_org_terarkdb_RateLimiter_newRateLimiterHandle(
     JNIEnv* /*env*/, jclass /*jclazz*/, jlong jrate_bytes_per_second,
     jlong jrefill_period_micros, jint jfairness, jbyte jrate_limiter_mode,
     jboolean jauto_tune) {
@@ -30,11 +30,11 @@ jlong Java_org_rocksdb_RateLimiter_newRateLimiterHandle(
 }
 
 /*
- * Class:     org_rocksdb_RateLimiter
+ * Class:     org_terarkdb_RateLimiter
  * Method:    disposeInternal
  * Signature: (J)V
  */
-void Java_org_rocksdb_RateLimiter_disposeInternal(JNIEnv* /*env*/,
+void Java_org_terarkdb_RateLimiter_disposeInternal(JNIEnv* /*env*/,
                                                   jobject /*jobj*/,
                                                   jlong jhandle) {
   auto* handle =
@@ -43,11 +43,11 @@ void Java_org_rocksdb_RateLimiter_disposeInternal(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_RateLimiter
+ * Class:     org_terarkdb_RateLimiter
  * Method:    setBytesPerSecond
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_RateLimiter_setBytesPerSecond(JNIEnv* /*env*/,
+void Java_org_terarkdb_RateLimiter_setBytesPerSecond(JNIEnv* /*env*/,
                                                     jobject /*jobj*/,
                                                     jlong handle,
                                                     jlong jbytes_per_second) {
@@ -57,11 +57,11 @@ void Java_org_rocksdb_RateLimiter_setBytesPerSecond(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_RateLimiter
+ * Class:     org_terarkdb_RateLimiter
  * Method:    getBytesPerSecond
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_RateLimiter_getBytesPerSecond(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_RateLimiter_getBytesPerSecond(JNIEnv* /*env*/,
                                                      jobject /*jobj*/,
                                                      jlong handle) {
   return reinterpret_cast<std::shared_ptr<TERARKDB_NAMESPACE::RateLimiter>*>(handle)
@@ -70,11 +70,11 @@ jlong Java_org_rocksdb_RateLimiter_getBytesPerSecond(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_RateLimiter
+ * Class:     org_terarkdb_RateLimiter
  * Method:    request
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_RateLimiter_request(JNIEnv* /*env*/, jobject /*jobj*/,
+void Java_org_terarkdb_RateLimiter_request(JNIEnv* /*env*/, jobject /*jobj*/,
                                           jlong handle, jlong jbytes) {
   reinterpret_cast<std::shared_ptr<TERARKDB_NAMESPACE::RateLimiter>*>(handle)
       ->get()
@@ -82,11 +82,11 @@ void Java_org_rocksdb_RateLimiter_request(JNIEnv* /*env*/, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_RateLimiter
+ * Class:     org_terarkdb_RateLimiter
  * Method:    getSingleBurstBytes
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_RateLimiter_getSingleBurstBytes(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_RateLimiter_getSingleBurstBytes(JNIEnv* /*env*/,
                                                        jobject /*jobj*/,
                                                        jlong handle) {
   return reinterpret_cast<std::shared_ptr<TERARKDB_NAMESPACE::RateLimiter>*>(handle)
@@ -95,11 +95,11 @@ jlong Java_org_rocksdb_RateLimiter_getSingleBurstBytes(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_RateLimiter
+ * Class:     org_terarkdb_RateLimiter
  * Method:    getTotalBytesThrough
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_RateLimiter_getTotalBytesThrough(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_RateLimiter_getTotalBytesThrough(JNIEnv* /*env*/,
                                                         jobject /*jobj*/,
                                                         jlong handle) {
   return reinterpret_cast<std::shared_ptr<TERARKDB_NAMESPACE::RateLimiter>*>(handle)
@@ -108,11 +108,11 @@ jlong Java_org_rocksdb_RateLimiter_getTotalBytesThrough(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_RateLimiter
+ * Class:     org_terarkdb_RateLimiter
  * Method:    getTotalRequests
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_RateLimiter_getTotalRequests(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_RateLimiter_getTotalRequests(JNIEnv* /*env*/,
                                                     jobject /*jobj*/,
                                                     jlong handle) {
   return reinterpret_cast<std::shared_ptr<TERARKDB_NAMESPACE::RateLimiter>*>(handle)

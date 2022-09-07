@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <name>RocksDB JNI</name>
     <url>http://rocksdb.org/</url>
-    <groupId>org.rocksdb</groupId>
+    <groupId>org.terarkdb</groupId>
     <artifactId>rocksdbjni</artifactId>
     <!-- Version will be automatically replaced -->
     <version>-</version>

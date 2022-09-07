@@ -10,7 +10,7 @@
 #include <jni.h>
 #include <string>
 
-#include "include/org_rocksdb_SstFileWriter.h"
+#include "include/org_terarkdb_SstFileWriter.h"
 #include "rocksdb/comparator.h"
 #include "rocksdb/env.h"
 #include "rocksdb/options.h"
@@ -18,11 +18,11 @@
 #include "rocksjni/portal.h"
 
 /*
- * Class:     org_rocksdb_SstFileWriter
+ * Class:     org_terarkdb_SstFileWriter
  * Method:    newSstFileWriter
  * Signature: (JJJB)J
  */
-jlong Java_org_rocksdb_SstFileWriter_newSstFileWriter__JJJB(
+jlong Java_org_terarkdb_SstFileWriter_newSstFileWriter__JJJB(
     JNIEnv * /*env*/, jclass /*jcls*/, jlong jenvoptions, jlong joptions,
     jlong jcomparator_handle, jbyte jcomparator_type) {
   TERARKDB_NAMESPACE::Comparator *comparator = nullptr;
@@ -53,11 +53,11 @@ jlong Java_org_rocksdb_SstFileWriter_newSstFileWriter__JJJB(
 }
 
 /*
- * Class:     org_rocksdb_SstFileWriter
+ * Class:     org_terarkdb_SstFileWriter
  * Method:    newSstFileWriter
  * Signature: (JJ)J
  */
-jlong Java_org_rocksdb_SstFileWriter_newSstFileWriter__JJ(JNIEnv * /*env*/,
+jlong Java_org_terarkdb_SstFileWriter_newSstFileWriter__JJ(JNIEnv * /*env*/,
                                                           jclass /*jcls*/,
                                                           jlong jenvoptions,
                                                           jlong joptions) {
@@ -70,11 +70,11 @@ jlong Java_org_rocksdb_SstFileWriter_newSstFileWriter__JJ(JNIEnv * /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_SstFileWriter
+ * Class:     org_terarkdb_SstFileWriter
  * Method:    open
  * Signature: (JLjava/lang/String;)V
  */
-void Java_org_rocksdb_SstFileWriter_open(JNIEnv *env, jobject /*jobj*/,
+void Java_org_terarkdb_SstFileWriter_open(JNIEnv *env, jobject /*jobj*/,
                                          jlong jhandle, jstring jfile_path) {
   const char *file_path = env->GetStringUTFChars(jfile_path, nullptr);
   if (file_path == nullptr) {
@@ -91,11 +91,11 @@ void Java_org_rocksdb_SstFileWriter_open(JNIEnv *env, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_SstFileWriter
+ * Class:     org_terarkdb_SstFileWriter
  * Method:    put
  * Signature: (JJJ)V
  */
-void Java_org_rocksdb_SstFileWriter_put__JJJ(JNIEnv *env, jobject /*jobj*/,
+void Java_org_terarkdb_SstFileWriter_put__JJJ(JNIEnv *env, jobject /*jobj*/,
                                              jlong jhandle, jlong jkey_handle,
                                              jlong jvalue_handle) {
   auto *key_slice = reinterpret_cast<TERARKDB_NAMESPACE::Slice *>(jkey_handle);
@@ -108,11 +108,11 @@ void Java_org_rocksdb_SstFileWriter_put__JJJ(JNIEnv *env, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_SstFileWriter
+ * Class:     org_terarkdb_SstFileWriter
  * Method:    put
  * Signature: (JJJ)V
  */
-void Java_org_rocksdb_SstFileWriter_put__J_3B_3B(JNIEnv *env, jobject /*jobj*/,
+void Java_org_terarkdb_SstFileWriter_put__J_3B_3B(JNIEnv *env, jobject /*jobj*/,
                                                  jlong jhandle, jbyteArray jkey,
                                                  jbyteArray jval) {
   jbyte *key = env->GetByteArrayElements(jkey, nullptr);
@@ -144,11 +144,11 @@ void Java_org_rocksdb_SstFileWriter_put__J_3B_3B(JNIEnv *env, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_SstFileWriter
+ * Class:     org_terarkdb_SstFileWriter
  * Method:    merge
  * Signature: (JJJ)V
  */
-void Java_org_rocksdb_SstFileWriter_merge__JJJ(JNIEnv *env, jobject /*jobj*/,
+void Java_org_terarkdb_SstFileWriter_merge__JJJ(JNIEnv *env, jobject /*jobj*/,
                                                jlong jhandle, jlong jkey_handle,
                                                jlong jvalue_handle) {
   auto *key_slice = reinterpret_cast<TERARKDB_NAMESPACE::Slice *>(jkey_handle);
@@ -162,11 +162,11 @@ void Java_org_rocksdb_SstFileWriter_merge__JJJ(JNIEnv *env, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_SstFileWriter
+ * Class:     org_terarkdb_SstFileWriter
  * Method:    merge
  * Signature: (J[B[B)V
  */
-void Java_org_rocksdb_SstFileWriter_merge__J_3B_3B(JNIEnv *env,
+void Java_org_terarkdb_SstFileWriter_merge__J_3B_3B(JNIEnv *env,
                                                    jobject /*jobj*/,
                                                    jlong jhandle,
                                                    jbyteArray jkey,
@@ -201,11 +201,11 @@ void Java_org_rocksdb_SstFileWriter_merge__J_3B_3B(JNIEnv *env,
 }
 
 /*
- * Class:     org_rocksdb_SstFileWriter
+ * Class:     org_terarkdb_SstFileWriter
  * Method:    delete
  * Signature: (JJJ)V
  */
-void Java_org_rocksdb_SstFileWriter_delete__J_3B(JNIEnv *env, jobject /*jobj*/,
+void Java_org_terarkdb_SstFileWriter_delete__J_3B(JNIEnv *env, jobject /*jobj*/,
                                                  jlong jhandle,
                                                  jbyteArray jkey) {
   jbyte *key = env->GetByteArrayElements(jkey, nullptr);
@@ -227,11 +227,11 @@ void Java_org_rocksdb_SstFileWriter_delete__J_3B(JNIEnv *env, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_SstFileWriter
+ * Class:     org_terarkdb_SstFileWriter
  * Method:    delete
  * Signature: (JJJ)V
  */
-void Java_org_rocksdb_SstFileWriter_delete__JJ(JNIEnv *env, jobject /*jobj*/,
+void Java_org_terarkdb_SstFileWriter_delete__JJ(JNIEnv *env, jobject /*jobj*/,
                                                jlong jhandle,
                                                jlong jkey_handle) {
   auto *key_slice = reinterpret_cast<TERARKDB_NAMESPACE::Slice *>(jkey_handle);
@@ -243,11 +243,11 @@ void Java_org_rocksdb_SstFileWriter_delete__JJ(JNIEnv *env, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_SstFileWriter
+ * Class:     org_terarkdb_SstFileWriter
  * Method:    finish
  * Signature: (J)V
  */
-void Java_org_rocksdb_SstFileWriter_finish(JNIEnv *env, jobject /*jobj*/,
+void Java_org_terarkdb_SstFileWriter_finish(JNIEnv *env, jobject /*jobj*/,
                                            jlong jhandle) {
   TERARKDB_NAMESPACE::Status s =
       reinterpret_cast<TERARKDB_NAMESPACE::SstFileWriter *>(jhandle)->Finish();
@@ -257,11 +257,11 @@ void Java_org_rocksdb_SstFileWriter_finish(JNIEnv *env, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_SstFileWriter
+ * Class:     org_terarkdb_SstFileWriter
  * Method:    disposeInternal
  * Signature: (J)V
  */
-void Java_org_rocksdb_SstFileWriter_disposeInternal(JNIEnv * /*env*/,
+void Java_org_terarkdb_SstFileWriter_disposeInternal(JNIEnv * /*env*/,
                                                     jobject /*jobj*/,
                                                     jlong jhandle) {
   delete reinterpret_cast<TERARKDB_NAMESPACE::SstFileWriter *>(jhandle);

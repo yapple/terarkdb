@@ -12,9 +12,9 @@
 #include <memory>
 #include <string>
 
-#include "include/org_rocksdb_StringAppendOperator.h"
-#include "include/org_rocksdb_StringAppendOperatorWithVariableDelimitor.h"
-#include "include/org_rocksdb_UInt64AddOperator.h"
+#include "include/org_terarkdb_StringAppendOperator.h"
+#include "include/org_terarkdb_StringAppendOperatorWithVariableDelimitor.h"
+#include "include/org_terarkdb_UInt64AddOperator.h"
 #include "rocksdb/db.h"
 #include "rocksdb/memtablerep.h"
 #include "rocksdb/merge_operator.h"
@@ -26,11 +26,11 @@
 #include "utilities/merge_operators.h"
 
 /*
- * Class:     org_rocksdb_StringAppendOperator
+ * Class:     org_terarkdb_StringAppendOperator
  * Method:    newSharedStringAppendOperator
  * Signature: (C)J
  */
-jlong Java_org_rocksdb_StringAppendOperator_newSharedStringAppendOperator(
+jlong Java_org_terarkdb_StringAppendOperator_newSharedStringAppendOperator(
     JNIEnv* /*env*/, jclass /*jclazz*/, jchar jdelim) {
   auto* sptr_string_append_op = new std::shared_ptr<TERARKDB_NAMESPACE::MergeOperator>(
       TERARKDB_NAMESPACE::MergeOperators::CreateStringAppendOperator((char)jdelim));
@@ -38,11 +38,11 @@ jlong Java_org_rocksdb_StringAppendOperator_newSharedStringAppendOperator(
 }
 
 /*
- * Class:     org_rocksdb_StringAppendOperator
+ * Class:     org_terarkdb_StringAppendOperator
  * Method:    disposeInternal
  * Signature: (J)V
  */
-void Java_org_rocksdb_StringAppendOperator_disposeInternal(JNIEnv* /*env*/,
+void Java_org_terarkdb_StringAppendOperator_disposeInternal(JNIEnv* /*env*/,
                                                            jobject /*jobj*/,
                                                            jlong jhandle) {
   auto* sptr_string_append_op =
@@ -52,11 +52,11 @@ void Java_org_rocksdb_StringAppendOperator_disposeInternal(JNIEnv* /*env*/,
 
 
 /*
- * Class:     org_rocksdb_StringAppendOperatorWithVariableDelimitor
+ * Class:     org_terarkdb_StringAppendOperatorWithVariableDelimitor
  * Method:    newSharedStringAppendTESTOperator
  * Signature: ([B)J
  */
-jlong Java_org_rocksdb_StringAppendOperatorWithVariableDelimitor_newSharedStringAppendTESTOperator(
+jlong Java_org_terarkdb_StringAppendOperatorWithVariableDelimitor_newSharedStringAppendTESTOperator(
         JNIEnv* env, jclass /*jclazz*/, jbyteArray jdelim) {
   jboolean has_exception = JNI_FALSE;
   std::string delim = TERARKDB_NAMESPACE::JniUtil::byteString<std::string>(
@@ -74,11 +74,11 @@ jlong Java_org_rocksdb_StringAppendOperatorWithVariableDelimitor_newSharedString
 }
 
 /*
- * Class:     org_rocksdb_StringAppendOperatorWithVariableDelimitor
+ * Class:     org_terarkdb_StringAppendOperatorWithVariableDelimitor
  * Method:    disposeInternal
  * Signature: (J)V
  */
-void Java_org_rocksdb_StringAppendOperatorWithVariableDelimitor_disposeInternal(JNIEnv* /*env*/,
+void Java_org_terarkdb_StringAppendOperatorWithVariableDelimitor_disposeInternal(JNIEnv* /*env*/,
                                                                                 jobject /*jobj*/,
                                                                                 jlong jhandle) {
   auto* sptr_string_append_test_op =
@@ -87,11 +87,11 @@ void Java_org_rocksdb_StringAppendOperatorWithVariableDelimitor_disposeInternal(
 }
 
 /*
- * Class:     org_rocksdb_UInt64AddOperator
+ * Class:     org_terarkdb_UInt64AddOperator
  * Method:    newSharedUInt64AddOperator
  * Signature: ()J
  */
-jlong Java_org_rocksdb_UInt64AddOperator_newSharedUInt64AddOperator(
+jlong Java_org_terarkdb_UInt64AddOperator_newSharedUInt64AddOperator(
     JNIEnv* /*env*/, jclass /*jclazz*/) {
   auto* sptr_uint64_add_op = new std::shared_ptr<TERARKDB_NAMESPACE::MergeOperator>(
       TERARKDB_NAMESPACE::MergeOperators::CreateUInt64AddOperator());
@@ -99,11 +99,11 @@ jlong Java_org_rocksdb_UInt64AddOperator_newSharedUInt64AddOperator(
 }
 
 /*
- * Class:     org_rocksdb_UInt64AddOperator
+ * Class:     org_terarkdb_UInt64AddOperator
  * Method:    disposeInternal
  * Signature: (J)V
  */
-void Java_org_rocksdb_UInt64AddOperator_disposeInternal(JNIEnv* /*env*/,
+void Java_org_terarkdb_UInt64AddOperator_disposeInternal(JNIEnv* /*env*/,
                                                         jobject /*jobj*/,
                                                         jlong jhandle) {
   auto* sptr_uint64_add_op =

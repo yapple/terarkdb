@@ -9,7 +9,7 @@
 #include <jni.h>
 #include <functional>
 
-#include "include/org_rocksdb_Transaction.h"
+#include "include/org_terarkdb_Transaction.h"
 
 #include "rocksdb/utilities/transaction.h"
 #include "rocksjni/portal.h"
@@ -23,33 +23,33 @@ using namespace std::placeholders;
 #endif
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    setSnapshot
  * Signature: (J)V
  */
-void Java_org_rocksdb_Transaction_setSnapshot(JNIEnv* /*env*/, jobject /*jobj*/,
+void Java_org_terarkdb_Transaction_setSnapshot(JNIEnv* /*env*/, jobject /*jobj*/,
                                               jlong jhandle) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
   txn->SetSnapshot();
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    setSnapshotOnNextOperation
  * Signature: (J)V
  */
-void Java_org_rocksdb_Transaction_setSnapshotOnNextOperation__J(
+void Java_org_terarkdb_Transaction_setSnapshotOnNextOperation__J(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
   txn->SetSnapshotOnNextOperation(nullptr);
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    setSnapshotOnNextOperation
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Transaction_setSnapshotOnNextOperation__JJ(
+void Java_org_terarkdb_Transaction_setSnapshotOnNextOperation__JJ(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jtxn_notifier_handle) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
@@ -60,11 +60,11 @@ void Java_org_rocksdb_Transaction_setSnapshotOnNextOperation__JJ(
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    getSnapshot
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Transaction_getSnapshot(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_Transaction_getSnapshot(JNIEnv* /*env*/,
                                                jobject /*jobj*/,
                                                jlong jhandle) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
@@ -73,11 +73,11 @@ jlong Java_org_rocksdb_Transaction_getSnapshot(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    clearSnapshot
  * Signature: (J)V
  */
-void Java_org_rocksdb_Transaction_clearSnapshot(JNIEnv* /*env*/,
+void Java_org_terarkdb_Transaction_clearSnapshot(JNIEnv* /*env*/,
                                                 jobject /*jobj*/,
                                                 jlong jhandle) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
@@ -85,11 +85,11 @@ void Java_org_rocksdb_Transaction_clearSnapshot(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    prepare
  * Signature: (J)V
  */
-void Java_org_rocksdb_Transaction_prepare(JNIEnv* env, jobject /*jobj*/,
+void Java_org_terarkdb_Transaction_prepare(JNIEnv* env, jobject /*jobj*/,
                                           jlong jhandle) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
   TERARKDB_NAMESPACE::Status s = txn->Prepare();
@@ -99,11 +99,11 @@ void Java_org_rocksdb_Transaction_prepare(JNIEnv* env, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    commit
  * Signature: (J)V
  */
-void Java_org_rocksdb_Transaction_commit(JNIEnv* env, jobject /*jobj*/,
+void Java_org_terarkdb_Transaction_commit(JNIEnv* env, jobject /*jobj*/,
                                          jlong jhandle) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
   TERARKDB_NAMESPACE::Status s = txn->Commit();
@@ -113,11 +113,11 @@ void Java_org_rocksdb_Transaction_commit(JNIEnv* env, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    rollback
  * Signature: (J)V
  */
-void Java_org_rocksdb_Transaction_rollback(JNIEnv* env, jobject /*jobj*/,
+void Java_org_terarkdb_Transaction_rollback(JNIEnv* env, jobject /*jobj*/,
                                            jlong jhandle) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
   TERARKDB_NAMESPACE::Status s = txn->Rollback();
@@ -127,11 +127,11 @@ void Java_org_rocksdb_Transaction_rollback(JNIEnv* env, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    setSavePoint
  * Signature: (J)V
  */
-void Java_org_rocksdb_Transaction_setSavePoint(JNIEnv* /*env*/,
+void Java_org_terarkdb_Transaction_setSavePoint(JNIEnv* /*env*/,
                                                jobject /*jobj*/,
                                                jlong jhandle) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
@@ -139,11 +139,11 @@ void Java_org_rocksdb_Transaction_setSavePoint(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    rollbackToSavePoint
  * Signature: (J)V
  */
-void Java_org_rocksdb_Transaction_rollbackToSavePoint(JNIEnv* env,
+void Java_org_terarkdb_Transaction_rollbackToSavePoint(JNIEnv* env,
                                                       jobject /*jobj*/,
                                                       jlong jhandle) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
@@ -202,11 +202,11 @@ jbyteArray txn_get_helper(JNIEnv* env, const FnGet& fn_get,
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    get
  * Signature: (JJ[BIJ)[B
  */
-jbyteArray Java_org_rocksdb_Transaction_get__JJ_3BIJ(
+jbyteArray Java_org_terarkdb_Transaction_get__JJ_3BIJ(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle, jlong jread_options_handle,
     jbyteArray jkey, jint jkey_part_len, jlong jcolumn_family_handle) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
@@ -220,11 +220,11 @@ jbyteArray Java_org_rocksdb_Transaction_get__JJ_3BIJ(
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    get
  * Signature: (JJ[BI)[B
  */
-jbyteArray Java_org_rocksdb_Transaction_get__JJ_3BI(
+jbyteArray Java_org_terarkdb_Transaction_get__JJ_3BI(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle, jlong jread_options_handle,
     jbyteArray jkey, jint jkey_part_len) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
@@ -371,11 +371,11 @@ jobjectArray txn_multi_get_helper(JNIEnv* env, const FnMultiGet& fn_multi_get,
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    multiGet
  * Signature: (JJ[[B[J)[[B
  */
-jobjectArray Java_org_rocksdb_Transaction_multiGet__JJ_3_3B_3J(
+jobjectArray Java_org_terarkdb_Transaction_multiGet__JJ_3_3B_3J(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle, jlong jread_options_handle,
     jobjectArray jkey_parts, jlongArray jcolumn_family_handles) {
   bool has_exception = false;
@@ -398,11 +398,11 @@ jobjectArray Java_org_rocksdb_Transaction_multiGet__JJ_3_3B_3J(
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    multiGet
  * Signature: (JJ[[B)[[B
  */
-jobjectArray Java_org_rocksdb_Transaction_multiGet__JJ_3_3B(
+jobjectArray Java_org_terarkdb_Transaction_multiGet__JJ_3_3B(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle, jlong jread_options_handle,
     jobjectArray jkey_parts) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
@@ -416,11 +416,11 @@ jobjectArray Java_org_rocksdb_Transaction_multiGet__JJ_3_3B(
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    getForUpdate
  * Signature: (JJ[BIJZ)[B
  */
-jbyteArray Java_org_rocksdb_Transaction_getForUpdate__JJ_3BIJZ(
+jbyteArray Java_org_terarkdb_Transaction_getForUpdate__JJ_3BIJZ(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle, jlong jread_options_handle,
     jbyteArray jkey, jint jkey_part_len, jlong jcolumn_family_handle,
     jboolean jexclusive) {
@@ -437,11 +437,11 @@ jbyteArray Java_org_rocksdb_Transaction_getForUpdate__JJ_3BIJZ(
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    getForUpdate
  * Signature: (JJ[BIZ)[B
  */
-jbyteArray Java_org_rocksdb_Transaction_getForUpdate__JJ_3BIZ(
+jbyteArray Java_org_terarkdb_Transaction_getForUpdate__JJ_3BIZ(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle, jlong jread_options_handle,
     jbyteArray jkey, jint jkey_part_len, jboolean jexclusive) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
@@ -453,11 +453,11 @@ jbyteArray Java_org_rocksdb_Transaction_getForUpdate__JJ_3BIZ(
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    multiGetForUpdate
  * Signature: (JJ[[B[J)[[B
  */
-jobjectArray Java_org_rocksdb_Transaction_multiGetForUpdate__JJ_3_3B_3J(
+jobjectArray Java_org_terarkdb_Transaction_multiGetForUpdate__JJ_3_3B_3J(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle, jlong jread_options_handle,
     jobjectArray jkey_parts, jlongArray jcolumn_family_handles) {
   bool has_exception = false;
@@ -480,11 +480,11 @@ jobjectArray Java_org_rocksdb_Transaction_multiGetForUpdate__JJ_3_3B_3J(
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    multiGetForUpdate
  * Signature: (JJ[[B)[[B
  */
-jobjectArray Java_org_rocksdb_Transaction_multiGetForUpdate__JJ_3_3B(
+jobjectArray Java_org_terarkdb_Transaction_multiGetForUpdate__JJ_3_3B(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle, jlong jread_options_handle,
     jobjectArray jkey_parts) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
@@ -498,11 +498,11 @@ jobjectArray Java_org_rocksdb_Transaction_multiGetForUpdate__JJ_3_3B(
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    getIterator
  * Signature: (JJ)J
  */
-jlong Java_org_rocksdb_Transaction_getIterator__JJ(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_Transaction_getIterator__JJ(JNIEnv* /*env*/,
                                                    jobject /*jobj*/,
                                                    jlong jhandle,
                                                    jlong jread_options_handle) {
@@ -513,11 +513,11 @@ jlong Java_org_rocksdb_Transaction_getIterator__JJ(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    getIterator
  * Signature: (JJJ)J
  */
-jlong Java_org_rocksdb_Transaction_getIterator__JJJ(
+jlong Java_org_terarkdb_Transaction_getIterator__JJJ(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jread_options_handle, jlong jcolumn_family_handle) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
@@ -566,11 +566,11 @@ void txn_write_kv_helper(JNIEnv* env, const FnWriteKV& fn_write_kv,
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    put
  * Signature: (J[BI[BIJ)V
  */
-void Java_org_rocksdb_Transaction_put__J_3BI_3BIJ(
+void Java_org_terarkdb_Transaction_put__J_3BI_3BIJ(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle, jbyteArray jkey,
     jint jkey_part_len, jbyteArray jval, jint jval_len,
     jlong jcolumn_family_handle) {
@@ -585,11 +585,11 @@ void Java_org_rocksdb_Transaction_put__J_3BI_3BIJ(
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    put
  * Signature: (J[BI[BI)V
  */
-void Java_org_rocksdb_Transaction_put__J_3BI_3BI(JNIEnv* env, jobject /*jobj*/,
+void Java_org_terarkdb_Transaction_put__J_3BI_3BI(JNIEnv* env, jobject /*jobj*/,
                                                  jlong jhandle, jbyteArray jkey,
                                                  jint jkey_part_len,
                                                  jbyteArray jval,
@@ -704,11 +704,11 @@ void txn_write_kv_parts_helper(JNIEnv* env,
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    put
  * Signature: (J[[BI[[BIJ)V
  */
-void Java_org_rocksdb_Transaction_put__J_3_3BI_3_3BIJ(
+void Java_org_terarkdb_Transaction_put__J_3_3BI_3_3BIJ(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle, jobjectArray jkey_parts,
     jint jkey_parts_len, jobjectArray jvalue_parts, jint jvalue_parts_len,
     jlong jcolumn_family_handle) {
@@ -725,11 +725,11 @@ void Java_org_rocksdb_Transaction_put__J_3_3BI_3_3BIJ(
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    put
  * Signature: (J[[BI[[BI)V
  */
-void Java_org_rocksdb_Transaction_put__J_3_3BI_3_3BI(
+void Java_org_terarkdb_Transaction_put__J_3_3BI_3_3BI(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle, jobjectArray jkey_parts,
     jint jkey_parts_len, jobjectArray jvalue_parts, jint jvalue_parts_len) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
@@ -742,11 +742,11 @@ void Java_org_rocksdb_Transaction_put__J_3_3BI_3_3BI(
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    merge
  * Signature: (J[BI[BIJ)V
  */
-void Java_org_rocksdb_Transaction_merge__J_3BI_3BIJ(
+void Java_org_terarkdb_Transaction_merge__J_3BI_3BIJ(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle, jbyteArray jkey,
     jint jkey_part_len, jbyteArray jval, jint jval_len,
     jlong jcolumn_family_handle) {
@@ -761,11 +761,11 @@ void Java_org_rocksdb_Transaction_merge__J_3BI_3BIJ(
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    merge
  * Signature: (J[BI[BI)V
  */
-void Java_org_rocksdb_Transaction_merge__J_3BI_3BI(
+void Java_org_terarkdb_Transaction_merge__J_3BI_3BI(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle, jbyteArray jkey,
     jint jkey_part_len, jbyteArray jval, jint jval_len) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
@@ -801,11 +801,11 @@ void txn_write_k_helper(JNIEnv* env, const FnWriteK& fn_write_k,
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    delete
  * Signature: (J[BIJ)V
  */
-void Java_org_rocksdb_Transaction_delete__J_3BIJ(JNIEnv* env, jobject /*jobj*/,
+void Java_org_terarkdb_Transaction_delete__J_3BIJ(JNIEnv* env, jobject /*jobj*/,
                                                  jlong jhandle, jbyteArray jkey,
                                                  jint jkey_part_len,
                                                  jlong jcolumn_family_handle) {
@@ -819,11 +819,11 @@ void Java_org_rocksdb_Transaction_delete__J_3BIJ(JNIEnv* env, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    delete
  * Signature: (J[BI)V
  */
-void Java_org_rocksdb_Transaction_delete__J_3BI(JNIEnv* env, jobject /*jobj*/,
+void Java_org_terarkdb_Transaction_delete__J_3BI(JNIEnv* env, jobject /*jobj*/,
                                                 jlong jhandle, jbyteArray jkey,
                                                 jint jkey_part_len) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
@@ -890,11 +890,11 @@ void txn_write_k_parts_helper(JNIEnv* env,
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    delete
  * Signature: (J[[BIJ)V
  */
-void Java_org_rocksdb_Transaction_delete__J_3_3BIJ(
+void Java_org_terarkdb_Transaction_delete__J_3_3BIJ(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle, jobjectArray jkey_parts,
     jint jkey_parts_len, jlong jcolumn_family_handle) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
@@ -908,11 +908,11 @@ void Java_org_rocksdb_Transaction_delete__J_3_3BIJ(
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    delete
  * Signature: (J[[BI)V
  */
-void Java_org_rocksdb_Transaction_delete__J_3_3BI(JNIEnv* env, jobject /*jobj*/,
+void Java_org_terarkdb_Transaction_delete__J_3_3BI(JNIEnv* env, jobject /*jobj*/,
                                                   jlong jhandle,
                                                   jobjectArray jkey_parts,
                                                   jint jkey_parts_len) {
@@ -924,11 +924,11 @@ void Java_org_rocksdb_Transaction_delete__J_3_3BI(JNIEnv* env, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    singleDelete
  * Signature: (J[BIJ)V
  */
-void Java_org_rocksdb_Transaction_singleDelete__J_3BIJ(
+void Java_org_terarkdb_Transaction_singleDelete__J_3BIJ(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle, jbyteArray jkey,
     jint jkey_part_len, jlong jcolumn_family_handle) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
@@ -942,11 +942,11 @@ void Java_org_rocksdb_Transaction_singleDelete__J_3BIJ(
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    singleDelete
  * Signature: (J[BI)V
  */
-void Java_org_rocksdb_Transaction_singleDelete__J_3BI(JNIEnv* env,
+void Java_org_terarkdb_Transaction_singleDelete__J_3BI(JNIEnv* env,
                                                       jobject /*jobj*/,
                                                       jlong jhandle,
                                                       jbyteArray jkey,
@@ -959,11 +959,11 @@ void Java_org_rocksdb_Transaction_singleDelete__J_3BI(JNIEnv* env,
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    singleDelete
  * Signature: (J[[BIJ)V
  */
-void Java_org_rocksdb_Transaction_singleDelete__J_3_3BIJ(
+void Java_org_terarkdb_Transaction_singleDelete__J_3_3BIJ(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle, jobjectArray jkey_parts,
     jint jkey_parts_len, jlong jcolumn_family_handle) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
@@ -978,11 +978,11 @@ void Java_org_rocksdb_Transaction_singleDelete__J_3_3BIJ(
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    singleDelete
  * Signature: (J[[BI)V
  */
-void Java_org_rocksdb_Transaction_singleDelete__J_3_3BI(JNIEnv* env,
+void Java_org_terarkdb_Transaction_singleDelete__J_3_3BI(JNIEnv* env,
                                                         jobject /*jobj*/,
                                                         jlong jhandle,
                                                         jobjectArray jkey_parts,
@@ -996,11 +996,11 @@ void Java_org_rocksdb_Transaction_singleDelete__J_3_3BI(JNIEnv* env,
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    putUntracked
  * Signature: (J[BI[BIJ)V
  */
-void Java_org_rocksdb_Transaction_putUntracked__J_3BI_3BIJ(
+void Java_org_terarkdb_Transaction_putUntracked__J_3BI_3BIJ(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle, jbyteArray jkey,
     jint jkey_part_len, jbyteArray jval, jint jval_len,
     jlong jcolumn_family_handle) {
@@ -1016,11 +1016,11 @@ void Java_org_rocksdb_Transaction_putUntracked__J_3BI_3BIJ(
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    putUntracked
  * Signature: (J[BI[BI)V
  */
-void Java_org_rocksdb_Transaction_putUntracked__J_3BI_3BI(
+void Java_org_terarkdb_Transaction_putUntracked__J_3BI_3BI(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle, jbyteArray jkey,
     jint jkey_part_len, jbyteArray jval, jint jval_len) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
@@ -1032,11 +1032,11 @@ void Java_org_rocksdb_Transaction_putUntracked__J_3BI_3BI(
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    putUntracked
  * Signature: (J[[BI[[BIJ)V
  */
-void Java_org_rocksdb_Transaction_putUntracked__J_3_3BI_3_3BIJ(
+void Java_org_terarkdb_Transaction_putUntracked__J_3_3BI_3_3BIJ(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle, jobjectArray jkey_parts,
     jint jkey_parts_len, jobjectArray jvalue_parts, jint jvalue_parts_len,
     jlong jcolumn_family_handle) {
@@ -1053,11 +1053,11 @@ void Java_org_rocksdb_Transaction_putUntracked__J_3_3BI_3_3BIJ(
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    putUntracked
  * Signature: (J[[BI[[BI)V
  */
-void Java_org_rocksdb_Transaction_putUntracked__J_3_3BI_3_3BI(
+void Java_org_terarkdb_Transaction_putUntracked__J_3_3BI_3_3BI(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle, jobjectArray jkey_parts,
     jint jkey_parts_len, jobjectArray jvalue_parts, jint jvalue_parts_len) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
@@ -1070,11 +1070,11 @@ void Java_org_rocksdb_Transaction_putUntracked__J_3_3BI_3_3BI(
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    mergeUntracked
  * Signature: (J[BI[BIJ)V
  */
-void Java_org_rocksdb_Transaction_mergeUntracked__J_3BI_3BIJ(
+void Java_org_terarkdb_Transaction_mergeUntracked__J_3BI_3BIJ(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle, jbyteArray jkey,
     jint jkey_part_len, jbyteArray jval, jint jval_len,
     jlong jcolumn_family_handle) {
@@ -1090,11 +1090,11 @@ void Java_org_rocksdb_Transaction_mergeUntracked__J_3BI_3BIJ(
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    mergeUntracked
  * Signature: (J[BI[BI)V
  */
-void Java_org_rocksdb_Transaction_mergeUntracked__J_3BI_3BI(
+void Java_org_terarkdb_Transaction_mergeUntracked__J_3BI_3BI(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle, jbyteArray jkey,
     jint jkey_part_len, jbyteArray jval, jint jval_len) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
@@ -1106,11 +1106,11 @@ void Java_org_rocksdb_Transaction_mergeUntracked__J_3BI_3BI(
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    deleteUntracked
  * Signature: (J[BIJ)V
  */
-void Java_org_rocksdb_Transaction_deleteUntracked__J_3BIJ(
+void Java_org_terarkdb_Transaction_deleteUntracked__J_3BIJ(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle, jbyteArray jkey,
     jint jkey_part_len, jlong jcolumn_family_handle) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
@@ -1125,11 +1125,11 @@ void Java_org_rocksdb_Transaction_deleteUntracked__J_3BIJ(
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    deleteUntracked
  * Signature: (J[BI)V
  */
-void Java_org_rocksdb_Transaction_deleteUntracked__J_3BI(JNIEnv* env,
+void Java_org_terarkdb_Transaction_deleteUntracked__J_3BI(JNIEnv* env,
                                                          jobject /*jobj*/,
                                                          jlong jhandle,
                                                          jbyteArray jkey,
@@ -1142,11 +1142,11 @@ void Java_org_rocksdb_Transaction_deleteUntracked__J_3BI(JNIEnv* env,
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    deleteUntracked
  * Signature: (J[[BIJ)V
  */
-void Java_org_rocksdb_Transaction_deleteUntracked__J_3_3BIJ(
+void Java_org_terarkdb_Transaction_deleteUntracked__J_3_3BIJ(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle, jobjectArray jkey_parts,
     jint jkey_parts_len, jlong jcolumn_family_handle) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
@@ -1162,11 +1162,11 @@ void Java_org_rocksdb_Transaction_deleteUntracked__J_3_3BIJ(
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    deleteUntracked
  * Signature: (J[[BI)V
  */
-void Java_org_rocksdb_Transaction_deleteUntracked__J_3_3BI(
+void Java_org_terarkdb_Transaction_deleteUntracked__J_3_3BI(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle, jobjectArray jkey_parts,
     jint jkey_parts_len) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
@@ -1178,11 +1178,11 @@ void Java_org_rocksdb_Transaction_deleteUntracked__J_3_3BI(
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    putLogData
  * Signature: (J[BI)V
  */
-void Java_org_rocksdb_Transaction_putLogData(JNIEnv* env, jobject /*jobj*/,
+void Java_org_terarkdb_Transaction_putLogData(JNIEnv* env, jobject /*jobj*/,
                                              jlong jhandle, jbyteArray jkey,
                                              jint jkey_part_len) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
@@ -1203,11 +1203,11 @@ void Java_org_rocksdb_Transaction_putLogData(JNIEnv* env, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    disableIndexing
  * Signature: (J)V
  */
-void Java_org_rocksdb_Transaction_disableIndexing(JNIEnv* /*env*/,
+void Java_org_terarkdb_Transaction_disableIndexing(JNIEnv* /*env*/,
                                                   jobject /*jobj*/,
                                                   jlong jhandle) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
@@ -1215,11 +1215,11 @@ void Java_org_rocksdb_Transaction_disableIndexing(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    enableIndexing
  * Signature: (J)V
  */
-void Java_org_rocksdb_Transaction_enableIndexing(JNIEnv* /*env*/,
+void Java_org_terarkdb_Transaction_enableIndexing(JNIEnv* /*env*/,
                                                  jobject /*jobj*/,
                                                  jlong jhandle) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
@@ -1227,33 +1227,33 @@ void Java_org_rocksdb_Transaction_enableIndexing(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    getNumKeys
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Transaction_getNumKeys(JNIEnv* /*env*/, jobject /*jobj*/,
+jlong Java_org_terarkdb_Transaction_getNumKeys(JNIEnv* /*env*/, jobject /*jobj*/,
                                               jlong jhandle) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
   return txn->GetNumKeys();
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    getNumPuts
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Transaction_getNumPuts(JNIEnv* /*env*/, jobject /*jobj*/,
+jlong Java_org_terarkdb_Transaction_getNumPuts(JNIEnv* /*env*/, jobject /*jobj*/,
                                               jlong jhandle) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
   return txn->GetNumPuts();
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    getNumDeletes
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Transaction_getNumDeletes(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_Transaction_getNumDeletes(JNIEnv* /*env*/,
                                                  jobject /*jobj*/,
                                                  jlong jhandle) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
@@ -1261,11 +1261,11 @@ jlong Java_org_rocksdb_Transaction_getNumDeletes(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    getNumMerges
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Transaction_getNumMerges(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_Transaction_getNumMerges(JNIEnv* /*env*/,
                                                 jobject /*jobj*/,
                                                 jlong jhandle) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
@@ -1273,11 +1273,11 @@ jlong Java_org_rocksdb_Transaction_getNumMerges(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    getElapsedTime
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Transaction_getElapsedTime(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_Transaction_getElapsedTime(JNIEnv* /*env*/,
                                                   jobject /*jobj*/,
                                                   jlong jhandle) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
@@ -1285,11 +1285,11 @@ jlong Java_org_rocksdb_Transaction_getElapsedTime(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    getWriteBatch
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Transaction_getWriteBatch(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_Transaction_getWriteBatch(JNIEnv* /*env*/,
                                                  jobject /*jobj*/,
                                                  jlong jhandle) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
@@ -1297,11 +1297,11 @@ jlong Java_org_rocksdb_Transaction_getWriteBatch(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    setLockTimeout
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Transaction_setLockTimeout(JNIEnv* /*env*/,
+void Java_org_terarkdb_Transaction_setLockTimeout(JNIEnv* /*env*/,
                                                  jobject /*jobj*/,
                                                  jlong jhandle,
                                                  jlong jlock_timeout) {
@@ -1310,11 +1310,11 @@ void Java_org_rocksdb_Transaction_setLockTimeout(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    getWriteOptions
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Transaction_getWriteOptions(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_Transaction_getWriteOptions(JNIEnv* /*env*/,
                                                    jobject /*jobj*/,
                                                    jlong jhandle) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
@@ -1322,11 +1322,11 @@ jlong Java_org_rocksdb_Transaction_getWriteOptions(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    setWriteOptions
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Transaction_setWriteOptions(JNIEnv* /*env*/,
+void Java_org_terarkdb_Transaction_setWriteOptions(JNIEnv* /*env*/,
                                                   jobject /*jobj*/,
                                                   jlong jhandle,
                                                   jlong jwrite_options_handle) {
@@ -1337,11 +1337,11 @@ void Java_org_rocksdb_Transaction_setWriteOptions(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    undo
  * Signature: (J[BIJ)V
  */
-void Java_org_rocksdb_Transaction_undoGetForUpdate__J_3BIJ(
+void Java_org_terarkdb_Transaction_undoGetForUpdate__J_3BIJ(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle, jbyteArray jkey,
     jint jkey_part_len, jlong jcolumn_family_handle) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
@@ -1360,11 +1360,11 @@ void Java_org_rocksdb_Transaction_undoGetForUpdate__J_3BIJ(
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    undoGetForUpdate
  * Signature: (J[BI)V
  */
-void Java_org_rocksdb_Transaction_undoGetForUpdate__J_3BI(JNIEnv* env,
+void Java_org_terarkdb_Transaction_undoGetForUpdate__J_3BI(JNIEnv* env,
                                                           jobject /*jobj*/,
                                                           jlong jhandle,
                                                           jbyteArray jkey,
@@ -1383,11 +1383,11 @@ void Java_org_rocksdb_Transaction_undoGetForUpdate__J_3BI(JNIEnv* env,
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    rebuildFromWriteBatch
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Transaction_rebuildFromWriteBatch(
+void Java_org_terarkdb_Transaction_rebuildFromWriteBatch(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle, jlong jwrite_batch_handle) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
   auto* write_batch =
@@ -1399,11 +1399,11 @@ void Java_org_rocksdb_Transaction_rebuildFromWriteBatch(
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    getCommitTimeWriteBatch
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Transaction_getCommitTimeWriteBatch(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_Transaction_getCommitTimeWriteBatch(JNIEnv* /*env*/,
                                                            jobject /*jobj*/,
                                                            jlong jhandle) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
@@ -1411,11 +1411,11 @@ jlong Java_org_rocksdb_Transaction_getCommitTimeWriteBatch(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    setLogNumber
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Transaction_setLogNumber(JNIEnv* /*env*/,
+void Java_org_terarkdb_Transaction_setLogNumber(JNIEnv* /*env*/,
                                                jobject /*jobj*/, jlong jhandle,
                                                jlong jlog_number) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
@@ -1423,11 +1423,11 @@ void Java_org_rocksdb_Transaction_setLogNumber(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    getLogNumber
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Transaction_getLogNumber(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_Transaction_getLogNumber(JNIEnv* /*env*/,
                                                 jobject /*jobj*/,
                                                 jlong jhandle) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
@@ -1435,11 +1435,11 @@ jlong Java_org_rocksdb_Transaction_getLogNumber(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    setName
  * Signature: (JLjava/lang/String;)V
  */
-void Java_org_rocksdb_Transaction_setName(JNIEnv* env, jobject /*jobj*/,
+void Java_org_terarkdb_Transaction_setName(JNIEnv* env, jobject /*jobj*/,
                                           jlong jhandle, jstring jname) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
   const char* name = env->GetStringUTFChars(jname, nullptr);
@@ -1458,11 +1458,11 @@ void Java_org_rocksdb_Transaction_setName(JNIEnv* env, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    getName
  * Signature: (J)Ljava/lang/String;
  */
-jstring Java_org_rocksdb_Transaction_getName(JNIEnv* env, jobject /*jobj*/,
+jstring Java_org_terarkdb_Transaction_getName(JNIEnv* env, jobject /*jobj*/,
                                              jlong jhandle) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
   TERARKDB_NAMESPACE::TransactionName name = txn->GetName();
@@ -1470,11 +1470,11 @@ jstring Java_org_rocksdb_Transaction_getName(JNIEnv* env, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    getID
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Transaction_getID(JNIEnv* /*env*/, jobject /*jobj*/,
+jlong Java_org_terarkdb_Transaction_getID(JNIEnv* /*env*/, jobject /*jobj*/,
                                          jlong jhandle) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
   TERARKDB_NAMESPACE::TransactionID id = txn->GetID();
@@ -1482,11 +1482,11 @@ jlong Java_org_rocksdb_Transaction_getID(JNIEnv* /*env*/, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    isDeadlockDetect
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_Transaction_isDeadlockDetect(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_Transaction_isDeadlockDetect(JNIEnv* /*env*/,
                                                        jobject /*jobj*/,
                                                        jlong jhandle) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
@@ -1494,11 +1494,11 @@ jboolean Java_org_rocksdb_Transaction_isDeadlockDetect(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    getWaitingTxns
- * Signature: (J)Lorg/rocksdb/Transaction/WaitingTransactions;
+ * Signature: (J)Lorg/terarkdb/Transaction/WaitingTransactions;
  */
-jobject Java_org_rocksdb_Transaction_getWaitingTxns(JNIEnv* env,
+jobject Java_org_terarkdb_Transaction_getWaitingTxns(JNIEnv* env,
                                                     jobject jtransaction_obj,
                                                     jlong jhandle) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
@@ -1512,11 +1512,11 @@ jobject Java_org_rocksdb_Transaction_getWaitingTxns(JNIEnv* env,
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    getState
  * Signature: (J)B
  */
-jbyte Java_org_rocksdb_Transaction_getState(JNIEnv* /*env*/, jobject /*jobj*/,
+jbyte Java_org_terarkdb_Transaction_getState(JNIEnv* /*env*/, jobject /*jobj*/,
                                             jlong jhandle) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
   TERARKDB_NAMESPACE::Transaction::TransactionState txn_status = txn->GetState();
@@ -1551,11 +1551,11 @@ jbyte Java_org_rocksdb_Transaction_getState(JNIEnv* /*env*/, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    getId
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Transaction_getId(JNIEnv* /*env*/, jobject /*jobj*/,
+jlong Java_org_terarkdb_Transaction_getId(JNIEnv* /*env*/, jobject /*jobj*/,
                                          jlong jhandle) {
   auto* txn = reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);
   uint64_t id = txn->GetId();
@@ -1563,11 +1563,11 @@ jlong Java_org_rocksdb_Transaction_getId(JNIEnv* /*env*/, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_Transaction
+ * Class:     org_terarkdb_Transaction
  * Method:    disposeInternal
  * Signature: (J)V
  */
-void Java_org_rocksdb_Transaction_disposeInternal(JNIEnv* /*env*/,
+void Java_org_terarkdb_Transaction_disposeInternal(JNIEnv* /*env*/,
                                                   jobject /*jobj*/,
                                                   jlong jhandle) {
   delete reinterpret_cast<TERARKDB_NAMESPACE::Transaction*>(jhandle);

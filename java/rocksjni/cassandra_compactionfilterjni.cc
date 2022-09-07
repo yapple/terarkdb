@@ -5,15 +5,15 @@
 
 #include <jni.h>
 
-#include "include/org_rocksdb_CassandraCompactionFilter.h"
+#include "include/org_terarkdb_CassandraCompactionFilter.h"
 #include "utilities/cassandra/cassandra_compaction_filter.h"
 
 /*
- * Class:     org_rocksdb_CassandraCompactionFilter
+ * Class:     org_terarkdb_CassandraCompactionFilter
  * Method:    createNewCassandraCompactionFilter0
  * Signature: (ZI)J
  */
-jlong Java_org_rocksdb_CassandraCompactionFilter_createNewCassandraCompactionFilter0(
+jlong Java_org_terarkdb_CassandraCompactionFilter_createNewCassandraCompactionFilter0(
     JNIEnv* /*env*/, jclass /*jcls*/, jboolean purge_ttl_on_expiration,
     jint gc_grace_period_in_seconds) {
   auto* compaction_filter = new TERARKDB_NAMESPACE::cassandra::CassandraCompactionFilter(

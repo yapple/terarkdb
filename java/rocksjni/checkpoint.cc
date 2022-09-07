@@ -11,16 +11,16 @@
 #include <stdlib.h>
 #include <string>
 
-#include "include/org_rocksdb_Checkpoint.h"
+#include "include/org_terarkdb_Checkpoint.h"
 #include "rocksdb/db.h"
 #include "rocksdb/utilities/checkpoint.h"
 #include "rocksjni/portal.h"
 /*
- * Class:     org_rocksdb_Checkpoint
+ * Class:     org_terarkdb_Checkpoint
  * Method:    newCheckpoint
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Checkpoint_newCheckpoint(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_Checkpoint_newCheckpoint(JNIEnv* /*env*/,
                                                 jclass /*jclazz*/,
                                                 jlong jdb_handle) {
   auto* db = reinterpret_cast<TERARKDB_NAMESPACE::DB*>(jdb_handle);
@@ -30,11 +30,11 @@ jlong Java_org_rocksdb_Checkpoint_newCheckpoint(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Checkpoint
+ * Class:     org_terarkdb_Checkpoint
  * Method:    dispose
  * Signature: (J)V
  */
-void Java_org_rocksdb_Checkpoint_disposeInternal(JNIEnv* /*env*/,
+void Java_org_terarkdb_Checkpoint_disposeInternal(JNIEnv* /*env*/,
                                                  jobject /*jobj*/,
                                                  jlong jhandle) {
   auto* checkpoint = reinterpret_cast<TERARKDB_NAMESPACE::Checkpoint*>(jhandle);
@@ -43,11 +43,11 @@ void Java_org_rocksdb_Checkpoint_disposeInternal(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Checkpoint
+ * Class:     org_terarkdb_Checkpoint
  * Method:    createCheckpoint
  * Signature: (JLjava/lang/String;)V
  */
-void Java_org_rocksdb_Checkpoint_createCheckpoint(JNIEnv* env, jobject /*jobj*/,
+void Java_org_terarkdb_Checkpoint_createCheckpoint(JNIEnv* env, jobject /*jobj*/,
                                                   jlong jcheckpoint_handle,
                                                   jstring jcheckpoint_path) {
   const char* checkpoint_path = env->GetStringUTFChars(jcheckpoint_path, 0);
@@ -66,7 +66,7 @@ void Java_org_rocksdb_Checkpoint_createCheckpoint(JNIEnv* env, jobject /*jobj*/,
   }
 }
 
-void Java_org_rocksdb_Checkpoint_createCheckpoint0(JNIEnv* env, jobject /*jobj*/,
+void Java_org_terarkdb_Checkpoint_createCheckpoint0(JNIEnv* env, jobject /*jobj*/,
                                                   jlong jcheckpoint_handle,
                                                   jstring jcheckpoint_path,
                                                   jlong jcheckpoint_log_size) {

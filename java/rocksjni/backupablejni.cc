@@ -13,7 +13,7 @@
 #include <string>
 #include <vector>
 
-#include "include/org_rocksdb_BackupableDBOptions.h"
+#include "include/org_terarkdb_BackupableDBOptions.h"
 #include "rocksdb/utilities/backupable_db.h"
 #include "rocksjni/portal.h"
 
@@ -21,11 +21,11 @@
 // BackupDBOptions
 
 /*
- * Class:     org_rocksdb_BackupableDBOptions
+ * Class:     org_terarkdb_BackupableDBOptions
  * Method:    newBackupableDBOptions
  * Signature: (Ljava/lang/String;)J
  */
-jlong Java_org_rocksdb_BackupableDBOptions_newBackupableDBOptions(
+jlong Java_org_terarkdb_BackupableDBOptions_newBackupableDBOptions(
     JNIEnv* env, jclass /*jcls*/, jstring jpath) {
   const char* cpath = env->GetStringUTFChars(jpath, nullptr);
   if (cpath == nullptr) {
@@ -38,11 +38,11 @@ jlong Java_org_rocksdb_BackupableDBOptions_newBackupableDBOptions(
 }
 
 /*
- * Class:     org_rocksdb_BackupableDBOptions
+ * Class:     org_terarkdb_BackupableDBOptions
  * Method:    backupDir
  * Signature: (J)Ljava/lang/String;
  */
-jstring Java_org_rocksdb_BackupableDBOptions_backupDir(JNIEnv* env,
+jstring Java_org_terarkdb_BackupableDBOptions_backupDir(JNIEnv* env,
                                                        jobject /*jopt*/,
                                                        jlong jhandle) {
   auto* bopt = reinterpret_cast<TERARKDB_NAMESPACE::BackupableDBOptions*>(jhandle);
@@ -50,11 +50,11 @@ jstring Java_org_rocksdb_BackupableDBOptions_backupDir(JNIEnv* env,
 }
 
 /*
- * Class:     org_rocksdb_BackupableDBOptions
+ * Class:     org_terarkdb_BackupableDBOptions
  * Method:    setBackupEnv
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_BackupableDBOptions_setBackupEnv(
+void Java_org_terarkdb_BackupableDBOptions_setBackupEnv(
     JNIEnv* /*env*/, jobject /*jopt*/, jlong jhandle, jlong jrocks_env_handle) {
   auto* bopt = reinterpret_cast<TERARKDB_NAMESPACE::BackupableDBOptions*>(jhandle);
   auto* rocks_env = reinterpret_cast<TERARKDB_NAMESPACE::Env*>(jrocks_env_handle);
@@ -62,11 +62,11 @@ void Java_org_rocksdb_BackupableDBOptions_setBackupEnv(
 }
 
 /*
- * Class:     org_rocksdb_BackupableDBOptions
+ * Class:     org_terarkdb_BackupableDBOptions
  * Method:    setShareTableFiles
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_BackupableDBOptions_setShareTableFiles(JNIEnv* /*env*/,
+void Java_org_terarkdb_BackupableDBOptions_setShareTableFiles(JNIEnv* /*env*/,
                                                              jobject /*jobj*/,
                                                              jlong jhandle,
                                                              jboolean flag) {
@@ -75,11 +75,11 @@ void Java_org_rocksdb_BackupableDBOptions_setShareTableFiles(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_BackupableDBOptions
+ * Class:     org_terarkdb_BackupableDBOptions
  * Method:    shareTableFiles
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_BackupableDBOptions_shareTableFiles(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_BackupableDBOptions_shareTableFiles(JNIEnv* /*env*/,
                                                               jobject /*jobj*/,
                                                               jlong jhandle) {
   auto* bopt = reinterpret_cast<TERARKDB_NAMESPACE::BackupableDBOptions*>(jhandle);
@@ -87,11 +87,11 @@ jboolean Java_org_rocksdb_BackupableDBOptions_shareTableFiles(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_BackupableDBOptions
+ * Class:     org_terarkdb_BackupableDBOptions
  * Method:    setInfoLog
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_BackupableDBOptions_setInfoLog(JNIEnv* /*env*/,
+void Java_org_terarkdb_BackupableDBOptions_setInfoLog(JNIEnv* /*env*/,
                                                      jobject /*jobj*/,
                                                      jlong jhandle,
                                                      jlong /*jlogger_handle*/) {
@@ -102,11 +102,11 @@ void Java_org_rocksdb_BackupableDBOptions_setInfoLog(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_BackupableDBOptions
+ * Class:     org_terarkdb_BackupableDBOptions
  * Method:    setSync
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_BackupableDBOptions_setSync(JNIEnv* /*env*/,
+void Java_org_terarkdb_BackupableDBOptions_setSync(JNIEnv* /*env*/,
                                                   jobject /*jobj*/,
                                                   jlong jhandle,
                                                   jboolean flag) {
@@ -115,11 +115,11 @@ void Java_org_rocksdb_BackupableDBOptions_setSync(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_BackupableDBOptions
+ * Class:     org_terarkdb_BackupableDBOptions
  * Method:    sync
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_BackupableDBOptions_sync(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_BackupableDBOptions_sync(JNIEnv* /*env*/,
                                                    jobject /*jobj*/,
                                                    jlong jhandle) {
   auto* bopt = reinterpret_cast<TERARKDB_NAMESPACE::BackupableDBOptions*>(jhandle);
@@ -127,11 +127,11 @@ jboolean Java_org_rocksdb_BackupableDBOptions_sync(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_BackupableDBOptions
+ * Class:     org_terarkdb_BackupableDBOptions
  * Method:    setDestroyOldData
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_BackupableDBOptions_setDestroyOldData(JNIEnv* /*env*/,
+void Java_org_terarkdb_BackupableDBOptions_setDestroyOldData(JNIEnv* /*env*/,
                                                             jobject /*jobj*/,
                                                             jlong jhandle,
                                                             jboolean flag) {
@@ -140,11 +140,11 @@ void Java_org_rocksdb_BackupableDBOptions_setDestroyOldData(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_BackupableDBOptions
+ * Class:     org_terarkdb_BackupableDBOptions
  * Method:    destroyOldData
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_BackupableDBOptions_destroyOldData(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_BackupableDBOptions_destroyOldData(JNIEnv* /*env*/,
                                                              jobject /*jobj*/,
                                                              jlong jhandle) {
   auto* bopt = reinterpret_cast<TERARKDB_NAMESPACE::BackupableDBOptions*>(jhandle);
@@ -152,11 +152,11 @@ jboolean Java_org_rocksdb_BackupableDBOptions_destroyOldData(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_BackupableDBOptions
+ * Class:     org_terarkdb_BackupableDBOptions
  * Method:    setBackupLogFiles
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_BackupableDBOptions_setBackupLogFiles(JNIEnv* /*env*/,
+void Java_org_terarkdb_BackupableDBOptions_setBackupLogFiles(JNIEnv* /*env*/,
                                                             jobject /*jobj*/,
                                                             jlong jhandle,
                                                             jboolean flag) {
@@ -165,11 +165,11 @@ void Java_org_rocksdb_BackupableDBOptions_setBackupLogFiles(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_BackupableDBOptions
+ * Class:     org_terarkdb_BackupableDBOptions
  * Method:    backupLogFiles
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_BackupableDBOptions_backupLogFiles(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_BackupableDBOptions_backupLogFiles(JNIEnv* /*env*/,
                                                              jobject /*jobj*/,
                                                              jlong jhandle) {
   auto* bopt = reinterpret_cast<TERARKDB_NAMESPACE::BackupableDBOptions*>(jhandle);
@@ -177,11 +177,11 @@ jboolean Java_org_rocksdb_BackupableDBOptions_backupLogFiles(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_BackupableDBOptions
+ * Class:     org_terarkdb_BackupableDBOptions
  * Method:    setBackupRateLimit
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_BackupableDBOptions_setBackupRateLimit(
+void Java_org_terarkdb_BackupableDBOptions_setBackupRateLimit(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jbackup_rate_limit) {
   auto* bopt = reinterpret_cast<TERARKDB_NAMESPACE::BackupableDBOptions*>(jhandle);
@@ -189,11 +189,11 @@ void Java_org_rocksdb_BackupableDBOptions_setBackupRateLimit(
 }
 
 /*
- * Class:     org_rocksdb_BackupableDBOptions
+ * Class:     org_terarkdb_BackupableDBOptions
  * Method:    backupRateLimit
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_BackupableDBOptions_backupRateLimit(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_BackupableDBOptions_backupRateLimit(JNIEnv* /*env*/,
                                                            jobject /*jobj*/,
                                                            jlong jhandle) {
   auto* bopt = reinterpret_cast<TERARKDB_NAMESPACE::BackupableDBOptions*>(jhandle);
@@ -201,11 +201,11 @@ jlong Java_org_rocksdb_BackupableDBOptions_backupRateLimit(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_BackupableDBOptions
+ * Class:     org_terarkdb_BackupableDBOptions
  * Method:    setBackupRateLimiter
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_BackupableDBOptions_setBackupRateLimiter(
+void Java_org_terarkdb_BackupableDBOptions_setBackupRateLimiter(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jrate_limiter_handle) {
   auto* bopt = reinterpret_cast<TERARKDB_NAMESPACE::BackupableDBOptions*>(jhandle);
@@ -216,11 +216,11 @@ void Java_org_rocksdb_BackupableDBOptions_setBackupRateLimiter(
 }
 
 /*
- * Class:     org_rocksdb_BackupableDBOptions
+ * Class:     org_terarkdb_BackupableDBOptions
  * Method:    setRestoreRateLimit
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_BackupableDBOptions_setRestoreRateLimit(
+void Java_org_terarkdb_BackupableDBOptions_setRestoreRateLimit(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jrestore_rate_limit) {
   auto* bopt = reinterpret_cast<TERARKDB_NAMESPACE::BackupableDBOptions*>(jhandle);
@@ -228,11 +228,11 @@ void Java_org_rocksdb_BackupableDBOptions_setRestoreRateLimit(
 }
 
 /*
- * Class:     org_rocksdb_BackupableDBOptions
+ * Class:     org_terarkdb_BackupableDBOptions
  * Method:    restoreRateLimit
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_BackupableDBOptions_restoreRateLimit(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_BackupableDBOptions_restoreRateLimit(JNIEnv* /*env*/,
                                                             jobject /*jobj*/,
                                                             jlong jhandle) {
   auto* bopt = reinterpret_cast<TERARKDB_NAMESPACE::BackupableDBOptions*>(jhandle);
@@ -240,11 +240,11 @@ jlong Java_org_rocksdb_BackupableDBOptions_restoreRateLimit(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_BackupableDBOptions
+ * Class:     org_terarkdb_BackupableDBOptions
  * Method:    setRestoreRateLimiter
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_BackupableDBOptions_setRestoreRateLimiter(
+void Java_org_terarkdb_BackupableDBOptions_setRestoreRateLimiter(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jrate_limiter_handle) {
   auto* bopt = reinterpret_cast<TERARKDB_NAMESPACE::BackupableDBOptions*>(jhandle);
@@ -255,33 +255,33 @@ void Java_org_rocksdb_BackupableDBOptions_setRestoreRateLimiter(
 }
 
 /*
- * Class:     org_rocksdb_BackupableDBOptions
+ * Class:     org_terarkdb_BackupableDBOptions
  * Method:    setShareFilesWithChecksum
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_BackupableDBOptions_setShareFilesWithChecksum(
+void Java_org_terarkdb_BackupableDBOptions_setShareFilesWithChecksum(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle, jboolean flag) {
   auto* bopt = reinterpret_cast<TERARKDB_NAMESPACE::BackupableDBOptions*>(jhandle);
   bopt->share_files_with_checksum = flag;
 }
 
 /*
- * Class:     org_rocksdb_BackupableDBOptions
+ * Class:     org_terarkdb_BackupableDBOptions
  * Method:    shareFilesWithChecksum
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_BackupableDBOptions_shareFilesWithChecksum(
+jboolean Java_org_terarkdb_BackupableDBOptions_shareFilesWithChecksum(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   auto* bopt = reinterpret_cast<TERARKDB_NAMESPACE::BackupableDBOptions*>(jhandle);
   return bopt->share_files_with_checksum;
 }
 
 /*
- * Class:     org_rocksdb_BackupableDBOptions
+ * Class:     org_terarkdb_BackupableDBOptions
  * Method:    setMaxBackgroundOperations
  * Signature: (JI)V
  */
-void Java_org_rocksdb_BackupableDBOptions_setMaxBackgroundOperations(
+void Java_org_terarkdb_BackupableDBOptions_setMaxBackgroundOperations(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jint max_background_operations) {
   auto* bopt = reinterpret_cast<TERARKDB_NAMESPACE::BackupableDBOptions*>(jhandle);
@@ -289,22 +289,22 @@ void Java_org_rocksdb_BackupableDBOptions_setMaxBackgroundOperations(
 }
 
 /*
- * Class:     org_rocksdb_BackupableDBOptions
+ * Class:     org_terarkdb_BackupableDBOptions
  * Method:    maxBackgroundOperations
  * Signature: (J)I
  */
-jint Java_org_rocksdb_BackupableDBOptions_maxBackgroundOperations(
+jint Java_org_terarkdb_BackupableDBOptions_maxBackgroundOperations(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   auto* bopt = reinterpret_cast<TERARKDB_NAMESPACE::BackupableDBOptions*>(jhandle);
   return static_cast<jint>(bopt->max_background_operations);
 }
 
 /*
- * Class:     org_rocksdb_BackupableDBOptions
+ * Class:     org_terarkdb_BackupableDBOptions
  * Method:    setCallbackTriggerIntervalSize
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_BackupableDBOptions_setCallbackTriggerIntervalSize(
+void Java_org_terarkdb_BackupableDBOptions_setCallbackTriggerIntervalSize(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jcallback_trigger_interval_size) {
   auto* bopt = reinterpret_cast<TERARKDB_NAMESPACE::BackupableDBOptions*>(jhandle);
@@ -313,22 +313,22 @@ void Java_org_rocksdb_BackupableDBOptions_setCallbackTriggerIntervalSize(
 }
 
 /*
- * Class:     org_rocksdb_BackupableDBOptions
+ * Class:     org_terarkdb_BackupableDBOptions
  * Method:    callbackTriggerIntervalSize
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_BackupableDBOptions_callbackTriggerIntervalSize(
+jlong Java_org_terarkdb_BackupableDBOptions_callbackTriggerIntervalSize(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   auto* bopt = reinterpret_cast<TERARKDB_NAMESPACE::BackupableDBOptions*>(jhandle);
   return static_cast<jlong>(bopt->callback_trigger_interval_size);
 }
 
 /*
- * Class:     org_rocksdb_BackupableDBOptions
+ * Class:     org_terarkdb_BackupableDBOptions
  * Method:    disposeInternal
  * Signature: (J)V
  */
-void Java_org_rocksdb_BackupableDBOptions_disposeInternal(JNIEnv* /*env*/,
+void Java_org_terarkdb_BackupableDBOptions_disposeInternal(JNIEnv* /*env*/,
                                                           jobject /*jopt*/,
                                                           jlong jhandle) {
   auto* bopt = reinterpret_cast<TERARKDB_NAMESPACE::BackupableDBOptions*>(jhandle);

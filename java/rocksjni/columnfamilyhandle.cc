@@ -10,15 +10,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "include/org_rocksdb_ColumnFamilyHandle.h"
+#include "include/org_terarkdb_ColumnFamilyHandle.h"
 #include "rocksjni/portal.h"
 
 /*
- * Class:     org_rocksdb_ColumnFamilyHandle
+ * Class:     org_terarkdb_ColumnFamilyHandle
  * Method:    getName
  * Signature: (J)[B
  */
-jbyteArray Java_org_rocksdb_ColumnFamilyHandle_getName(JNIEnv* env,
+jbyteArray Java_org_terarkdb_ColumnFamilyHandle_getName(JNIEnv* env,
                                                        jobject /*jobj*/,
                                                        jlong jhandle) {
   auto* cfh = reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyHandle*>(jhandle);
@@ -27,11 +27,11 @@ jbyteArray Java_org_rocksdb_ColumnFamilyHandle_getName(JNIEnv* env,
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyHandle
+ * Class:     org_terarkdb_ColumnFamilyHandle
  * Method:    getID
  * Signature: (J)I
  */
-jint Java_org_rocksdb_ColumnFamilyHandle_getID(JNIEnv* /*env*/,
+jint Java_org_terarkdb_ColumnFamilyHandle_getID(JNIEnv* /*env*/,
                                                jobject /*jobj*/,
                                                jlong jhandle) {
   auto* cfh = reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyHandle*>(jhandle);
@@ -40,11 +40,11 @@ jint Java_org_rocksdb_ColumnFamilyHandle_getID(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyHandle
+ * Class:     org_terarkdb_ColumnFamilyHandle
  * Method:    getDescriptor
- * Signature: (J)Lorg/rocksdb/ColumnFamilyDescriptor;
+ * Signature: (J)Lorg/terarkdb/ColumnFamilyDescriptor;
  */
-jobject Java_org_rocksdb_ColumnFamilyHandle_getDescriptor(JNIEnv* env,
+jobject Java_org_terarkdb_ColumnFamilyHandle_getDescriptor(JNIEnv* env,
                                                           jobject /*jobj*/,
                                                           jlong jhandle) {
   auto* cfh = reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyHandle*>(jhandle);
@@ -59,11 +59,11 @@ jobject Java_org_rocksdb_ColumnFamilyHandle_getDescriptor(JNIEnv* env,
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyHandle
+ * Class:     org_terarkdb_ColumnFamilyHandle
  * Method:    disposeInternal
  * Signature: (J)V
  */
-void Java_org_rocksdb_ColumnFamilyHandle_disposeInternal(JNIEnv* /*env*/,
+void Java_org_terarkdb_ColumnFamilyHandle_disposeInternal(JNIEnv* /*env*/,
                                                          jobject /*jobj*/,
                                                          jlong jhandle) {
   auto* cfh = reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyHandle*>(jhandle);

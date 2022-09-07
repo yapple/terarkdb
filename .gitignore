@@ -51,7 +51,7 @@ trace_analyzer_test
 java/out
 java/target
 java/*.log
-java/include/org_rocksdb_*.h
+java/include/org_terarkdb_*.h
 
 .idea/
 *.iml

@@ -9,15 +9,15 @@
 #include <jni.h>
 #include <memory>
 
-#include "include/org_rocksdb_AbstractCompactionFilterFactory.h"
+#include "include/org_terarkdb_AbstractCompactionFilterFactory.h"
 #include "rocksjni/compaction_filter_factory_jnicallback.h"
 
 /*
- * Class:     org_rocksdb_AbstractCompactionFilterFactory
+ * Class:     org_terarkdb_AbstractCompactionFilterFactory
  * Method:    createNewCompactionFilterFactory0
  * Signature: ()J
  */
-jlong Java_org_rocksdb_AbstractCompactionFilterFactory_createNewCompactionFilterFactory0(
+jlong Java_org_terarkdb_AbstractCompactionFilterFactory_createNewCompactionFilterFactory0(
     JNIEnv* env, jobject jobj) {
   auto* cff = new TERARKDB_NAMESPACE::CompactionFilterFactoryJniCallback(env, jobj);
   auto* ptr_sptr_cff =
@@ -26,11 +26,11 @@ jlong Java_org_rocksdb_AbstractCompactionFilterFactory_createNewCompactionFilter
 }
 
 /*
- * Class:     org_rocksdb_AbstractCompactionFilterFactory
+ * Class:     org_terarkdb_AbstractCompactionFilterFactory
  * Method:    disposeInternal
  * Signature: (J)V
  */
-void Java_org_rocksdb_AbstractCompactionFilterFactory_disposeInternal(
+void Java_org_terarkdb_AbstractCompactionFilterFactory_disposeInternal(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   auto* ptr_sptr_cff = reinterpret_cast<
       std::shared_ptr<TERARKDB_NAMESPACE::CompactionFilterFactoryJniCallback>*>(jhandle);

@@ -4,19 +4,19 @@
 //  (found in the LICENSE.Apache file in the root directory).
 //
 // This file implements the "bridge" between Java and C++ for
-// JNI Callbacks from C++ to sub-classes or org.rocksdb.RocksCallbackObject
+// JNI Callbacks from C++ to sub-classes or org.terarkdb.RocksCallbackObject
 
 #include <jni.h>
 
-#include "include/org_rocksdb_RocksCallbackObject.h"
+#include "include/org_terarkdb_RocksCallbackObject.h"
 #include "jnicallback.h"
 
 /*
- * Class:     org_rocksdb_RocksCallbackObject
+ * Class:     org_terarkdb_RocksCallbackObject
  * Method:    disposeInternal
  * Signature: (J)V
  */
-void Java_org_rocksdb_RocksCallbackObject_disposeInternal(JNIEnv* /*env*/,
+void Java_org_terarkdb_RocksCallbackObject_disposeInternal(JNIEnv* /*env*/,
                                                           jobject /*jobj*/,
                                                           jlong handle) {
   // TODO(AR) is deleting from the super class JniCallback OK, or must we delete

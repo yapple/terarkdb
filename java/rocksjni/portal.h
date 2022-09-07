@@ -163,12 +163,12 @@ class JavaException : public JavaClass {
   }
 };
 
-// The portal class for org.rocksdb.RocksDB
+// The portal class for org.terarkdb.RocksDB
 class RocksDBJni
     : public RocksDBNativeClass<TERARKDB_NAMESPACE::DB*, RocksDBJni> {
  public:
   /**
-   * Get the Java Class org.rocksdb.RocksDB
+   * Get the Java Class org.terarkdb.RocksDB
    *
    * @param env A pointer to the Java environment
    *
@@ -177,15 +177,15 @@ class RocksDBJni
    *     OutOfMemoryError or ExceptionInInitializerError exceptions is thrown
    */
   static jclass getJClass(JNIEnv* env) {
-    return RocksDBNativeClass::getJClass(env, "org/rocksdb/RocksDB");
+    return RocksDBNativeClass::getJClass(env, "org/terarkdb/RocksDB");
   }
 };
 
-// The portal class for org.rocksdb.Status.Code
+// The portal class for org.terarkdb.Status.Code
 class CodeJni : public JavaClass {
  public:
   /**
-   * Get the Java Class org.rocksdb.Status.Code
+   * Get the Java Class org.terarkdb.Status.Code
    *
    * @param env A pointer to the Java environment
    *
@@ -194,7 +194,7 @@ class CodeJni : public JavaClass {
    *     OutOfMemoryError or ExceptionInInitializerError exceptions is thrown
    */
   static jclass getJClass(JNIEnv* env) {
-    return JavaClass::getJClass(env, "org/rocksdb/Status$Code");
+    return JavaClass::getJClass(env, "org/terarkdb/Status$Code");
   }
 
   /**
@@ -218,11 +218,11 @@ class CodeJni : public JavaClass {
   }
 };
 
-// The portal class for org.rocksdb.Status.SubCode
+// The portal class for org.terarkdb.Status.SubCode
 class SubCodeJni : public JavaClass {
  public:
   /**
-   * Get the Java Class org.rocksdb.Status.SubCode
+   * Get the Java Class org.terarkdb.Status.SubCode
    *
    * @param env A pointer to the Java environment
    *
@@ -231,7 +231,7 @@ class SubCodeJni : public JavaClass {
    *     OutOfMemoryError or ExceptionInInitializerError exceptions is thrown
    */
   static jclass getJClass(JNIEnv* env) {
-    return JavaClass::getJClass(env, "org/rocksdb/Status$SubCode");
+    return JavaClass::getJClass(env, "org/terarkdb/Status$SubCode");
   }
 
   /**
@@ -281,12 +281,12 @@ class SubCodeJni : public JavaClass {
   }
 };
 
-// The portal class for org.rocksdb.Status
+// The portal class for org.terarkdb.Status
 class StatusJni
     : public RocksDBNativeClass<TERARKDB_NAMESPACE::Status*, StatusJni> {
  public:
   /**
-   * Get the Java Class org.rocksdb.Status
+   * Get the Java Class org.terarkdb.Status
    *
    * @param env A pointer to the Java environment
    *
@@ -295,7 +295,7 @@ class StatusJni
    *     OutOfMemoryError or ExceptionInInitializerError exceptions is thrown
    */
   static jclass getJClass(JNIEnv* env) {
-    return RocksDBNativeClass::getJClass(env, "org/rocksdb/Status");
+    return RocksDBNativeClass::getJClass(env, "org/terarkdb/Status");
   }
 
   /**
@@ -314,7 +314,7 @@ class StatusJni
     }
 
     static jmethodID mid =
-        env->GetMethodID(jclazz, "getCode", "()Lorg/rocksdb/Status$Code;");
+        env->GetMethodID(jclazz, "getCode", "()Lorg/terarkdb/Status$Code;");
     assert(mid != nullptr);
     return mid;
   }
@@ -335,7 +335,7 @@ class StatusJni
     }
 
     static jmethodID mid = env->GetMethodID(jclazz, "getSubCode",
-                                            "()Lorg/rocksdb/Status$SubCode;");
+                                            "()Lorg/terarkdb/Status$SubCode;");
     assert(mid != nullptr);
     return mid;
   }
@@ -362,13 +362,13 @@ class StatusJni
   }
 
   /**
-   * Create a new Java org.rocksdb.Status object with the same properties as
+   * Create a new Java org.terarkdb.Status object with the same properties as
    * the provided C++ TERARKDB_NAMESPACE::Status object
    *
    * @param env A pointer to the Java environment
    * @param status The TERARKDB_NAMESPACE::Status object
    *
-   * @return A reference to a Java org.rocksdb.Status object, or nullptr
+   * @return A reference to a Java org.terarkdb.Status object, or nullptr
    *     if an an exception occurs
    */
   static jobject construct(JNIEnv* env, const Status& status) {
@@ -416,7 +416,7 @@ class StatusJni
     return jstatus;
   }
 
-  // Returns the equivalent org.rocksdb.Status.Code for the provided
+  // Returns the equivalent org.terarkdb.Status.Code for the provided
   // C++ TERARKDB_NAMESPACE::Status::Code enum
   static jbyte toJavaStatusCode(const TERARKDB_NAMESPACE::Status::Code& code) {
     switch (code) {
@@ -453,7 +453,7 @@ class StatusJni
     }
   }
 
-  // Returns the equivalent org.rocksdb.Status.SubCode for the provided
+  // Returns the equivalent org.terarkdb.Status.SubCode for the provided
   // C++ TERARKDB_NAMESPACE::Status::SubCode enum
   static jbyte toJavaStatusSubCode(
       const TERARKDB_NAMESPACE::Status::SubCode& subCode) {
@@ -480,7 +480,7 @@ class StatusJni
   }
 
   // Returns the equivalent TERARKDB_NAMESPACE::Status for the Java
-  // org.rocksdb.Status
+  // org.terarkdb.Status
   static std::unique_ptr<TERARKDB_NAMESPACE::Status> toCppStatus(
       JNIEnv* env, const jobject jstatus) {
     jmethodID mid_code = getCodeMethod(env);
@@ -674,11 +674,11 @@ class StatusJni
   }
 };
 
-// The portal class for org.rocksdb.RocksDBException
+// The portal class for org.terarkdb.RocksDBException
 class RocksDBExceptionJni : public JavaException<RocksDBExceptionJni> {
  public:
   /**
-   * Get the Java Class org.rocksdb.RocksDBException
+   * Get the Java Class org.terarkdb.RocksDBException
    *
    * @param env A pointer to the Java environment
    *
@@ -687,7 +687,7 @@ class RocksDBExceptionJni : public JavaException<RocksDBExceptionJni> {
    *     OutOfMemoryError or ExceptionInInitializerError exceptions is thrown
    */
   static jclass getJClass(JNIEnv* env) {
-    return JavaException::getJClass(env, "org/rocksdb/RocksDBException");
+    return JavaException::getJClass(env, "org/terarkdb/RocksDBException");
   }
 
   /**
@@ -742,9 +742,9 @@ class RocksDBExceptionJni : public JavaException<RocksDBExceptionJni> {
       return env->ExceptionCheck();
     }
 
-    // get the constructor of org.rocksdb.RocksDBException
+    // get the constructor of org.terarkdb.RocksDBException
     jmethodID mid =
-        env->GetMethodID(jclazz, "<init>", "(Lorg/rocksdb/Status;)V");
+        env->GetMethodID(jclazz, "<init>", "(Lorg/terarkdb/Status;)V");
     if (mid == nullptr) {
       // exception thrown: NoSuchMethodException or OutOfMemoryError
       std::cerr
@@ -833,9 +833,9 @@ class RocksDBExceptionJni : public JavaException<RocksDBExceptionJni> {
       return env->ExceptionCheck();
     }
 
-    // get the constructor of org.rocksdb.RocksDBException
+    // get the constructor of org.terarkdb.RocksDBException
     jmethodID mid = env->GetMethodID(
-        jclazz, "<init>", "(Ljava/lang/String;Lorg/rocksdb/Status;)V");
+        jclazz, "<init>", "(Ljava/lang/String;Lorg/terarkdb/Status;)V");
     if (mid == nullptr) {
       // exception thrown: NoSuchMethodException or OutOfMemoryError
       std::cerr
@@ -933,7 +933,7 @@ class RocksDBExceptionJni : public JavaException<RocksDBExceptionJni> {
     }
 
     static jmethodID mid =
-        env->GetMethodID(jclazz, "getStatus", "()Lorg/rocksdb/Status;");
+        env->GetMethodID(jclazz, "getStatus", "()Lorg/terarkdb/Status;");
     assert(mid != nullptr);
     return mid;
   }
@@ -1013,12 +1013,12 @@ class IllegalArgumentExceptionJni
   }
 };
 
-// The portal class for org.rocksdb.Options
+// The portal class for org.terarkdb.Options
 class OptionsJni
     : public RocksDBNativeClass<TERARKDB_NAMESPACE::Options*, OptionsJni> {
  public:
   /**
-   * Get the Java Class org.rocksdb.Options
+   * Get the Java Class org.terarkdb.Options
    *
    * @param env A pointer to the Java environment
    *
@@ -1027,16 +1027,16 @@ class OptionsJni
    *     OutOfMemoryError or ExceptionInInitializerError exceptions is thrown
    */
   static jclass getJClass(JNIEnv* env) {
-    return RocksDBNativeClass::getJClass(env, "org/rocksdb/Options");
+    return RocksDBNativeClass::getJClass(env, "org/terarkdb/Options");
   }
 };
 
-// The portal class for org.rocksdb.DBOptions
+// The portal class for org.terarkdb.DBOptions
 class DBOptionsJni
     : public RocksDBNativeClass<TERARKDB_NAMESPACE::DBOptions*, DBOptionsJni> {
  public:
   /**
-   * Get the Java Class org.rocksdb.DBOptions
+   * Get the Java Class org.terarkdb.DBOptions
    *
    * @param env A pointer to the Java environment
    *
@@ -1045,17 +1045,17 @@ class DBOptionsJni
    *     OutOfMemoryError or ExceptionInInitializerError exceptions is thrown
    */
   static jclass getJClass(JNIEnv* env) {
-    return RocksDBNativeClass::getJClass(env, "org/rocksdb/DBOptions");
+    return RocksDBNativeClass::getJClass(env, "org/terarkdb/DBOptions");
   }
 };
 
-// The portal class for org.rocksdb.ColumnFamilyOptions
+// The portal class for org.terarkdb.ColumnFamilyOptions
 class ColumnFamilyOptionsJni
     : public RocksDBNativeClass<TERARKDB_NAMESPACE::ColumnFamilyOptions*,
                                 ColumnFamilyOptionsJni> {
  public:
   /**
-   * Get the Java Class org.rocksdb.ColumnFamilyOptions
+   * Get the Java Class org.terarkdb.ColumnFamilyOptions
    *
    * @param env A pointer to the Java environment
    *
@@ -1065,11 +1065,11 @@ class ColumnFamilyOptionsJni
    */
   static jclass getJClass(JNIEnv* env) {
     return RocksDBNativeClass::getJClass(env,
-                                         "org/rocksdb/ColumnFamilyOptions");
+                                         "org/terarkdb/ColumnFamilyOptions");
   }
 
   /**
-   * Create a new Java org.rocksdb.ColumnFamilyOptions object with the same
+   * Create a new Java org.terarkdb.ColumnFamilyOptions object with the same
    * properties as the provided C++ TERARKDB_NAMESPACE::ColumnFamilyOptions
    * object
    *
@@ -1077,7 +1077,7 @@ class ColumnFamilyOptionsJni
    * @param cfoptions A pointer to TERARKDB_NAMESPACE::ColumnFamilyOptions
    * object
    *
-   * @return A reference to a Java org.rocksdb.ColumnFamilyOptions object, or
+   * @return A reference to a Java org.terarkdb.ColumnFamilyOptions object, or
    * nullptr if an an exception occurs
    */
   static jobject construct(JNIEnv* env, const ColumnFamilyOptions* cfoptions) {
@@ -1103,13 +1103,13 @@ class ColumnFamilyOptionsJni
   }
 };
 
-// The portal class for org.rocksdb.WriteOptions
+// The portal class for org.terarkdb.WriteOptions
 class WriteOptionsJni
     : public RocksDBNativeClass<TERARKDB_NAMESPACE::WriteOptions*,
                                 WriteOptionsJni> {
  public:
   /**
-   * Get the Java Class org.rocksdb.WriteOptions
+   * Get the Java Class org.terarkdb.WriteOptions
    *
    * @param env A pointer to the Java environment
    *
@@ -1118,17 +1118,17 @@ class WriteOptionsJni
    *     OutOfMemoryError or ExceptionInInitializerError exceptions is thrown
    */
   static jclass getJClass(JNIEnv* env) {
-    return RocksDBNativeClass::getJClass(env, "org/rocksdb/WriteOptions");
+    return RocksDBNativeClass::getJClass(env, "org/terarkdb/WriteOptions");
   }
 };
 
-// The portal class for org.rocksdb.ReadOptions
+// The portal class for org.terarkdb.ReadOptions
 class ReadOptionsJni
     : public RocksDBNativeClass<TERARKDB_NAMESPACE::ReadOptions*,
                                 ReadOptionsJni> {
  public:
   /**
-   * Get the Java Class org.rocksdb.ReadOptions
+   * Get the Java Class org.terarkdb.ReadOptions
    *
    * @param env A pointer to the Java environment
    *
@@ -1137,16 +1137,16 @@ class ReadOptionsJni
    *     OutOfMemoryError or ExceptionInInitializerError exceptions is thrown
    */
   static jclass getJClass(JNIEnv* env) {
-    return RocksDBNativeClass::getJClass(env, "org/rocksdb/ReadOptions");
+    return RocksDBNativeClass::getJClass(env, "org/terarkdb/ReadOptions");
   }
 };
 
-// The portal class for org.rocksdb.WriteBatch
+// The portal class for org.terarkdb.WriteBatch
 class WriteBatchJni : public RocksDBNativeClass<TERARKDB_NAMESPACE::WriteBatch*,
                                                 WriteBatchJni> {
  public:
   /**
-   * Get the Java Class org.rocksdb.WriteBatch
+   * Get the Java Class org.terarkdb.WriteBatch
    *
    * @param env A pointer to the Java environment
    *
@@ -1155,16 +1155,16 @@ class WriteBatchJni : public RocksDBNativeClass<TERARKDB_NAMESPACE::WriteBatch*,
    *     OutOfMemoryError or ExceptionInInitializerError exceptions is thrown
    */
   static jclass getJClass(JNIEnv* env) {
-    return RocksDBNativeClass::getJClass(env, "org/rocksdb/WriteBatch");
+    return RocksDBNativeClass::getJClass(env, "org/terarkdb/WriteBatch");
   }
 
   /**
-   * Create a new Java org.rocksdb.WriteBatch object
+   * Create a new Java org.terarkdb.WriteBatch object
    *
    * @param env A pointer to the Java environment
    * @param wb A pointer to TERARKDB_NAMESPACE::WriteBatch object
    *
-   * @return A reference to a Java org.rocksdb.WriteBatch object, or
+   * @return A reference to a Java org.terarkdb.WriteBatch object, or
    * nullptr if an an exception occurs
    */
   static jobject construct(JNIEnv* env, const WriteBatch* wb) {
@@ -1189,14 +1189,14 @@ class WriteBatchJni : public RocksDBNativeClass<TERARKDB_NAMESPACE::WriteBatch*,
   }
 };
 
-// The portal class for org.rocksdb.WriteBatch.Handler
+// The portal class for org.terarkdb.WriteBatch.Handler
 class WriteBatchHandlerJni
     : public RocksDBNativeClass<
           const TERARKDB_NAMESPACE::WriteBatchHandlerJniCallback*,
           WriteBatchHandlerJni> {
  public:
   /**
-   * Get the Java Class org.rocksdb.WriteBatch.Handler
+   * Get the Java Class org.terarkdb.WriteBatch.Handler
    *
    * @param env A pointer to the Java environment
    *
@@ -1205,7 +1205,7 @@ class WriteBatchHandlerJni
    *     OutOfMemoryError or ExceptionInInitializerError exceptions is thrown
    */
   static jclass getJClass(JNIEnv* env) {
-    return RocksDBNativeClass::getJClass(env, "org/rocksdb/WriteBatch$Handler");
+    return RocksDBNativeClass::getJClass(env, "org/terarkdb/WriteBatch$Handler");
   }
 
   /**
@@ -1572,7 +1572,7 @@ class WriteBatchHandlerJni
 class WriteBatchSavePointJni : public JavaClass {
  public:
   /**
-   * Get the Java Class org.rocksdb.WriteBatch.SavePoint
+   * Get the Java Class org.terarkdb.WriteBatch.SavePoint
    *
    * @param env A pointer to the Java environment
    *
@@ -1581,7 +1581,7 @@ class WriteBatchSavePointJni : public JavaClass {
    *     OutOfMemoryError or ExceptionInInitializerError exceptions is thrown
    */
   static jclass getJClass(JNIEnv* env) {
-    return JavaClass::getJClass(env, "org/rocksdb/WriteBatch$SavePoint");
+    return JavaClass::getJClass(env, "org/terarkdb/WriteBatch$SavePoint");
   }
 
   /**
@@ -1605,13 +1605,13 @@ class WriteBatchSavePointJni : public JavaClass {
   }
 
   /**
-   * Create a new Java org.rocksdb.WriteBatch.SavePoint object
+   * Create a new Java org.terarkdb.WriteBatch.SavePoint object
    *
    * @param env A pointer to the Java environment
    * @param savePoint A pointer to TERARKDB_NAMESPACE::WriteBatch::SavePoint
    * object
    *
-   * @return A reference to a Java org.rocksdb.WriteBatch.SavePoint object, or
+   * @return A reference to a Java org.terarkdb.WriteBatch.SavePoint object, or
    * nullptr if an an exception occurs
    */
   static jobject construct(JNIEnv* env, const SavePoint& save_point) {
@@ -1639,13 +1639,13 @@ class WriteBatchSavePointJni : public JavaClass {
   }
 };
 
-// The portal class for org.rocksdb.WriteBatchWithIndex
+// The portal class for org.terarkdb.WriteBatchWithIndex
 class WriteBatchWithIndexJni
     : public RocksDBNativeClass<TERARKDB_NAMESPACE::WriteBatchWithIndex*,
                                 WriteBatchWithIndexJni> {
  public:
   /**
-   * Get the Java Class org.rocksdb.WriteBatchWithIndex
+   * Get the Java Class org.terarkdb.WriteBatchWithIndex
    *
    * @param env A pointer to the Java environment
    *
@@ -1655,15 +1655,15 @@ class WriteBatchWithIndexJni
    */
   static jclass getJClass(JNIEnv* env) {
     return RocksDBNativeClass::getJClass(env,
-                                         "org/rocksdb/WriteBatchWithIndex");
+                                         "org/terarkdb/WriteBatchWithIndex");
   }
 };
 
-// The portal class for org.rocksdb.HistogramData
+// The portal class for org.terarkdb.HistogramData
 class HistogramDataJni : public JavaClass {
  public:
   /**
-   * Get the Java Class org.rocksdb.HistogramData
+   * Get the Java Class org.terarkdb.HistogramData
    *
    * @param env A pointer to the Java environment
    *
@@ -1672,7 +1672,7 @@ class HistogramDataJni : public JavaClass {
    *     OutOfMemoryError or ExceptionInInitializerError exceptions is thrown
    */
   static jclass getJClass(JNIEnv* env) {
-    return JavaClass::getJClass(env, "org/rocksdb/HistogramData");
+    return JavaClass::getJClass(env, "org/terarkdb/HistogramData");
   }
 
   /**
@@ -1696,13 +1696,13 @@ class HistogramDataJni : public JavaClass {
   }
 };
 
-// The portal class for org.rocksdb.BackupableDBOptions
+// The portal class for org.terarkdb.BackupableDBOptions
 class BackupableDBOptionsJni
     : public RocksDBNativeClass<TERARKDB_NAMESPACE::BackupableDBOptions*,
                                 BackupableDBOptionsJni> {
  public:
   /**
-   * Get the Java Class org.rocksdb.BackupableDBOptions
+   * Get the Java Class org.terarkdb.BackupableDBOptions
    *
    * @param env A pointer to the Java environment
    *
@@ -1712,17 +1712,17 @@ class BackupableDBOptionsJni
    */
   static jclass getJClass(JNIEnv* env) {
     return RocksDBNativeClass::getJClass(env,
-                                         "org/rocksdb/BackupableDBOptions");
+                                         "org/terarkdb/BackupableDBOptions");
   }
 };
 
-// The portal class for org.rocksdb.BackupEngine
+// The portal class for org.terarkdb.BackupEngine
 class BackupEngineJni
     : public RocksDBNativeClass<TERARKDB_NAMESPACE::BackupEngine*,
                                 BackupEngineJni> {
  public:
   /**
-   * Get the Java Class org.rocksdb.BackupableEngine
+   * Get the Java Class org.terarkdb.BackupableEngine
    *
    * @param env A pointer to the Java environment
    *
@@ -1731,16 +1731,16 @@ class BackupEngineJni
    *     OutOfMemoryError or ExceptionInInitializerError exceptions is thrown
    */
   static jclass getJClass(JNIEnv* env) {
-    return RocksDBNativeClass::getJClass(env, "org/rocksdb/BackupEngine");
+    return RocksDBNativeClass::getJClass(env, "org/terarkdb/BackupEngine");
   }
 };
 
-// The portal class for org.rocksdb.RocksIterator
+// The portal class for org.terarkdb.RocksIterator
 class IteratorJni
     : public RocksDBNativeClass<TERARKDB_NAMESPACE::Iterator*, IteratorJni> {
  public:
   /**
-   * Get the Java Class org.rocksdb.RocksIterator
+   * Get the Java Class org.terarkdb.RocksIterator
    *
    * @param env A pointer to the Java environment
    *
@@ -1749,17 +1749,17 @@ class IteratorJni
    *     OutOfMemoryError or ExceptionInInitializerError exceptions is thrown
    */
   static jclass getJClass(JNIEnv* env) {
-    return RocksDBNativeClass::getJClass(env, "org/rocksdb/RocksIterator");
+    return RocksDBNativeClass::getJClass(env, "org/terarkdb/RocksIterator");
   }
 };
 
-// The portal class for org.rocksdb.Filter
+// The portal class for org.terarkdb.Filter
 class FilterJni
     : public RocksDBNativeClass<
           std::shared_ptr<TERARKDB_NAMESPACE::FilterPolicy>*, FilterJni> {
  public:
   /**
-   * Get the Java Class org.rocksdb.Filter
+   * Get the Java Class org.terarkdb.Filter
    *
    * @param env A pointer to the Java environment
    *
@@ -1768,17 +1768,17 @@ class FilterJni
    *     OutOfMemoryError or ExceptionInInitializerError exceptions is thrown
    */
   static jclass getJClass(JNIEnv* env) {
-    return RocksDBNativeClass::getJClass(env, "org/rocksdb/Filter");
+    return RocksDBNativeClass::getJClass(env, "org/terarkdb/Filter");
   }
 };
 
-// The portal class for org.rocksdb.ColumnFamilyHandle
+// The portal class for org.terarkdb.ColumnFamilyHandle
 class ColumnFamilyHandleJni
     : public RocksDBNativeClass<TERARKDB_NAMESPACE::ColumnFamilyHandle*,
                                 ColumnFamilyHandleJni> {
  public:
   /**
-   * Get the Java Class org.rocksdb.ColumnFamilyHandle
+   * Get the Java Class org.terarkdb.ColumnFamilyHandle
    *
    * @param env A pointer to the Java environment
    *
@@ -1787,17 +1787,17 @@ class ColumnFamilyHandleJni
    *     OutOfMemoryError or ExceptionInInitializerError exceptions is thrown
    */
   static jclass getJClass(JNIEnv* env) {
-    return RocksDBNativeClass::getJClass(env, "org/rocksdb/ColumnFamilyHandle");
+    return RocksDBNativeClass::getJClass(env, "org/terarkdb/ColumnFamilyHandle");
   }
 };
 
-// The portal class for org.rocksdb.FlushOptions
+// The portal class for org.terarkdb.FlushOptions
 class FlushOptionsJni
     : public RocksDBNativeClass<TERARKDB_NAMESPACE::FlushOptions*,
                                 FlushOptionsJni> {
  public:
   /**
-   * Get the Java Class org.rocksdb.FlushOptions
+   * Get the Java Class org.terarkdb.FlushOptions
    *
    * @param env A pointer to the Java environment
    *
@@ -1806,18 +1806,18 @@ class FlushOptionsJni
    *     OutOfMemoryError or ExceptionInInitializerError exceptions is thrown
    */
   static jclass getJClass(JNIEnv* env) {
-    return RocksDBNativeClass::getJClass(env, "org/rocksdb/FlushOptions");
+    return RocksDBNativeClass::getJClass(env, "org/terarkdb/FlushOptions");
   }
 };
 
-// The portal class for org.rocksdb.ComparatorOptions
+// The portal class for org.terarkdb.ComparatorOptions
 class ComparatorOptionsJni
     : public RocksDBNativeClass<
           TERARKDB_NAMESPACE::ComparatorJniCallbackOptions*,
           ComparatorOptionsJni> {
  public:
   /**
-   * Get the Java Class org.rocksdb.ComparatorOptions
+   * Get the Java Class org.terarkdb.ComparatorOptions
    *
    * @param env A pointer to the Java environment
    *
@@ -1826,18 +1826,18 @@ class ComparatorOptionsJni
    *     OutOfMemoryError or ExceptionInInitializerError exceptions is thrown
    */
   static jclass getJClass(JNIEnv* env) {
-    return RocksDBNativeClass::getJClass(env, "org/rocksdb/ComparatorOptions");
+    return RocksDBNativeClass::getJClass(env, "org/terarkdb/ComparatorOptions");
   }
 };
 
-// The portal class for org.rocksdb.AbstractCompactionFilterFactory
+// The portal class for org.terarkdb.AbstractCompactionFilterFactory
 class AbstractCompactionFilterFactoryJni
     : public RocksDBNativeClass<
           const TERARKDB_NAMESPACE::CompactionFilterFactoryJniCallback*,
           AbstractCompactionFilterFactoryJni> {
  public:
   /**
-   * Get the Java Class org.rocksdb.AbstractCompactionFilterFactory
+   * Get the Java Class org.terarkdb.AbstractCompactionFilterFactory
    *
    * @param env A pointer to the Java environment
    *
@@ -1847,7 +1847,7 @@ class AbstractCompactionFilterFactoryJni
    */
   static jclass getJClass(JNIEnv* env) {
     return RocksDBNativeClass::getJClass(
-        env, "org/rocksdb/AbstractCompactionFilterFactory");
+        env, "org/terarkdb/AbstractCompactionFilterFactory");
   }
 
   /**
@@ -1893,7 +1893,7 @@ class AbstractCompactionFilterFactoryJni
   }
 };
 
-// The portal class for org.rocksdb.AbstractTransactionNotifier
+// The portal class for org.terarkdb.AbstractTransactionNotifier
 class AbstractTransactionNotifierJni
     : public RocksDBNativeClass<
           const TERARKDB_NAMESPACE::TransactionNotifierJniCallback*,
@@ -1901,11 +1901,11 @@ class AbstractTransactionNotifierJni
  public:
   static jclass getJClass(JNIEnv* env) {
     return RocksDBNativeClass::getJClass(
-        env, "org/rocksdb/AbstractTransactionNotifier");
+        env, "org/terarkdb/AbstractTransactionNotifier");
   }
 
   // Get the java method `snapshotCreated`
-  // of org.rocksdb.AbstractTransactionNotifier.
+  // of org.terarkdb.AbstractTransactionNotifier.
   static jmethodID getSnapshotCreatedMethodId(JNIEnv* env) {
     jclass jclazz = getJClass(env);
     if (jclazz == nullptr) {
@@ -1919,14 +1919,14 @@ class AbstractTransactionNotifierJni
   }
 };
 
-// The portal class for org.rocksdb.AbstractComparator
+// The portal class for org.terarkdb.AbstractComparator
 class AbstractComparatorJni
     : public RocksDBNativeClass<
           const TERARKDB_NAMESPACE::BaseComparatorJniCallback*,
           AbstractComparatorJni> {
  public:
   /**
-   * Get the Java Class org.rocksdb.AbstractComparator
+   * Get the Java Class org.terarkdb.AbstractComparator
    *
    * @param env A pointer to the Java environment
    *
@@ -1935,7 +1935,7 @@ class AbstractComparatorJni
    *     OutOfMemoryError or ExceptionInInitializerError exceptions is thrown
    */
   static jclass getJClass(JNIEnv* env) {
-    return RocksDBNativeClass::getJClass(env, "org/rocksdb/AbstractComparator");
+    return RocksDBNativeClass::getJClass(env, "org/terarkdb/AbstractComparator");
   }
 
   /**
@@ -1976,7 +1976,7 @@ class AbstractComparatorJni
 
     static jmethodID mid = env->GetMethodID(
         jclazz, "compare",
-        "(Lorg/rocksdb/AbstractSlice;Lorg/rocksdb/AbstractSlice;)I");
+        "(Lorg/terarkdb/AbstractSlice;Lorg/terarkdb/AbstractSlice;)I");
     assert(mid != nullptr);
     return mid;
   }
@@ -1998,7 +1998,7 @@ class AbstractComparatorJni
 
     static jmethodID mid = env->GetMethodID(
         jclazz, "findShortestSeparator",
-        "(Ljava/lang/String;Lorg/rocksdb/AbstractSlice;)Ljava/lang/String;");
+        "(Ljava/lang/String;Lorg/terarkdb/AbstractSlice;)Ljava/lang/String;");
     assert(mid != nullptr);
     return mid;
   }
@@ -2025,13 +2025,13 @@ class AbstractComparatorJni
   }
 };
 
-// The portal class for org.rocksdb.AbstractSlice
+// The portal class for org.terarkdb.AbstractSlice
 class AbstractSliceJni
     : public NativeRocksMutableObject<const TERARKDB_NAMESPACE::Slice*,
                                       AbstractSliceJni> {
  public:
   /**
-   * Get the Java Class org.rocksdb.AbstractSlice
+   * Get the Java Class org.terarkdb.AbstractSlice
    *
    * @param env A pointer to the Java environment
    *
@@ -2040,17 +2040,17 @@ class AbstractSliceJni
    *     OutOfMemoryError or ExceptionInInitializerError exceptions is thrown
    */
   static jclass getJClass(JNIEnv* env) {
-    return RocksDBNativeClass::getJClass(env, "org/rocksdb/AbstractSlice");
+    return RocksDBNativeClass::getJClass(env, "org/terarkdb/AbstractSlice");
   }
 };
 
-// The portal class for org.rocksdb.Slice
+// The portal class for org.terarkdb.Slice
 class SliceJni
     : public NativeRocksMutableObject<const TERARKDB_NAMESPACE::Slice*,
                                       AbstractSliceJni> {
  public:
   /**
-   * Get the Java Class org.rocksdb.Slice
+   * Get the Java Class org.terarkdb.Slice
    *
    * @param env A pointer to the Java environment
    *
@@ -2059,7 +2059,7 @@ class SliceJni
    *     OutOfMemoryError or ExceptionInInitializerError exceptions is thrown
    */
   static jclass getJClass(JNIEnv* env) {
-    return RocksDBNativeClass::getJClass(env, "org/rocksdb/Slice");
+    return RocksDBNativeClass::getJClass(env, "org/terarkdb/Slice");
   }
 
   /**
@@ -2092,13 +2092,13 @@ class SliceJni
   }
 };
 
-// The portal class for org.rocksdb.DirectSlice
+// The portal class for org.terarkdb.DirectSlice
 class DirectSliceJni
     : public NativeRocksMutableObject<const TERARKDB_NAMESPACE::Slice*,
                                       AbstractSliceJni> {
  public:
   /**
-   * Get the Java Class org.rocksdb.DirectSlice
+   * Get the Java Class org.terarkdb.DirectSlice
    *
    * @param env A pointer to the Java environment
    *
@@ -2107,7 +2107,7 @@ class DirectSliceJni
    *     OutOfMemoryError or ExceptionInInitializerError exceptions is thrown
    */
   static jclass getJClass(JNIEnv* env) {
-    return RocksDBNativeClass::getJClass(env, "org/rocksdb/DirectSlice");
+    return RocksDBNativeClass::getJClass(env, "org/terarkdb/DirectSlice");
   }
 
   /**
@@ -2459,11 +2459,11 @@ class StringBuilderJni : public JavaClass {
   }
 };
 
-// The portal class for org.rocksdb.BackupInfo
+// The portal class for org.terarkdb.BackupInfo
 class BackupInfoJni : public JavaClass {
  public:
   /**
-   * Get the Java Class org.rocksdb.BackupInfo
+   * Get the Java Class org.terarkdb.BackupInfo
    *
    * @param env A pointer to the Java environment
    *
@@ -2472,7 +2472,7 @@ class BackupInfoJni : public JavaClass {
    *     OutOfMemoryError or ExceptionInInitializerError exceptions is thrown
    */
   static jclass getJClass(JNIEnv* env) {
-    return JavaClass::getJClass(env, "org/rocksdb/BackupInfo");
+    return JavaClass::getJClass(env, "org/terarkdb/BackupInfo");
   }
 
   /**
@@ -2528,7 +2528,7 @@ class BackupInfoListJni {
  public:
   /**
    * Converts a C++ std::vector<BackupInfo> object to
-   * a Java ArrayList<org.rocksdb.BackupInfo> object
+   * a Java ArrayList<org.terarkdb.BackupInfo> object
    *
    * @param env A pointer to the Java environment
    * @param backup_infos A vector of BackupInfo
@@ -2603,11 +2603,11 @@ class BackupInfoListJni {
   }
 };
 
-// The portal class for org.rocksdb.WBWIRocksIterator
+// The portal class for org.terarkdb.WBWIRocksIterator
 class WBWIRocksIteratorJni : public JavaClass {
  public:
   /**
-   * Get the Java Class org.rocksdb.WBWIRocksIterator
+   * Get the Java Class org.terarkdb.WBWIRocksIterator
    *
    * @param env A pointer to the Java environment
    *
@@ -2616,7 +2616,7 @@ class WBWIRocksIteratorJni : public JavaClass {
    *     OutOfMemoryError or ExceptionInInitializerError exceptions is thrown
    */
   static jclass getJClass(JNIEnv* env) {
-    return JavaClass::getJClass(env, "org/rocksdb/WBWIRocksIterator");
+    return JavaClass::getJClass(env, "org/terarkdb/WBWIRocksIterator");
   }
 
   /**
@@ -2635,7 +2635,7 @@ class WBWIRocksIteratorJni : public JavaClass {
     }
 
     static jfieldID fid = env->GetFieldID(
-        jclazz, "entry", "Lorg/rocksdb/WBWIRocksIterator$WriteEntry;");
+        jclazz, "entry", "Lorg/terarkdb/WBWIRocksIterator$WriteEntry;");
     assert(fid != nullptr);
     return fid;
   }
@@ -2664,7 +2664,7 @@ class WBWIRocksIteratorJni : public JavaClass {
   }
 };
 
-// The portal class for org.rocksdb.WBWIRocksIterator.WriteType
+// The portal class for org.terarkdb.WBWIRocksIterator.WriteType
 class WriteTypeJni : public JavaClass {
  public:
   /**
@@ -2707,7 +2707,7 @@ class WriteTypeJni : public JavaClass {
    */
   static jobject LOG(JNIEnv* env) { return getEnum(env, "LOG"); }
 
-  // Returns the equivalent org.rocksdb.WBWIRocksIterator.WriteType for the
+  // Returns the equivalent org.terarkdb.WBWIRocksIterator.WriteType for the
   // provided C++ TERARKDB_NAMESPACE::WriteType enum
   static jbyte toJavaWriteType(const TERARKDB_NAMESPACE::WriteType& writeType) {
     switch (writeType) {
@@ -2732,7 +2732,7 @@ class WriteTypeJni : public JavaClass {
 
  private:
   /**
-   * Get the Java Class org.rocksdb.WBWIRocksIterator.WriteType
+   * Get the Java Class org.terarkdb.WBWIRocksIterator.WriteType
    *
    * @param env A pointer to the Java environment
    *
@@ -2741,11 +2741,11 @@ class WriteTypeJni : public JavaClass {
    *     OutOfMemoryError or ExceptionInInitializerError exceptions is thrown
    */
   static jclass getJClass(JNIEnv* env) {
-    return JavaClass::getJClass(env, "org/rocksdb/WBWIRocksIterator$WriteType");
+    return JavaClass::getJClass(env, "org/terarkdb/WBWIRocksIterator$WriteType");
   }
 
   /**
-   * Get an enum field of org.rocksdb.WBWIRocksIterator.WriteType
+   * Get an enum field of org.terarkdb.WBWIRocksIterator.WriteType
    *
    * @param env A pointer to the Java environment
    * @param name The name of the enum field
@@ -2761,7 +2761,7 @@ class WriteTypeJni : public JavaClass {
     }
 
     jfieldID jfid = env->GetStaticFieldID(
-        jclazz, name, "Lorg/rocksdb/WBWIRocksIterator$WriteType;");
+        jclazz, name, "Lorg/terarkdb/WBWIRocksIterator$WriteType;");
     if (env->ExceptionCheck()) {
       // exception occurred while getting field
       return nullptr;
@@ -2775,11 +2775,11 @@ class WriteTypeJni : public JavaClass {
   }
 };
 
-// The portal class for org.rocksdb.WBWIRocksIterator.WriteEntry
+// The portal class for org.terarkdb.WBWIRocksIterator.WriteEntry
 class WriteEntryJni : public JavaClass {
  public:
   /**
-   * Get the Java Class org.rocksdb.WBWIRocksIterator.WriteEntry
+   * Get the Java Class org.terarkdb.WBWIRocksIterator.WriteEntry
    *
    * @param env A pointer to the Java environment
    *
@@ -2789,11 +2789,11 @@ class WriteEntryJni : public JavaClass {
    */
   static jclass getJClass(JNIEnv* env) {
     return JavaClass::getJClass(env,
-                                "org/rocksdb/WBWIRocksIterator$WriteEntry");
+                                "org/terarkdb/WBWIRocksIterator$WriteEntry");
   }
 };
 
-// The portal class for org.rocksdb.InfoLogLevel
+// The portal class for org.terarkdb.InfoLogLevel
 class InfoLogLevelJni : public JavaClass {
  public:
   /**
@@ -2866,7 +2866,7 @@ class InfoLogLevelJni : public JavaClass {
 
  private:
   /**
-   * Get the Java Class org.rocksdb.InfoLogLevel
+   * Get the Java Class org.terarkdb.InfoLogLevel
    *
    * @param env A pointer to the Java environment
    *
@@ -2875,11 +2875,11 @@ class InfoLogLevelJni : public JavaClass {
    *     OutOfMemoryError or ExceptionInInitializerError exceptions is thrown
    */
   static jclass getJClass(JNIEnv* env) {
-    return JavaClass::getJClass(env, "org/rocksdb/InfoLogLevel");
+    return JavaClass::getJClass(env, "org/terarkdb/InfoLogLevel");
   }
 
   /**
-   * Get an enum field of org.rocksdb.InfoLogLevel
+   * Get an enum field of org.terarkdb.InfoLogLevel
    *
    * @param env A pointer to the Java environment
    * @param name The name of the enum field
@@ -2895,7 +2895,7 @@ class InfoLogLevelJni : public JavaClass {
     }
 
     jfieldID jfid =
-        env->GetStaticFieldID(jclazz, name, "Lorg/rocksdb/InfoLogLevel;");
+        env->GetStaticFieldID(jclazz, name, "Lorg/terarkdb/InfoLogLevel;");
     if (env->ExceptionCheck()) {
       // exception occurred while getting field
       return nullptr;
@@ -2909,13 +2909,13 @@ class InfoLogLevelJni : public JavaClass {
   }
 };
 
-// The portal class for org.rocksdb.Logger
+// The portal class for org.terarkdb.Logger
 class LoggerJni
     : public RocksDBNativeClass<
           std::shared_ptr<TERARKDB_NAMESPACE::LoggerJniCallback>*, LoggerJni> {
  public:
   /**
-   * Get the Java Class org/rocksdb/Logger
+   * Get the Java Class org/terarkdb/Logger
    *
    * @param env A pointer to the Java environment
    *
@@ -2924,7 +2924,7 @@ class LoggerJni
    *     OutOfMemoryError or ExceptionInInitializerError exceptions is thrown
    */
   static jclass getJClass(JNIEnv* env) {
-    return RocksDBNativeClass::getJClass(env, "org/rocksdb/Logger");
+    return RocksDBNativeClass::getJClass(env, "org/terarkdb/Logger");
   }
 
   /**
@@ -2943,17 +2943,17 @@ class LoggerJni
     }
 
     static jmethodID mid = env->GetMethodID(
-        jclazz, "log", "(Lorg/rocksdb/InfoLogLevel;Ljava/lang/String;)V");
+        jclazz, "log", "(Lorg/terarkdb/InfoLogLevel;Ljava/lang/String;)V");
     assert(mid != nullptr);
     return mid;
   }
 };
 
-// The portal class for org.rocksdb.TransactionLogIterator.BatchResult
+// The portal class for org.terarkdb.TransactionLogIterator.BatchResult
 class BatchResultJni : public JavaClass {
  public:
   /**
-   * Get the Java Class org.rocksdb.TransactionLogIterator.BatchResult
+   * Get the Java Class org.terarkdb.TransactionLogIterator.BatchResult
    *
    * @param env A pointer to the Java environment
    *
@@ -2963,11 +2963,11 @@ class BatchResultJni : public JavaClass {
    */
   static jclass getJClass(JNIEnv* env) {
     return JavaClass::getJClass(
-        env, "org/rocksdb/TransactionLogIterator$BatchResult");
+        env, "org/terarkdb/TransactionLogIterator$BatchResult");
   }
 
   /**
-   * Create a new Java org.rocksdb.TransactionLogIterator.BatchResult object
+   * Create a new Java org.terarkdb.TransactionLogIterator.BatchResult object
    * with the same properties as the provided C++
    * TERARKDB_NAMESPACE::BatchResult object
    *
@@ -2975,7 +2975,7 @@ class BatchResultJni : public JavaClass {
    * @param batch_result The TERARKDB_NAMESPACE::BatchResult object
    *
    * @return A reference to a Java
-   *     org.rocksdb.TransactionLogIterator.BatchResult object,
+   *     org.terarkdb.TransactionLogIterator.BatchResult object,
    *     or nullptr if an an exception occurs
    */
   static jobject construct(JNIEnv* env,
@@ -3004,10 +3004,10 @@ class BatchResultJni : public JavaClass {
   }
 };
 
-// The portal class for org.rocksdb.BottommostLevelCompaction
+// The portal class for org.terarkdb.BottommostLevelCompaction
 class BottommostLevelCompactionJni {
  public:
-  // Returns the equivalent org.rocksdb.BottommostLevelCompaction for the
+  // Returns the equivalent org.terarkdb.BottommostLevelCompaction for the
   // provided C++ TERARKDB_NAMESPACE::BottommostLevelCompaction enum
   static jint toJavaBottommostLevelCompaction(
       const TERARKDB_NAMESPACE::BottommostLevelCompaction&
@@ -3026,7 +3026,7 @@ class BottommostLevelCompactionJni {
   }
 
   // Returns the equivalent C++ TERARKDB_NAMESPACE::BottommostLevelCompaction
-  // enum for the provided Java org.rocksdb.BottommostLevelCompaction
+  // enum for the provided Java org.terarkdb.BottommostLevelCompaction
   static TERARKDB_NAMESPACE::BottommostLevelCompaction
   toCppBottommostLevelCompaction(jint bottommost_level_compaction) {
     switch (bottommost_level_compaction) {
@@ -3045,10 +3045,10 @@ class BottommostLevelCompactionJni {
   }
 };
 
-// The portal class for org.rocksdb.CompactionStopStyle
+// The portal class for org.terarkdb.CompactionStopStyle
 class CompactionStopStyleJni {
  public:
-  // Returns the equivalent org.rocksdb.CompactionStopStyle for the provided
+  // Returns the equivalent org.terarkdb.CompactionStopStyle for the provided
   // C++ TERARKDB_NAMESPACE::CompactionStopStyle enum
   static jbyte toJavaCompactionStopStyle(
       const TERARKDB_NAMESPACE::CompactionStopStyle& compaction_stop_style) {
@@ -3065,7 +3065,7 @@ class CompactionStopStyleJni {
   }
 
   // Returns the equivalent C++ TERARKDB_NAMESPACE::CompactionStopStyle enum for
-  // the provided Java org.rocksdb.CompactionStopStyle
+  // the provided Java org.terarkdb.CompactionStopStyle
   static TERARKDB_NAMESPACE::CompactionStopStyle toCppCompactionStopStyle(
       jbyte jcompaction_stop_style) {
     switch (jcompaction_stop_style) {
@@ -3083,10 +3083,10 @@ class CompactionStopStyleJni {
   }
 };
 
-// The portal class for org.rocksdb.CompressionType
+// The portal class for org.terarkdb.CompressionType
 class CompressionTypeJni {
  public:
-  // Returns the equivalent org.rocksdb.CompressionType for the provided
+  // Returns the equivalent org.terarkdb.CompressionType for the provided
   // C++ TERARKDB_NAMESPACE::CompressionType enum
   static jbyte toJavaCompressionType(
       const TERARKDB_NAMESPACE::CompressionType& compression_type) {
@@ -3114,7 +3114,7 @@ class CompressionTypeJni {
   }
 
   // Returns the equivalent C++ TERARKDB_NAMESPACE::CompressionType enum for the
-  // provided Java org.rocksdb.CompressionType
+  // provided Java org.terarkdb.CompressionType
   static TERARKDB_NAMESPACE::CompressionType toCppCompressionType(
       jbyte jcompression_type) {
     switch (jcompression_type) {
@@ -3141,10 +3141,10 @@ class CompressionTypeJni {
   }
 };
 
-// The portal class for org.rocksdb.CompactionPriority
+// The portal class for org.terarkdb.CompactionPriority
 class CompactionPriorityJni {
  public:
-  // Returns the equivalent org.rocksdb.CompactionPriority for the provided
+  // Returns the equivalent org.terarkdb.CompactionPriority for the provided
   // C++ TERARKDB_NAMESPACE::CompactionPri enum
   static jbyte toJavaCompactionPriority(
       const TERARKDB_NAMESPACE::CompactionPri& compaction_priority) {
@@ -3163,7 +3163,7 @@ class CompactionPriorityJni {
   }
 
   // Returns the equivalent C++ TERARKDB_NAMESPACE::CompactionPri enum for the
-  // provided Java org.rocksdb.CompactionPriority
+  // provided Java org.terarkdb.CompactionPriority
   static TERARKDB_NAMESPACE::CompactionPri toCppCompactionPriority(
       jbyte jcompaction_priority) {
     switch (jcompaction_priority) {
@@ -3182,10 +3182,10 @@ class CompactionPriorityJni {
   }
 };
 
-// The portal class for org.rocksdb.AccessHint
+// The portal class for org.terarkdb.AccessHint
 class AccessHintJni {
  public:
-  // Returns the equivalent org.rocksdb.AccessHint for the provided
+  // Returns the equivalent org.terarkdb.AccessHint for the provided
   // C++ TERARKDB_NAMESPACE::DBOptions::AccessHint enum
   static jbyte toJavaAccessHint(
       const TERARKDB_NAMESPACE::DBOptions::AccessHint& access_hint) {
@@ -3205,7 +3205,7 @@ class AccessHintJni {
   }
 
   // Returns the equivalent C++ TERARKDB_NAMESPACE::DBOptions::AccessHint enum
-  // for the provided Java org.rocksdb.AccessHint
+  // for the provided Java org.terarkdb.AccessHint
   static TERARKDB_NAMESPACE::DBOptions::AccessHint toCppAccessHint(
       jbyte jaccess_hint) {
     switch (jaccess_hint) {
@@ -3224,10 +3224,10 @@ class AccessHintJni {
   }
 };
 
-// The portal class for org.rocksdb.WALRecoveryMode
+// The portal class for org.terarkdb.WALRecoveryMode
 class WALRecoveryModeJni {
  public:
-  // Returns the equivalent org.rocksdb.WALRecoveryMode for the provided
+  // Returns the equivalent org.terarkdb.WALRecoveryMode for the provided
   // C++ TERARKDB_NAMESPACE::WALRecoveryMode enum
   static jbyte toJavaWALRecoveryMode(
       const TERARKDB_NAMESPACE::WALRecoveryMode& wal_recovery_mode) {
@@ -3247,7 +3247,7 @@ class WALRecoveryModeJni {
   }
 
   // Returns the equivalent C++ TERARKDB_NAMESPACE::WALRecoveryMode enum for the
-  // provided Java org.rocksdb.WALRecoveryMode
+  // provided Java org.terarkdb.WALRecoveryMode
   static TERARKDB_NAMESPACE::WALRecoveryMode toCppWALRecoveryMode(
       jbyte jwal_recovery_mode) {
     switch (jwal_recovery_mode) {
@@ -3267,10 +3267,10 @@ class WALRecoveryModeJni {
   }
 };
 
-// The portal class for org.rocksdb.TickerType
+// The portal class for org.terarkdb.TickerType
 class TickerTypeJni {
  public:
-  // Returns the equivalent org.rocksdb.TickerType for the provided
+  // Returns the equivalent org.terarkdb.TickerType for the provided
   // C++ TERARKDB_NAMESPACE::Tickers enum
   static jbyte toJavaTickerType(const TERARKDB_NAMESPACE::Tickers& tickers) {
     switch (tickers) {
@@ -3489,7 +3489,7 @@ class TickerTypeJni {
   }
 
   // Returns the equivalent C++ TERARKDB_NAMESPACE::Tickers enum for the
-  // provided Java org.rocksdb.TickerType
+  // provided Java org.terarkdb.TickerType
   static TERARKDB_NAMESPACE::Tickers toCppTickers(jbyte jticker_type) {
     switch (jticker_type) {
       case 0x0:
@@ -3708,10 +3708,10 @@ class TickerTypeJni {
   }
 };
 
-// The portal class for org.rocksdb.HistogramType
+// The portal class for org.terarkdb.HistogramType
 class HistogramTypeJni {
  public:
-  // Returns the equivalent org.rocksdb.HistogramType for the provided
+  // Returns the equivalent org.terarkdb.HistogramType for the provided
   // C++ TERARKDB_NAMESPACE::Histograms enum
   static jbyte toJavaHistogramsType(
       const TERARKDB_NAMESPACE::Histograms& histograms) {
@@ -3798,7 +3798,7 @@ class HistogramTypeJni {
   }
 
   // Returns the equivalent C++ TERARKDB_NAMESPACE::Histograms enum for the
-  // provided Java org.rocksdb.HistogramsType
+  // provided Java org.terarkdb.HistogramsType
   static TERARKDB_NAMESPACE::Histograms toCppHistograms(
       jbyte jhistograms_type) {
     switch (jhistograms_type) {
@@ -3884,10 +3884,10 @@ class HistogramTypeJni {
   }
 };
 
-// The portal class for org.rocksdb.StatsLevel
+// The portal class for org.terarkdb.StatsLevel
 class StatsLevelJni {
  public:
-  // Returns the equivalent org.rocksdb.StatsLevel for the provided
+  // Returns the equivalent org.terarkdb.StatsLevel for the provided
   // C++ TERARKDB_NAMESPACE::StatsLevel enum
   static jbyte toJavaStatsLevel(
       const TERARKDB_NAMESPACE::StatsLevel& stats_level) {
@@ -3906,7 +3906,7 @@ class StatsLevelJni {
   }
 
   // Returns the equivalent C++ TERARKDB_NAMESPACE::StatsLevel enum for the
-  // provided Java org.rocksdb.StatsLevel
+  // provided Java org.terarkdb.StatsLevel
   static TERARKDB_NAMESPACE::StatsLevel toCppStatsLevel(jbyte jstats_level) {
     switch (jstats_level) {
       case 0x0:
@@ -3923,10 +3923,10 @@ class StatsLevelJni {
   }
 };
 
-// The portal class for org.rocksdb.RateLimiterMode
+// The portal class for org.terarkdb.RateLimiterMode
 class RateLimiterModeJni {
  public:
-  // Returns the equivalent org.rocksdb.RateLimiterMode for the provided
+  // Returns the equivalent org.terarkdb.RateLimiterMode for the provided
   // C++ TERARKDB_NAMESPACE::RateLimiter::Mode enum
   static jbyte toJavaRateLimiterMode(
       const TERARKDB_NAMESPACE::RateLimiter::Mode& rate_limiter_mode) {
@@ -3945,7 +3945,7 @@ class RateLimiterModeJni {
   }
 
   // Returns the equivalent C++ TERARKDB_NAMESPACE::RateLimiter::Mode enum for
-  // the provided Java org.rocksdb.RateLimiterMode
+  // the provided Java org.terarkdb.RateLimiterMode
   static TERARKDB_NAMESPACE::RateLimiter::Mode toCppRateLimiterMode(
       jbyte jrate_limiter_mode) {
     switch (jrate_limiter_mode) {
@@ -3963,10 +3963,10 @@ class RateLimiterModeJni {
   }
 };
 
-// The portal class for org.rocksdb.MemoryUsageType
+// The portal class for org.terarkdb.MemoryUsageType
 class MemoryUsageTypeJni {
  public:
-  // Returns the equivalent org.rocksdb.MemoryUsageType for the provided
+  // Returns the equivalent org.terarkdb.MemoryUsageType for the provided
   // C++ TERARKDB_NAMESPACE::MemoryUtil::UsageType enum
   static jbyte toJavaMemoryUsageType(
       const TERARKDB_NAMESPACE::MemoryUtil::UsageType& usage_type) {
@@ -3986,7 +3986,7 @@ class MemoryUsageTypeJni {
   }
 
   // Returns the equivalent C++ TERARKDB_NAMESPACE::MemoryUtil::UsageType enum
-  // for the provided Java org.rocksdb.MemoryUsageType
+  // for the provided Java org.terarkdb.MemoryUsageType
   static TERARKDB_NAMESPACE::MemoryUtil::UsageType toCppMemoryUsageType(
       jbyte usage_type) {
     switch (usage_type) {
@@ -4005,11 +4005,11 @@ class MemoryUsageTypeJni {
   }
 };
 
-// The portal class for org.rocksdb.Transaction
+// The portal class for org.terarkdb.Transaction
 class TransactionJni : public JavaClass {
  public:
   /**
-   * Get the Java Class org.rocksdb.Transaction
+   * Get the Java Class org.terarkdb.Transaction
    *
    * @param env A pointer to the Java environment
    *
@@ -4018,20 +4018,20 @@ class TransactionJni : public JavaClass {
    *     OutOfMemoryError or ExceptionInInitializerError exceptions is thrown
    */
   static jclass getJClass(JNIEnv* env) {
-    return JavaClass::getJClass(env, "org/rocksdb/Transaction");
+    return JavaClass::getJClass(env, "org/terarkdb/Transaction");
   }
 
   /**
-   * Create a new Java org.rocksdb.Transaction.WaitingTransactions object
+   * Create a new Java org.terarkdb.Transaction.WaitingTransactions object
    *
    * @param env A pointer to the Java environment
-   * @param jtransaction A Java org.rocksdb.Transaction object
+   * @param jtransaction A Java org.terarkdb.Transaction object
    * @param column_family_id The id of the column family
    * @param key The key
    * @param transaction_ids The transaction ids
    *
    * @return A reference to a Java
-   *     org.rocksdb.Transaction.WaitingTransactions object,
+   *     org.terarkdb.Transaction.WaitingTransactions object,
    *     or nullptr if an an exception occurs
    */
   static jobject newWaitingTransactions(
@@ -4046,7 +4046,7 @@ class TransactionJni : public JavaClass {
 
     jmethodID mid = env->GetMethodID(
         jclazz, "newWaitingTransactions",
-        "(JLjava/lang/String;[J)Lorg/rocksdb/Transaction$WaitingTransactions;");
+        "(JLjava/lang/String;[J)Lorg/terarkdb/Transaction$WaitingTransactions;");
     if (mid == nullptr) {
       // exception thrown: NoSuchMethodException or OutOfMemoryError
       return nullptr;
@@ -4092,11 +4092,11 @@ class TransactionJni : public JavaClass {
   }
 };
 
-// The portal class for org.rocksdb.TransactionDB
+// The portal class for org.terarkdb.TransactionDB
 class TransactionDBJni : public JavaClass {
  public:
   /**
-   * Get the Java Class org.rocksdb.TransactionDB
+   * Get the Java Class org.terarkdb.TransactionDB
    *
    * @param env A pointer to the Java environment
    *
@@ -4105,20 +4105,20 @@ class TransactionDBJni : public JavaClass {
    *     OutOfMemoryError or ExceptionInInitializerError exceptions is thrown
    */
   static jclass getJClass(JNIEnv* env) {
-    return JavaClass::getJClass(env, "org/rocksdb/TransactionDB");
+    return JavaClass::getJClass(env, "org/terarkdb/TransactionDB");
   }
 
   /**
-   * Create a new Java org.rocksdb.TransactionDB.DeadlockInfo object
+   * Create a new Java org.terarkdb.TransactionDB.DeadlockInfo object
    *
    * @param env A pointer to the Java environment
-   * @param jtransaction A Java org.rocksdb.Transaction object
+   * @param jtransaction A Java org.terarkdb.Transaction object
    * @param column_family_id The id of the column family
    * @param key The key
    * @param transaction_ids The transaction ids
    *
    * @return A reference to a Java
-   *     org.rocksdb.Transaction.WaitingTransactions object,
+   *     org.terarkdb.Transaction.WaitingTransactions object,
    *     or nullptr if an an exception occurs
    */
   static jobject newDeadlockInfo(
@@ -4134,7 +4134,7 @@ class TransactionDBJni : public JavaClass {
 
     jmethodID mid = env->GetMethodID(
         jclazz, "newDeadlockInfo",
-        "(JJLjava/lang/String;Z)Lorg/rocksdb/TransactionDB$DeadlockInfo;");
+        "(JJLjava/lang/String;Z)Lorg/terarkdb/TransactionDB$DeadlockInfo;");
     if (mid == nullptr) {
       // exception thrown: NoSuchMethodException or OutOfMemoryError
       return nullptr;
@@ -4160,10 +4160,10 @@ class TransactionDBJni : public JavaClass {
   }
 };
 
-// The portal class for org.rocksdb.TxnDBWritePolicy
+// The portal class for org.terarkdb.TxnDBWritePolicy
 class TxnDBWritePolicyJni {
  public:
-  // Returns the equivalent org.rocksdb.TxnDBWritePolicy for the provided
+  // Returns the equivalent org.terarkdb.TxnDBWritePolicy for the provided
   // C++ TERARKDB_NAMESPACE::TxnDBWritePolicy enum
   static jbyte toJavaTxnDBWritePolicy(
       const TERARKDB_NAMESPACE::TxnDBWritePolicy& txndb_write_policy) {
@@ -4180,7 +4180,7 @@ class TxnDBWritePolicyJni {
   }
 
   // Returns the equivalent C++ TERARKDB_NAMESPACE::TxnDBWritePolicy enum for
-  // the provided Java org.rocksdb.TxnDBWritePolicy
+  // the provided Java org.terarkdb.TxnDBWritePolicy
   static TERARKDB_NAMESPACE::TxnDBWritePolicy toCppTxnDBWritePolicy(
       jbyte jtxndb_write_policy) {
     switch (jtxndb_write_policy) {
@@ -4197,11 +4197,11 @@ class TxnDBWritePolicyJni {
   }
 };
 
-// The portal class for org.rocksdb.TransactionDB.KeyLockInfo
+// The portal class for org.terarkdb.TransactionDB.KeyLockInfo
 class KeyLockInfoJni : public JavaClass {
  public:
   /**
-   * Get the Java Class org.rocksdb.TransactionDB.KeyLockInfo
+   * Get the Java Class org.terarkdb.TransactionDB.KeyLockInfo
    *
    * @param env A pointer to the Java environment
    *
@@ -4210,11 +4210,11 @@ class KeyLockInfoJni : public JavaClass {
    *     OutOfMemoryError or ExceptionInInitializerError exceptions is thrown
    */
   static jclass getJClass(JNIEnv* env) {
-    return JavaClass::getJClass(env, "org/rocksdb/TransactionDB$KeyLockInfo");
+    return JavaClass::getJClass(env, "org/terarkdb/TransactionDB$KeyLockInfo");
   }
 
   /**
-   * Create a new Java org.rocksdb.TransactionDB.KeyLockInfo object
+   * Create a new Java org.terarkdb.TransactionDB.KeyLockInfo object
    * with the same properties as the provided C++
    * TERARKDB_NAMESPACE::KeyLockInfo object
    *
@@ -4222,7 +4222,7 @@ class KeyLockInfoJni : public JavaClass {
    * @param key_lock_info The TERARKDB_NAMESPACE::KeyLockInfo object
    *
    * @return A reference to a Java
-   *     org.rocksdb.TransactionDB.KeyLockInfo object,
+   *     org.terarkdb.TransactionDB.KeyLockInfo object,
    *     or nullptr if an an exception occurs
    */
   static jobject construct(
@@ -4268,11 +4268,11 @@ class KeyLockInfoJni : public JavaClass {
   }
 };
 
-// The portal class for org.rocksdb.TransactionDB.DeadlockInfo
+// The portal class for org.terarkdb.TransactionDB.DeadlockInfo
 class DeadlockInfoJni : public JavaClass {
  public:
   /**
-   * Get the Java Class org.rocksdb.TransactionDB.DeadlockInfo
+   * Get the Java Class org.terarkdb.TransactionDB.DeadlockInfo
    *
    * @param env A pointer to the Java environment
    *
@@ -4281,15 +4281,15 @@ class DeadlockInfoJni : public JavaClass {
    *     OutOfMemoryError or ExceptionInInitializerError exceptions is thrown
    */
   static jclass getJClass(JNIEnv* env) {
-    return JavaClass::getJClass(env, "org/rocksdb/TransactionDB$DeadlockInfo");
+    return JavaClass::getJClass(env, "org/terarkdb/TransactionDB$DeadlockInfo");
   }
 };
 
-// The portal class for org.rocksdb.TransactionDB.DeadlockPath
+// The portal class for org.terarkdb.TransactionDB.DeadlockPath
 class DeadlockPathJni : public JavaClass {
  public:
   /**
-   * Get the Java Class org.rocksdb.TransactionDB.DeadlockPath
+   * Get the Java Class org.terarkdb.TransactionDB.DeadlockPath
    *
    * @param env A pointer to the Java environment
    *
@@ -4298,16 +4298,16 @@ class DeadlockPathJni : public JavaClass {
    *     OutOfMemoryError or ExceptionInInitializerError exceptions is thrown
    */
   static jclass getJClass(JNIEnv* env) {
-    return JavaClass::getJClass(env, "org/rocksdb/TransactionDB$DeadlockPath");
+    return JavaClass::getJClass(env, "org/terarkdb/TransactionDB$DeadlockPath");
   }
 
   /**
-   * Create a new Java org.rocksdb.TransactionDB.DeadlockPath object
+   * Create a new Java org.terarkdb.TransactionDB.DeadlockPath object
    *
    * @param env A pointer to the Java environment
    *
    * @return A reference to a Java
-   *     org.rocksdb.TransactionDB.DeadlockPath object,
+   *     org.terarkdb.TransactionDB.DeadlockPath object,
    *     or nullptr if an an exception occurs
    */
   static jobject construct(JNIEnv* env, const jobjectArray jdeadlock_infos,
@@ -4926,7 +4926,7 @@ class JniUtil {
 class ColumnFamilyDescriptorJni : public JavaClass {
  public:
   /**
-   * Get the Java Class org.rocksdb.ColumnFamilyDescriptor
+   * Get the Java Class org.terarkdb.ColumnFamilyDescriptor
    *
    * @param env A pointer to the Java environment
    *
@@ -4935,18 +4935,18 @@ class ColumnFamilyDescriptorJni : public JavaClass {
    *     OutOfMemoryError or ExceptionInInitializerError exceptions is thrown
    */
   static jclass getJClass(JNIEnv* env) {
-    return JavaClass::getJClass(env, "org/rocksdb/ColumnFamilyDescriptor");
+    return JavaClass::getJClass(env, "org/terarkdb/ColumnFamilyDescriptor");
   }
 
   /**
-   * Create a new Java org.rocksdb.ColumnFamilyDescriptor object with the same
+   * Create a new Java org.terarkdb.ColumnFamilyDescriptor object with the same
    * properties as the provided C++ TERARKDB_NAMESPACE::ColumnFamilyDescriptor
    * object
    *
    * @param env A pointer to the Java environment
    * @param cfd A pointer to TERARKDB_NAMESPACE::ColumnFamilyDescriptor object
    *
-   * @return A reference to a Java org.rocksdb.ColumnFamilyDescriptor object, or
+   * @return A reference to a Java org.terarkdb.ColumnFamilyDescriptor object, or
    * nullptr if an an exception occurs
    */
   static jobject construct(JNIEnv* env, ColumnFamilyDescriptor* cfd) {
@@ -4960,7 +4960,7 @@ class ColumnFamilyDescriptorJni : public JavaClass {
     }
 
     jmethodID mid = env->GetMethodID(jclazz, "<init>",
-                                     "([BLorg/rocksdb/ColumnFamilyOptions;)V");
+                                     "([BLorg/terarkdb/ColumnFamilyOptions;)V");
     if (mid == nullptr) {
       // exception thrown: NoSuchMethodException or OutOfMemoryError
       env->DeleteLocalRef(jcf_name);
@@ -5012,7 +5012,7 @@ class ColumnFamilyDescriptorJni : public JavaClass {
     }
 
     static jmethodID mid = env->GetMethodID(
-        jclazz, "columnFamilyOptions", "()Lorg/rocksdb/ColumnFamilyOptions;");
+        jclazz, "columnFamilyOptions", "()Lorg/terarkdb/ColumnFamilyOptions;");
     assert(mid != nullptr);
     return mid;
   }

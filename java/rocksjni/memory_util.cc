@@ -9,7 +9,7 @@
 #include <unordered_set>
 #include <vector>
 
-#include "include/org_rocksdb_MemoryUtil.h"
+#include "include/org_terarkdb_MemoryUtil.h"
 
 #include "rocksjni/portal.h"
 
@@ -17,11 +17,11 @@
 
 
 /*
- * Class:     org_rocksdb_MemoryUtil
+ * Class:     org_terarkdb_MemoryUtil
  * Method:    getApproximateMemoryUsageByType
  * Signature: ([J[J)Ljava/util/Map;
  */
-jobject Java_org_rocksdb_MemoryUtil_getApproximateMemoryUsageByType(
+jobject Java_org_terarkdb_MemoryUtil_getApproximateMemoryUsageByType(
     JNIEnv *env, jclass /*jclazz*/, jlongArray jdb_handles, jlongArray jcache_handles) {
 
   std::vector<TERARKDB_NAMESPACE::DB*> dbs;

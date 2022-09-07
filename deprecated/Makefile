@@ -2091,7 +2091,7 @@ rocksdbjavastatic: $(java_static_all_libobjects)
 	cd java;jar -cf target/$(ROCKSDB_JAR) HISTORY*.md
 	jar -uf java/target/$(ROCKSDB_JAR) HISTORY*.md
 	cd java/target;jar -uf $(ROCKSDB_JAR) $(ROCKSDBJNILIB)
-	cd java/target/classes;jar -uf ../$(ROCKSDB_JAR) org/rocksdb/*.class org/rocksdb/util/*.class
+	cd java/target/classes;jar -uf ../$(ROCKSDB_JAR) org/terarkdb/*.class org/terarkdb/util/*.class
 	cd java/target/apidocs;jar -cf ../$(ROCKSDB_JAVADOCS_JAR) *
 	cd java/src/main/java;jar -cf ../../../target/$(ROCKSDB_SOURCES_JAR) org
 
@@ -2109,7 +2109,7 @@ rocksdbjavastaticrelease: rocksdbjavastatic
 	# Enable crossbuild again(guokuankuan)
 	# cd java/target;jar -uf $(ROCKSDB_JAR_ALL) libterarkdbjni-*.so libterarkdbjni-*.jnilib libterarkdbjni-win64.dll
 	cd java/target;jar -uf $(ROCKSDB_JAR_ALL) *.so
-	cd java/target/classes;jar -uf ../$(ROCKSDB_JAR_ALL) org/rocksdb/*.class org/rocksdb/util/*.class
+	cd java/target/classes;jar -uf ../$(ROCKSDB_JAR_ALL) org/terarkdb/*.class org/terarkdb/util/*.class
 
 frocksdbjavastaticrelease: rocksdbjavastaticrelease
 	# update license
@@ -2163,7 +2163,7 @@ frocksdbjavastaticrelease: rocksdbjavastaticrelease
 rocksdbjavastaticreleasedocker: rocksdbjavastatic rocksdbjavastaticdockerx86 rocksdbjavastaticdockerx86_64
 	cd java;jar -cf target/$(ROCKSDB_JAR_ALL) HISTORY*.md
 	cd java/target;jar -uf $(ROCKSDB_JAR_ALL) libterarkdbjni-*.so libterarkdbjni-*.jnilib
-	cd java/target/classes;jar -uf ../$(ROCKSDB_JAR_ALL) org/rocksdb/*.class org/rocksdb/util/*.class
+	cd java/target/classes;jar -uf ../$(ROCKSDB_JAR_ALL) org/terarkdb/*.class org/terarkdb/util/*.class
 
 rocksdbjavastaticdockerx86:
 	mkdir -p java/target
@@ -2236,7 +2236,7 @@ rocksdbjava: $(java_all_libobjects)
 	$(AM_V_at)$(CXX) $(CXXFLAGS) -I./java/. $(JAVA_INCLUDE) -shared -fPIC -o ./java/target/$(ROCKSDBJNILIB) $(JNI_NATIVE_SOURCES) $(java_all_libobjects) $(JAVA_LDFLAGS) $(COVERAGEFLAGS)
 	$(AM_V_at)cd java;jar -cf target/$(ROCKSDB_JAR) HISTORY*.md
 	$(AM_V_at)cd java/target;jar -uf $(ROCKSDB_JAR) $(ROCKSDBJNILIB)
-	$(AM_V_at)cd java/target/classes;jar -uf ../$(ROCKSDB_JAR) org/rocksdb/*.class org/rocksdb/util/*.class
+	$(AM_V_at)cd java/target/classes;jar -uf ../$(ROCKSDB_JAR) org/terarkdb/*.class org/terarkdb/util/*.class
 
 jclean:
 	cd java;$(MAKE) clean;

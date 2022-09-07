@@ -19,7 +19,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.rocksdb.benchmark;
+package org.terarkdb.benchmark;
 
 import java.io.IOException;
 import java.lang.Runnable;
@@ -43,9 +43,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import org.rocksdb.*;
-import org.rocksdb.RocksMemEnv;
-import org.rocksdb.util.SizeUnit;
+import org.terarkdb.*;
+import org.terarkdb.RocksMemEnv;
+import org.terarkdb.util.SizeUnit;
 
 class Stats {
   int id_;
