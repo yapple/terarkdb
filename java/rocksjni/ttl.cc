@@ -14,16 +14,16 @@
 #include <string>
 #include <vector>
 
-#include "include/org_rocksdb_TtlDB.h"
+#include "include/org_terarkdb_TtlDB.h"
 #include "rocksdb/utilities/db_ttl.h"
 #include "rocksjni/portal.h"
 
 /*
- * Class:     org_rocksdb_TtlDB
+ * Class:     org_terarkdb_TtlDB
  * Method:    open
  * Signature: (JLjava/lang/String;IZ)J
  */
-jlong Java_org_rocksdb_TtlDB_open(JNIEnv* env, jclass /*jcls*/,
+jlong Java_org_terarkdb_TtlDB_open(JNIEnv* env, jclass /*jcls*/,
                                   jlong joptions_handle, jstring jdb_path,
                                   jint jttl, jboolean jread_only) {
   const char* db_path = env->GetStringUTFChars(jdb_path, nullptr);
@@ -49,11 +49,11 @@ jlong Java_org_rocksdb_TtlDB_open(JNIEnv* env, jclass /*jcls*/,
 }
 
 /*
- * Class:     org_rocksdb_TtlDB
+ * Class:     org_terarkdb_TtlDB
  * Method:    openCF
  * Signature: (JLjava/lang/String;[[B[J[IZ)[J
  */
-jlongArray Java_org_rocksdb_TtlDB_openCF(JNIEnv* env, jclass /*jcls*/,
+jlongArray Java_org_terarkdb_TtlDB_openCF(JNIEnv* env, jclass /*jcls*/,
                                          jlong jopt_handle, jstring jdb_path,
                                          jobjectArray jcolumn_names,
                                          jlongArray jcolumn_options,
@@ -148,11 +148,11 @@ jlongArray Java_org_rocksdb_TtlDB_openCF(JNIEnv* env, jclass /*jcls*/,
 }
 
 /*
- * Class:     org_rocksdb_TtlDB
+ * Class:     org_terarkdb_TtlDB
  * Method:    createColumnFamilyWithTtl
- * Signature: (JLorg/rocksdb/ColumnFamilyDescriptor;[BJI)J;
+ * Signature: (JL/ColumnFamilyDescriptor;[BJI)J;
  */
-jlong Java_org_rocksdb_TtlDB_createColumnFamilyWithTtl(
+jlong Java_org_terarkdb_TtlDB_createColumnFamilyWithTtl(
     JNIEnv* env, jobject /*jobj*/, jlong jdb_handle, jbyteArray jcolumn_name,
     jlong jcolumn_options, jint jttl) {
   jbyte* cfname = env->GetByteArrayElements(jcolumn_name, nullptr);

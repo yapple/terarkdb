@@ -5,17 +5,17 @@
 
 #include <jni.h>
 
-#include "include/org_rocksdb_WriteBufferManager.h"
+#include "include/org_terarkdb_WriteBufferManager.h"
 
 #include "rocksdb/cache.h"
 #include "rocksdb/write_buffer_manager.h"
 
 /*
- * Class:     org_rocksdb_WriteBufferManager
+ * Class:     org_terarkdb_WriteBufferManager
  * Method:    newWriteBufferManager
  * Signature: (JJ)J
  */
-jlong Java_org_rocksdb_WriteBufferManager_newWriteBufferManager(
+jlong Java_org_terarkdb_WriteBufferManager_newWriteBufferManager(
         JNIEnv* /*env*/, jclass /*jclazz*/, jlong jbuffer_size, jlong jcache_handle) {
     auto* cache_ptr =
             reinterpret_cast<std::shared_ptr<TERARKDB_NAMESPACE::Cache> *>(jcache_handle);
@@ -25,11 +25,11 @@ jlong Java_org_rocksdb_WriteBufferManager_newWriteBufferManager(
 }
 
 /*
- * Class:     org_rocksdb_WriteBufferManager
+ * Class:     org_terarkdb_WriteBufferManager
  * Method:    disposeInternal
  * Signature: (J)V
  */
-void Java_org_rocksdb_WriteBufferManager_disposeInternal(
+void Java_org_terarkdb_WriteBufferManager_disposeInternal(
         JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
     auto* write_buffer_manager =
             reinterpret_cast<std::shared_ptr<TERARKDB_NAMESPACE::WriteBufferManager> *>(jhandle);

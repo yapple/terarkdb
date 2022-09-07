@@ -8,17 +8,17 @@
 
 #include <jni.h>
 
-#include "include/org_rocksdb_OptimisticTransactionOptions.h"
+#include "include/org_terarkdb_OptimisticTransactionOptions.h"
 
 #include "rocksdb/comparator.h"
 #include "rocksdb/utilities/optimistic_transaction_db.h"
 
 /*
- * Class:     org_rocksdb_OptimisticTransactionOptions
+ * Class:     org_terarkdb_OptimisticTransactionOptions
  * Method:    newOptimisticTransactionOptions
  * Signature: ()J
  */
-jlong Java_org_rocksdb_OptimisticTransactionOptions_newOptimisticTransactionOptions(
+jlong Java_org_terarkdb_OptimisticTransactionOptions_newOptimisticTransactionOptions(
     JNIEnv* /*env*/, jclass /*jcls*/) {
   TERARKDB_NAMESPACE::OptimisticTransactionOptions* opts =
       new TERARKDB_NAMESPACE::OptimisticTransactionOptions();
@@ -26,11 +26,11 @@ jlong Java_org_rocksdb_OptimisticTransactionOptions_newOptimisticTransactionOpti
 }
 
 /*
- * Class:     org_rocksdb_OptimisticTransactionOptions
+ * Class:     org_terarkdb_OptimisticTransactionOptions
  * Method:    isSetSnapshot
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_OptimisticTransactionOptions_isSetSnapshot(
+jboolean Java_org_terarkdb_OptimisticTransactionOptions_isSetSnapshot(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   auto* opts =
       reinterpret_cast<TERARKDB_NAMESPACE::OptimisticTransactionOptions*>(jhandle);
@@ -38,11 +38,11 @@ jboolean Java_org_rocksdb_OptimisticTransactionOptions_isSetSnapshot(
 }
 
 /*
- * Class:     org_rocksdb_OptimisticTransactionOptions
+ * Class:     org_terarkdb_OptimisticTransactionOptions
  * Method:    setSetSnapshot
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_OptimisticTransactionOptions_setSetSnapshot(
+void Java_org_terarkdb_OptimisticTransactionOptions_setSetSnapshot(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle, jboolean jset_snapshot) {
   auto* opts =
       reinterpret_cast<TERARKDB_NAMESPACE::OptimisticTransactionOptions*>(jhandle);
@@ -50,11 +50,11 @@ void Java_org_rocksdb_OptimisticTransactionOptions_setSetSnapshot(
 }
 
 /*
- * Class:     org_rocksdb_OptimisticTransactionOptions
+ * Class:     org_terarkdb_OptimisticTransactionOptions
  * Method:    setComparator
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_OptimisticTransactionOptions_setComparator(
+void Java_org_terarkdb_OptimisticTransactionOptions_setComparator(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jcomparator_handle) {
   auto* opts =
@@ -63,11 +63,11 @@ void Java_org_rocksdb_OptimisticTransactionOptions_setComparator(
 }
 
 /*
- * Class:     org_rocksdb_OptimisticTransactionOptions
+ * Class:     org_terarkdb_OptimisticTransactionOptions
  * Method:    disposeInternal
  * Signature: (J)V
  */
-void Java_org_rocksdb_OptimisticTransactionOptions_disposeInternal(
+void Java_org_terarkdb_OptimisticTransactionOptions_disposeInternal(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   delete reinterpret_cast<TERARKDB_NAMESPACE::OptimisticTransactionOptions*>(jhandle);
 }

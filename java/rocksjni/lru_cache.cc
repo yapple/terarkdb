@@ -9,14 +9,14 @@
 #include <jni.h>
 
 #include "cache/lru_cache.h"
-#include "include/org_rocksdb_LRUCache.h"
+#include "include/org_terarkdb_LRUCache.h"
 
 /*
- * Class:     org_rocksdb_LRUCache
+ * Class:     org_terarkdb_LRUCache
  * Method:    newLRUCache
  * Signature: (JIZD)J
  */
-jlong Java_org_rocksdb_LRUCache_newLRUCache(JNIEnv* /*env*/, jclass /*jcls*/,
+jlong Java_org_terarkdb_LRUCache_newLRUCache(JNIEnv* /*env*/, jclass /*jcls*/,
                                             jlong jcapacity,
                                             jint jnum_shard_bits,
                                             jboolean jstrict_capacity_limit,
@@ -30,11 +30,11 @@ jlong Java_org_rocksdb_LRUCache_newLRUCache(JNIEnv* /*env*/, jclass /*jcls*/,
 }
 
 /*
- * Class:     org_rocksdb_LRUCache
+ * Class:     org_terarkdb_LRUCache
  * Method:    disposeInternal
  * Signature: (J)V
  */
-void Java_org_rocksdb_LRUCache_disposeInternal(JNIEnv* /*env*/,
+void Java_org_terarkdb_LRUCache_disposeInternal(JNIEnv* /*env*/,
                                                jobject /*jobj*/,
                                                jlong jhandle) {
   auto* sptr_lru_cache =

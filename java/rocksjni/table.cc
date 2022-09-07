@@ -7,17 +7,17 @@
 
 #include "rocksdb/table.h"
 #include <jni.h>
-#include "include/org_rocksdb_BlockBasedTableConfig.h"
-#include "include/org_rocksdb_PlainTableConfig.h"
+#include "include/org_terarkdb_BlockBasedTableConfig.h"
+#include "include/org_terarkdb_PlainTableConfig.h"
 #include "rocksdb/cache.h"
 #include "rocksdb/filter_policy.h"
 
 /*
- * Class:     org_rocksdb_PlainTableConfig
+ * Class:     org_terarkdb_PlainTableConfig
  * Method:    newTableFactoryHandle
  * Signature: (IIDIIBZZ)J
  */
-jlong Java_org_rocksdb_PlainTableConfig_newTableFactoryHandle(
+jlong Java_org_terarkdb_PlainTableConfig_newTableFactoryHandle(
     JNIEnv * /*env*/, jobject /*jobj*/, jint jkey_size,
     jint jbloom_bits_per_key, jdouble jhash_table_ratio, jint jindex_sparseness,
     jint jhuge_page_tlb_size, jbyte jencoding_type, jboolean jfull_scan_mode,
@@ -35,11 +35,11 @@ jlong Java_org_rocksdb_PlainTableConfig_newTableFactoryHandle(
 }
 
 /*
- * Class:     org_rocksdb_BlockBasedTableConfig
+ * Class:     org_terarkdb_BlockBasedTableConfig
  * Method:    newTableFactoryHandle
  * Signature: (ZJIJJIIZJZZZZJZZJIBBI)J
  */
-jlong Java_org_rocksdb_BlockBasedTableConfig_newTableFactoryHandle(
+jlong Java_org_terarkdb_BlockBasedTableConfig_newTableFactoryHandle(
     JNIEnv * /*env*/, jobject /*jobj*/, jboolean no_block_cache,
     jlong block_cache_size, jint block_cache_num_shardbits, jlong jblock_cache,
     jlong block_size, jint block_size_deviation, jint block_restart_interval,
