@@ -419,6 +419,14 @@ class ColumnFamilyData {
 
   Directory* GetDataDir(size_t path_id) const;
 
+  void disableAutoCompaction() {
+      mutable_cf_options_.disable_auto_compactions = true;
+  }
+
+  void enableAutoCompaction() {
+    mutable_cf_options_.disable_auto_compactions = false;
+  }
+
  private:
   friend class ColumnFamilySet;
   ColumnFamilyData(uint32_t id, const std::string& name,

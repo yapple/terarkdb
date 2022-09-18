@@ -51,6 +51,11 @@ public class Checkpoint extends RocksObject {
     createCheckpoint(nativeHandle_, checkpointPath);
   }
 
+  public void createCheckpoint(final String checkpointPath, final long logSize)
+        throws RocksDBException {
+      createCheckpoint0(nativeHandle_, checkpointPath, logSize);
+  }
+
   private Checkpoint(final RocksDB db) {
     super(newCheckpoint(db.nativeHandle_));
     this.db_ = db;
@@ -63,4 +68,6 @@ public class Checkpoint extends RocksObject {
 
   private native void createCheckpoint(long handle, String checkpointPath)
       throws RocksDBException;
+  private native void createCheckpoint0(long handle, String checkpointPath, long logSize)
+            throws RocksDBException;
 }
