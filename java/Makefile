@@ -12,7 +12,6 @@ NATIVE_JAVA_CLASSES = org.rocksdb.AbstractCompactionFilter\
 	org.rocksdb.CassandraValueMergeOperator\
 	org.rocksdb.ColumnFamilyHandle\
 	org.rocksdb.ColumnFamilyOptions\
-	org.rocksdb.CompactionOptionsFIFO\
 	org.rocksdb.CompactionOptionsUniversal\
 	org.rocksdb.CompactRangeOptions\
 	org.rocksdb.Comparator\
@@ -97,7 +96,6 @@ JAVA_TESTS = org.rocksdb.BackupableDBOptionsTest\
 	org.rocksdb.ColumnFamilyOptionsTest\
 	org.rocksdb.ColumnFamilyTest\
     org.rocksdb.CompactionFilterFactoryTest\
-	org.rocksdb.CompactionOptionsFIFOTest\
 	org.rocksdb.CompactionOptionsUniversalTest\
 	org.rocksdb.CompactionPriorityTest\
 	org.rocksdb.CompactionStopStyleTest\
@@ -196,14 +194,16 @@ endif
 
 SEARCH_REPO_URL?=http://search.maven.org/remotecontent?filepath=
 CENTRAL_REPO_URL?=https://repo1.maven.org/maven2/
+clean: clean-not-downloaded clean-downloaded
 
-clean:
-	$(AM_V_at)rm -rf include/*
-	$(AM_V_at)rm -rf test-libs/
+clean-not-downloaded:
+	$(AM_V_at)rm -rf $(NATIVE_INCLUDE)
 	$(AM_V_at)rm -rf $(OUTPUT)
 	$(AM_V_at)rm -rf $(BENCHMARK_OUTPUT)
 	$(AM_V_at)rm -rf $(SAMPLES_OUTPUT)
 
+clean-downloaded:
+	$(AM_V_at)rm -rf $(JAVA_TEST_LIBDIR)
 
 javadocs: java
 	$(AM_V_GEN)mkdir -p $(JAVADOC)
