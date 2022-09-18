@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
 
-import org.rocksdb.*;
-import org.rocksdb.util.SizeUnit;
+import org.terarkdb.*;
+import org.terarkdb.util.SizeUnit;
 
 public class RocksDBSample {
   static {

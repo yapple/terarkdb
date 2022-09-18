@@ -10,48 +10,48 @@
 #include <memory>
 #include <set>
 
-#include "include/org_rocksdb_Statistics.h"
+#include "include/org_terarkdb_Statistics.h"
 #include "rocksdb/statistics.h"
 #include "rocksjni/portal.h"
 #include "rocksjni/statisticsjni.h"
 
 /*
- * Class:     org_rocksdb_Statistics
+ * Class:     org_terarkdb_Statistics
  * Method:    newStatistics
  * Signature: ()J
  */
-jlong Java_org_rocksdb_Statistics_newStatistics__(JNIEnv* env, jclass jcls) {
-  return Java_org_rocksdb_Statistics_newStatistics___3BJ(env, jcls, nullptr, 0);
+jlong Java_org_terarkdb_Statistics_newStatistics__(JNIEnv* env, jclass jcls) {
+  return Java_org_terarkdb_Statistics_newStatistics___3BJ(env, jcls, nullptr, 0);
 }
 
 /*
- * Class:     org_rocksdb_Statistics
+ * Class:     org_terarkdb_Statistics
  * Method:    newStatistics
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Statistics_newStatistics__J(
+jlong Java_org_terarkdb_Statistics_newStatistics__J(
     JNIEnv* env, jclass jcls, jlong jother_statistics_handle) {
-  return Java_org_rocksdb_Statistics_newStatistics___3BJ(
+  return Java_org_terarkdb_Statistics_newStatistics___3BJ(
       env, jcls, nullptr, jother_statistics_handle);
 }
 
 /*
- * Class:     org_rocksdb_Statistics
+ * Class:     org_terarkdb_Statistics
  * Method:    newStatistics
  * Signature: ([B)J
  */
-jlong Java_org_rocksdb_Statistics_newStatistics___3B(JNIEnv* env, jclass jcls,
+jlong Java_org_terarkdb_Statistics_newStatistics___3B(JNIEnv* env, jclass jcls,
                                                      jbyteArray jhistograms) {
-  return Java_org_rocksdb_Statistics_newStatistics___3BJ(env, jcls, jhistograms,
+  return Java_org_terarkdb_Statistics_newStatistics___3BJ(env, jcls, jhistograms,
                                                          0);
 }
 
 /*
- * Class:     org_rocksdb_Statistics
+ * Class:     org_terarkdb_Statistics
  * Method:    newStatistics
  * Signature: ([BJ)J
  */
-jlong Java_org_rocksdb_Statistics_newStatistics___3BJ(
+jlong Java_org_terarkdb_Statistics_newStatistics___3BJ(
     JNIEnv* env, jclass /*jcls*/, jbyteArray jhistograms,
     jlong jother_statistics_handle) {
   std::shared_ptr<TERARKDB_NAMESPACE::Statistics>* pSptr_other_statistics = nullptr;
@@ -93,11 +93,11 @@ jlong Java_org_rocksdb_Statistics_newStatistics___3BJ(
 }
 
 /*
- * Class:     org_rocksdb_Statistics
+ * Class:     org_terarkdb_Statistics
  * Method:    disposeInternal
  * Signature: (J)V
  */
-void Java_org_rocksdb_Statistics_disposeInternal(JNIEnv* /*env*/,
+void Java_org_terarkdb_Statistics_disposeInternal(JNIEnv* /*env*/,
                                                  jobject /*jobj*/,
                                                  jlong jhandle) {
   if (jhandle > 0) {
@@ -108,11 +108,11 @@ void Java_org_rocksdb_Statistics_disposeInternal(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Statistics
+ * Class:     org_terarkdb_Statistics
  * Method:    statsLevel
  * Signature: (J)B
  */
-jbyte Java_org_rocksdb_Statistics_statsLevel(JNIEnv* /*env*/, jobject /*jobj*/,
+jbyte Java_org_terarkdb_Statistics_statsLevel(JNIEnv* /*env*/, jobject /*jobj*/,
                                              jlong jhandle) {
   auto* pSptr_statistics =
       reinterpret_cast<std::shared_ptr<TERARKDB_NAMESPACE::Statistics>*>(jhandle);
@@ -122,11 +122,11 @@ jbyte Java_org_rocksdb_Statistics_statsLevel(JNIEnv* /*env*/, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_Statistics
+ * Class:     org_terarkdb_Statistics
  * Method:    setStatsLevel
  * Signature: (JB)V
  */
-void Java_org_rocksdb_Statistics_setStatsLevel(JNIEnv* /*env*/,
+void Java_org_terarkdb_Statistics_setStatsLevel(JNIEnv* /*env*/,
                                                jobject /*jobj*/, jlong jhandle,
                                                jbyte jstats_level) {
   auto* pSptr_statistics =
@@ -137,11 +137,11 @@ void Java_org_rocksdb_Statistics_setStatsLevel(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Statistics
+ * Class:     org_terarkdb_Statistics
  * Method:    getTickerCount
  * Signature: (JB)J
  */
-jlong Java_org_rocksdb_Statistics_getTickerCount(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_Statistics_getTickerCount(JNIEnv* /*env*/,
                                                  jobject /*jobj*/,
                                                  jlong jhandle,
                                                  jbyte jticker_type) {
@@ -153,11 +153,11 @@ jlong Java_org_rocksdb_Statistics_getTickerCount(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Statistics
+ * Class:     org_terarkdb_Statistics
  * Method:    getAndResetTickerCount
  * Signature: (JB)J
  */
-jlong Java_org_rocksdb_Statistics_getAndResetTickerCount(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_Statistics_getAndResetTickerCount(JNIEnv* /*env*/,
                                                          jobject /*jobj*/,
                                                          jlong jhandle,
                                                          jbyte jticker_type) {
@@ -169,11 +169,11 @@ jlong Java_org_rocksdb_Statistics_getAndResetTickerCount(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Statistics
+ * Class:     org_terarkdb_Statistics
  * Method:    getHistogramData
- * Signature: (JB)Lorg/rocksdb/HistogramData;
+ * Signature: (JB)Lorg/terarkdb/HistogramData;
  */
-jobject Java_org_rocksdb_Statistics_getHistogramData(JNIEnv* env,
+jobject Java_org_terarkdb_Statistics_getHistogramData(JNIEnv* env,
                                                      jobject /*jobj*/,
                                                      jlong jhandle,
                                                      jbyte jhistogram_type) {
@@ -206,11 +206,11 @@ jobject Java_org_rocksdb_Statistics_getHistogramData(JNIEnv* env,
 }
 
 /*
- * Class:     org_rocksdb_Statistics
+ * Class:     org_terarkdb_Statistics
  * Method:    getHistogramString
  * Signature: (JB)Ljava/lang/String;
  */
-jstring Java_org_rocksdb_Statistics_getHistogramString(JNIEnv* env,
+jstring Java_org_terarkdb_Statistics_getHistogramString(JNIEnv* env,
                                                        jobject /*jobj*/,
                                                        jlong jhandle,
                                                        jbyte jhistogram_type) {
@@ -223,11 +223,11 @@ jstring Java_org_rocksdb_Statistics_getHistogramString(JNIEnv* env,
 }
 
 /*
- * Class:     org_rocksdb_Statistics
+ * Class:     org_terarkdb_Statistics
  * Method:    reset
  * Signature: (J)V
  */
-void Java_org_rocksdb_Statistics_reset(JNIEnv* env, jobject /*jobj*/,
+void Java_org_terarkdb_Statistics_reset(JNIEnv* env, jobject /*jobj*/,
                                        jlong jhandle) {
   auto* pSptr_statistics =
       reinterpret_cast<std::shared_ptr<TERARKDB_NAMESPACE::Statistics>*>(jhandle);
@@ -239,11 +239,11 @@ void Java_org_rocksdb_Statistics_reset(JNIEnv* env, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_Statistics
+ * Class:     org_terarkdb_Statistics
  * Method:    toString
  * Signature: (J)Ljava/lang/String;
  */
-jstring Java_org_rocksdb_Statistics_toString(JNIEnv* env, jobject /*jobj*/,
+jstring Java_org_terarkdb_Statistics_toString(JNIEnv* env, jobject /*jobj*/,
                                              jlong jhandle) {
   auto* pSptr_statistics =
       reinterpret_cast<std::shared_ptr<TERARKDB_NAMESPACE::Statistics>*>(jhandle);

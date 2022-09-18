@@ -1,6 +1,6 @@
-import org.rocksdb.RocksDB;
-import org.rocksdb.*;
-import org.rocksdb.Options;
+import org.terarkdb.RocksDB;
+import org.terarkdb.*;
+import org.terarkdb.Options;
 
 public class RocksDBJava {
   public static void main(String[] args){
