@@ -1119,20 +1119,7 @@ public class OptionsTest {
           .isEqualTo(7);
     }
   }
-
-  @Test
-  public void compactionOptionsFIFO() {
-    try (final Options options = new Options();
-         final CompactionOptionsFIFO optFifo = new CompactionOptionsFIFO()
-             .setMaxTableFilesSize(2000)) {
-      options.setCompactionOptionsFIFO(optFifo);
-      assertThat(options.compactionOptionsFIFO()).
-          isEqualTo(optFifo);
-      assertThat(options.compactionOptionsFIFO().maxTableFilesSize())
-          .isEqualTo(2000);
-    }
-  }
-
+  
   @Test
   public void forceConsistencyChecks() {
     try (final Options options = new Options()) {

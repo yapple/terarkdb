@@ -49,7 +49,6 @@ public class ColumnFamilyOptions extends RocksObject
     this.compactionFilter_ = other.compactionFilter_;
     this.compactionFilterFactory_ = other.compactionFilterFactory_;
     this.compactionOptionsUniversal_ = other.compactionOptionsUniversal_;
-    this.compactionOptionsFIFO_ = other.compactionOptionsFIFO_;
     this.compressionOptions_ = other.compressionOptions_;
   }
 
@@ -485,6 +484,40 @@ public class ColumnFamilyOptions extends RocksObject
   }
 
   @Override
+  public ColumnFamilyOptions setTargetBlobFileSize(
+      final long targetBlobFileSize) {
+    setTargetBlobFileSize(nativeHandle_, targetBlobFileSize);
+    return this;
+  }
+
+  @Override
+  public long targetBlobFileSize() {
+    return targetBlobFileSize(nativeHandle_);
+  }
+
+  @Override
+  public ColumnFamilyOptions setBlobSize(
+      final long blobSize) {
+    setBlobSize(nativeHandle_, blobSize);
+    return this;
+  }
+
+  @Override
+  public long blobSize() {
+    return blobSize(nativeHandle_);
+  }
+
+  public ColumnFamilyOptions setBlobGcRatio(
+      final double blobGcRatio) {
+    setBlobGcRatio(nativeHandle_, blobGcRatio);
+    return this;
+  }
+
+  public double blobGcRatio() {
+    return blobGcRatio(nativeHandle_);
+  }
+
+  @Override
   public ColumnFamilyOptions setCompactionStyle(
       final CompactionStyle compactionStyle) {
     setCompactionStyle(nativeHandle_, compactionStyle.getValue());
@@ -777,19 +810,6 @@ public class ColumnFamilyOptions extends RocksObject
   }
 
   @Override
-  public ColumnFamilyOptions setCompactionOptionsFIFO(final CompactionOptionsFIFO compactionOptionsFIFO) {
-    setCompactionOptionsFIFO(nativeHandle_,
-        compactionOptionsFIFO.nativeHandle_);
-    this.compactionOptionsFIFO_ = compactionOptionsFIFO;
-    return this;
-  }
-
-  @Override
-  public CompactionOptionsFIFO compactionOptionsFIFO() {
-    return this.compactionOptionsFIFO_;
-  }
-
-  @Override
   public ColumnFamilyOptions setForceConsistencyChecks(final boolean forceConsistencyChecks) {
     setForceConsistencyChecks(nativeHandle_, forceConsistencyChecks);
     return this;
@@ -800,6 +820,20 @@ public class ColumnFamilyOptions extends RocksObject
     return forceConsistencyChecks(nativeHandle_);
   }
 
+  @Override
+  public void setMaxSubcompactions(final int maxSubcompactions) {
+    assert(isOwningHandle());
+    setMaxSubcompactions(nativeHandle_, maxSubcompactions);
+  }
+
+  @Override
+  public int maxSubcompactions() {
+    assert(isOwningHandle());
+    return maxSubcompactions(nativeHandle_);
+  }
+
+  private native void setMaxSubcompactions(long handle, int maxSubcompactions);
+  private native int maxSubcompactions(long handle);
   private static native long getColumnFamilyOptionsFromProps(
       String optString);
 
@@ -882,6 +916,12 @@ public class ColumnFamilyOptions extends RocksObject
   private native void setDisableAutoCompactions(
       long handle, boolean disableAutoCompactions);
   private native boolean disableAutoCompactions(long handle);
+  private native void setBlobSize(long handle, long blobSize);
+  private native long blobSize(long handle);
+  private native void setBlobGcRatio(long handle, double blobGcRatio);
+  private native double blobGcRatio(long handle);
+  private native void setTargetBlobFileSize(long handle, long targetBlobFileSize);
+  private native long targetBlobFileSize(long handle);
   private native void setCompactionStyle(long handle, byte compactionStyle);
   private native byte compactionStyle(long handle);
    private native void setMaxTableFilesSizeFIFO(
@@ -964,7 +1004,6 @@ public class ColumnFamilyOptions extends RocksObject
   AbstractCompactionFilterFactory<? extends AbstractCompactionFilter<?>>
       compactionFilterFactory_;
   private CompactionOptionsUniversal compactionOptionsUniversal_;
-  private CompactionOptionsFIFO compactionOptionsFIFO_;
   private CompressionOptions compressionOptions_;
 
 }

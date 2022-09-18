@@ -388,18 +388,6 @@ public class DBOptions
   }
 
   @Override
-  public void setMaxSubcompactions(final int maxSubcompactions) {
-    assert(isOwningHandle());
-    setMaxSubcompactions(nativeHandle_, maxSubcompactions);
-  }
-
-  @Override
-  public int maxSubcompactions() {
-    assert(isOwningHandle());
-    return maxSubcompactions(nativeHandle_);
-  }
-
-  @Override
   public DBOptions setMaxBackgroundFlushes(
       final int maxBackgroundFlushes) {
     assert(isOwningHandle());
@@ -1046,8 +1034,6 @@ public class DBOptions
   private native void setMaxBackgroundCompactions(
       long handle, int maxBackgroundCompactions);
   private native int maxBackgroundCompactions(long handle);
-  private native void setMaxSubcompactions(long handle, int maxSubcompactions);
-  private native int maxSubcompactions(long handle);
   private native void setMaxBackgroundFlushes(
       long handle, int maxBackgroundFlushes);
   private native int maxBackgroundFlushes(long handle);

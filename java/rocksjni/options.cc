@@ -728,9 +728,9 @@ void Java_org_rocksdb_Options_setMaxBackgroundCompactions(JNIEnv* /*env*/,
 void Java_org_rocksdb_Options_setMaxSubcompactions(JNIEnv* /*env*/,
                                                    jobject /*jobj*/,
                                                    jlong jhandle, jint max) {
-  // reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)->max_subcompactions
-  // =
-  //     static_cast<int32_t>(max);
+  reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)->max_subcompactions
+  =
+      static_cast<int32_t>(max);
 }
 
 /*
@@ -2477,6 +2477,88 @@ void Java_org_rocksdb_Options_setArenaBlockSize(JNIEnv* env, jobject /*jobj*/,
 
 /*
  * Class:     org_rocksdb_Options
+ * Method:    setTargetBlobFileSize
+ * Signature: (JJ)V
+ */
+void Java_org_rocksdb_Options_setTargetBlobFileSize(JNIEnv* env, jobject /*jobj*/,
+                                                jlong jhandle,
+                                                jlong jtarget_blob_file_size) {
+  TERARKDB_NAMESPACE::Status s =
+      TERARKDB_NAMESPACE::check_if_jlong_fits_size_t(jtarget_blob_file_size);
+  if (s.ok()) {
+    reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)->target_blob_file_size =
+        jtarget_blob_file_size;
+  } else {
+    TERARKDB_NAMESPACE::IllegalArgumentExceptionJni::ThrowNew(env, s);
+  }
+}
+
+
+/*
+ * Class:     org_rocksdb_Options
+ * Method:    targetBlobFileSize
+ * Signature: (J)J
+ */
+jlong Java_org_rocksdb_Options_targetBlobFileSize(JNIEnv* /*env*/, jobject /*jobj*/,
+                                              jlong jhandle) {
+  return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
+      ->target_blob_file_size;
+}
+
+/*
+ * Class:     org_rocksdb_Options
+ * Method:    setBlobSize
+ * Signature: (JJ)V
+ */
+void Java_org_rocksdb_Options_setBlobSize(JNIEnv* env, jobject /*jobj*/,
+                                                jlong jhandle,
+                                                jlong jblob_size) {
+  TERARKDB_NAMESPACE::Status s =
+      TERARKDB_NAMESPACE::check_if_jlong_fits_size_t(jblob_size);
+  if (s.ok()) {
+    reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)->blob_size =
+        jblob_size;
+  } else {
+    TERARKDB_NAMESPACE::IllegalArgumentExceptionJni::ThrowNew(env, s);
+  }
+}
+
+
+/*
+ * Class:     org_rocksdb_Options
+ * Method:    blobSize
+ * Signature: (J)J
+ */
+jlong Java_org_rocksdb_Options_blobSize(JNIEnv* /*env*/, jobject /*jobj*/,
+                                              jlong jhandle) {
+  return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
+      ->blob_size;
+}
+
+/*
+ * Class:     org_rocksdb_Options
+ * Method:    setBlobGcRatio
+ * Signature: (JJ)V
+ */
+void Java_org_rocksdb_Options_setBlobGcRatio(JNIEnv* env, jobject /*jobj*/,
+                                             jlong jhandle,
+                                             jdouble jblob_gc_ratio) {
+  reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)->blob_gc_ratio =
+      static_cast<double>(jblob_gc_ratio);
+}
+
+/*
+ * Class:     org_rocksdb_Options
+ * Method:    blobGcRatio
+ * Signature: (J)J
+ */
+jdouble Java_org_rocksdb_Options_blobGcRatio(JNIEnv* /*env*/, jobject /*jobj*/,
+                                           jlong jhandle) {
+  return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)->blob_gc_ratio;
+}
+
+/*
+ * Class:     org_rocksdb_Options
  * Method:    disableAutoCompactions
  * Signature: (J)Z
  */
@@ -3270,6 +3352,116 @@ void Java_org_rocksdb_ColumnFamilyOptions_setComparatorHandle__JJB(
       reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jopt_handle);
   opt->comparator = comparator;
 }
+
+
+/*
+ * Class:     org_rocksdb_ColumnFamilyOptions
+ * Method:    setMaxSubcompactions
+ * Signature: (JI)V
+ */
+void Java_org_rocksdb_ColumnFamilyOptions_setMaxSubcompactions(JNIEnv* env,
+                                                     jobject /*jobj*/,
+                                                     jlong jhandle, jint max) {
+  TERARKDB_NAMESPACE::Status s =
+    TERARKDB_NAMESPACE::check_if_jlong_fits_size_t(max);
+  if(s.ok()){
+    reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)->max_subcompactions
+  = static_cast<int32_t>(max);
+  }else{
+    TERARKDB_NAMESPACE::IllegalArgumentExceptionJni::ThrowNew(env, s);
+  }
+}
+
+/*
+ * Class:     org_rocksdb_ColumnFamilyOptions
+ * Method:    maxSubcompactions
+ * Signature: (J)I
+ */
+jint Java_org_rocksdb_ColumnFamilyOptions_maxSubcompactions(JNIEnv* /*env*/,
+                                                  jobject /*jobj*/,
+                                                  jlong jhandle) {
+  return reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
+      ->max_subcompactions;
+}
+/*
+ * Class:     org_rocksdb_ColumnFamilyOptions
+ * Method:    setTargetBlobFileSize
+ * Signature: (JJ)V
+ */
+void Java_org_rocksdb_ColumnFamilyOptions_setTargetBlobFileSize(JNIEnv* env, jobject /*jobj*/,
+                                                jlong jhandle,
+                                                jlong jtarget_blob_file_size) {
+  TERARKDB_NAMESPACE::Status s =
+      TERARKDB_NAMESPACE::check_if_jlong_fits_size_t(jtarget_blob_file_size);
+  if (s.ok()) {
+    reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)->target_blob_file_size =
+        jtarget_blob_file_size;
+  } else {
+    TERARKDB_NAMESPACE::IllegalArgumentExceptionJni::ThrowNew(env, s);
+  }
+}
+
+/*
+ * Class:     org_rocksdb_ColumnFamilyOptions
+ * Method:    targetBlobFileSize
+ * Signature: (J)J
+ */
+jlong Java_org_rocksdb_ColumnFamilyOptions_targetBlobFileSize(JNIEnv* /*env*/, jobject /*jobj*/,
+                                              jlong jhandle) {
+  return reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
+      ->target_blob_file_size;
+}
+/*
+ * Class:     org_rocksdb_ColumnFamilyOptions
+ * Method:    setBlobSize
+ * Signature: (JJ)V
+ */
+void Java_org_rocksdb_ColumnFamilyOptions_setBlobSize(JNIEnv* env, jobject /*jobj*/,
+                                                jlong jhandle,
+                                                jlong jblob_size) {
+  TERARKDB_NAMESPACE::Status s =
+      TERARKDB_NAMESPACE::check_if_jlong_fits_size_t(jblob_size);
+  if (s.ok()) {
+    reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)->blob_size =
+        jblob_size;
+  } else {
+    TERARKDB_NAMESPACE::IllegalArgumentExceptionJni::ThrowNew(env, s);
+  }
+}
+
+/*
+ * Class:     org_rocksdb_ColumnFamilyOptions
+ * Method:    blobGcRatio
+ * Signature: (J)J
+ */
+jdouble Java_org_rocksdb_ColumnFamilyOptions_blobGcRatio(JNIEnv* /*env*/,
+                                                         jobject /*jobj*/,
+                                                         jlong jhandle) {
+  return reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
+      ->blob_gc_ratio;
+}
+/*
+ * Class:     org_rocksdb_ColumnFamilyOptions
+ * Method:    setBlobGcRatio
+ * Signature: (JJ)V
+ */
+void Java_org_rocksdb_ColumnFamilyOptions_setBlobGcRatio(
+    JNIEnv* env, jobject /*jobj*/, jlong jhandle, jdouble jblob_gc_ratio) {
+  reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
+      ->blob_gc_ratio = static_cast<double>(jblob_gc_ratio);
+}
+
+/*
+ * Class:     org_rocksdb_ColumnFamilyOptions
+ * Method:    blobSize
+ * Signature: (J)J
+ */
+jlong Java_org_rocksdb_ColumnFamilyOptions_blobSize(JNIEnv* /*env*/, jobject /*jobj*/,
+                                              jlong jhandle) {
+  return reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
+      ->blob_size;
+}
+
 
 /*
  * Class:     org_rocksdb_ColumnFamilyOptions
@@ -5118,30 +5310,6 @@ jint Java_org_rocksdb_DBOptions_maxBackgroundCompactions(JNIEnv* /*env*/,
                                                          jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
       ->max_background_compactions;
-}
-
-/*
- * Class:     org_rocksdb_DBOptions
- * Method:    setMaxSubcompactions
- * Signature: (JI)V
- */
-void Java_org_rocksdb_DBOptions_setMaxSubcompactions(JNIEnv* /*env*/,
-                                                     jobject /*jobj*/,
-                                                     jlong jhandle, jint max) {
-  // reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)->max_subcompactions
-  // =
-  //     static_cast<int32_t>(max);
-}
-
-/*
- * Class:     org_rocksdb_DBOptions
- * Method:    maxSubcompactions
- * Signature: (J)I
- */
-jint Java_org_rocksdb_DBOptions_maxSubcompactions(JNIEnv* /*env*/,
-                                                  jobject /*jobj*/,
-                                                  jlong jhandle) {
-  return 0;
 }
 
 /*
