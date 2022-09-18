@@ -15,13 +15,13 @@
 #include <memory>
 #include <vector>
 
-#include "include/org_rocksdb_ColumnFamilyOptions.h"
-#include "include/org_rocksdb_ComparatorOptions.h"
-#include "include/org_rocksdb_DBOptions.h"
-#include "include/org_rocksdb_FlushOptions.h"
-#include "include/org_rocksdb_Options.h"
-#include "include/org_rocksdb_ReadOptions.h"
-#include "include/org_rocksdb_WriteOptions.h"
+#include "include/org_terarkdb_ColumnFamilyOptions.h"
+#include "include/org_terarkdb_ComparatorOptions.h"
+#include "include/org_terarkdb_DBOptions.h"
+#include "include/org_terarkdb_FlushOptions.h"
+#include "include/org_terarkdb_Options.h"
+#include "include/org_terarkdb_ReadOptions.h"
+#include "include/org_terarkdb_WriteOptions.h"
 #include "rocksdb/comparator.h"
 #include "rocksdb/convenience.h"
 #include "rocksdb/db.h"
@@ -38,21 +38,21 @@
 #include "utilities/merge_operators.h"
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    newOptions
  * Signature: ()J
  */
-jlong Java_org_rocksdb_Options_newOptions__(JNIEnv* /*env*/, jclass /*jcls*/) {
+jlong Java_org_terarkdb_Options_newOptions__(JNIEnv* /*env*/, jclass /*jcls*/) {
   auto* op = new TERARKDB_NAMESPACE::Options();
   return reinterpret_cast<jlong>(op);
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    newOptions
  * Signature: (JJ)J
  */
-jlong Java_org_rocksdb_Options_newOptions__JJ(JNIEnv* /*env*/, jclass /*jcls*/,
+jlong Java_org_terarkdb_Options_newOptions__JJ(JNIEnv* /*env*/, jclass /*jcls*/,
                                               jlong jdboptions,
                                               jlong jcfoptions) {
   auto* dbOpt =
@@ -65,11 +65,11 @@ jlong Java_org_rocksdb_Options_newOptions__JJ(JNIEnv* /*env*/, jclass /*jcls*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    copyOptions
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Options_copyOptions(JNIEnv* /*env*/, jclass /*jcls*/,
+jlong Java_org_terarkdb_Options_copyOptions(JNIEnv* /*env*/, jclass /*jcls*/,
                                            jlong jhandle) {
   auto new_opt = new TERARKDB_NAMESPACE::Options(
       *(reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)));
@@ -77,11 +77,11 @@ jlong Java_org_rocksdb_Options_copyOptions(JNIEnv* /*env*/, jclass /*jcls*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    disposeInternal
  * Signature: (J)V
  */
-void Java_org_rocksdb_Options_disposeInternal(JNIEnv* /*env*/, jobject /*jobj*/,
+void Java_org_terarkdb_Options_disposeInternal(JNIEnv* /*env*/, jobject /*jobj*/,
                                               jlong handle) {
   auto* op = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(handle);
   assert(op != nullptr);
@@ -89,11 +89,11 @@ void Java_org_rocksdb_Options_disposeInternal(JNIEnv* /*env*/, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setIncreaseParallelism
  * Signature: (JI)V
  */
-void Java_org_rocksdb_Options_setIncreaseParallelism(JNIEnv* /*env*/,
+void Java_org_terarkdb_Options_setIncreaseParallelism(JNIEnv* /*env*/,
                                                      jobject /*jobj*/,
                                                      jlong jhandle,
                                                      jint totalThreads) {
@@ -102,11 +102,11 @@ void Java_org_rocksdb_Options_setIncreaseParallelism(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setCreateIfMissing
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_Options_setCreateIfMissing(JNIEnv* /*env*/,
+void Java_org_terarkdb_Options_setCreateIfMissing(JNIEnv* /*env*/,
                                                  jobject /*jobj*/,
                                                  jlong jhandle, jboolean flag) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)->create_if_missing =
@@ -114,11 +114,11 @@ void Java_org_rocksdb_Options_setCreateIfMissing(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    createIfMissing
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_Options_createIfMissing(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_Options_createIfMissing(JNIEnv* /*env*/,
                                                   jobject /*jobj*/,
                                                   jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -126,11 +126,11 @@ jboolean Java_org_rocksdb_Options_createIfMissing(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setCreateMissingColumnFamilies
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_Options_setCreateMissingColumnFamilies(JNIEnv* /*env*/,
+void Java_org_terarkdb_Options_setCreateMissingColumnFamilies(JNIEnv* /*env*/,
                                                              jobject /*jobj*/,
                                                              jlong jhandle,
                                                              jboolean flag) {
@@ -139,11 +139,11 @@ void Java_org_rocksdb_Options_setCreateMissingColumnFamilies(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    createMissingColumnFamilies
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_Options_createMissingColumnFamilies(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_Options_createMissingColumnFamilies(JNIEnv* /*env*/,
                                                               jobject /*jobj*/,
                                                               jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -151,11 +151,11 @@ jboolean Java_org_rocksdb_Options_createMissingColumnFamilies(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setComparatorHandle
  * Signature: (JI)V
  */
-void Java_org_rocksdb_Options_setComparatorHandle__JI(JNIEnv* /*env*/,
+void Java_org_terarkdb_Options_setComparatorHandle__JI(JNIEnv* /*env*/,
                                                       jobject /*jobj*/,
                                                       jlong jhandle,
                                                       jint builtinComparator) {
@@ -172,11 +172,11 @@ void Java_org_rocksdb_Options_setComparatorHandle__JI(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setComparatorHandle
  * Signature: (JJB)V
  */
-void Java_org_rocksdb_Options_setComparatorHandle__JJB(JNIEnv* /*env*/,
+void Java_org_terarkdb_Options_setComparatorHandle__JJB(JNIEnv* /*env*/,
                                                        jobject /*jobj*/,
                                                        jlong jopt_handle,
                                                        jlong jcomparator_handle,
@@ -207,11 +207,11 @@ void Java_org_rocksdb_Options_setComparatorHandle__JJB(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setMergeOperatorName
  * Signature: (JJjava/lang/String)V
  */
-void Java_org_rocksdb_Options_setMergeOperatorName(JNIEnv* env,
+void Java_org_terarkdb_Options_setMergeOperatorName(JNIEnv* env,
                                                    jobject /*jobj*/,
                                                    jlong jhandle,
                                                    jstring jop_name) {
@@ -229,11 +229,11 @@ void Java_org_rocksdb_Options_setMergeOperatorName(JNIEnv* env,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setMergeOperator
  * Signature: (JJjava/lang/String)V
  */
-void Java_org_rocksdb_Options_setMergeOperator(JNIEnv* /*env*/,
+void Java_org_terarkdb_Options_setMergeOperator(JNIEnv* /*env*/,
                                                jobject /*jobj*/, jlong jhandle,
                                                jlong mergeOperatorHandle) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)->merge_operator =
@@ -242,11 +242,11 @@ void Java_org_rocksdb_Options_setMergeOperator(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setWriteBufferSize
  * Signature: (JJ)I
  */
-void Java_org_rocksdb_Options_setWriteBufferSize(JNIEnv* env, jobject /*jobj*/,
+void Java_org_terarkdb_Options_setWriteBufferSize(JNIEnv* env, jobject /*jobj*/,
                                                  jlong jhandle,
                                                  jlong jwrite_buffer_size) {
   TERARKDB_NAMESPACE::Status s =
@@ -260,11 +260,11 @@ void Java_org_rocksdb_Options_setWriteBufferSize(JNIEnv* env, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setWriteBufferManager
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_setWriteBufferManager(
+void Java_org_terarkdb_Options_setWriteBufferManager(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong joptions_handle,
     jlong jwrite_buffer_manager_handle) {
   auto* write_buffer_manager = reinterpret_cast<
@@ -275,11 +275,11 @@ void Java_org_rocksdb_Options_setWriteBufferManager(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    writeBufferSize
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Options_writeBufferSize(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_Options_writeBufferSize(JNIEnv* /*env*/,
                                                jobject /*jobj*/,
                                                jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -287,11 +287,11 @@ jlong Java_org_rocksdb_Options_writeBufferSize(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setMaxWriteBufferNumber
  * Signature: (JI)V
  */
-void Java_org_rocksdb_Options_setMaxWriteBufferNumber(
+void Java_org_terarkdb_Options_setMaxWriteBufferNumber(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jint jmax_write_buffer_number) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -299,11 +299,11 @@ void Java_org_rocksdb_Options_setMaxWriteBufferNumber(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setStatistics
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_setStatistics(JNIEnv* /*env*/, jobject /*jobj*/,
+void Java_org_terarkdb_Options_setStatistics(JNIEnv* /*env*/, jobject /*jobj*/,
                                             jlong jhandle,
                                             jlong jstatistics_handle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -314,11 +314,11 @@ void Java_org_rocksdb_Options_setStatistics(JNIEnv* /*env*/, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    statistics
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Options_statistics(JNIEnv* /*env*/, jobject /*jobj*/,
+jlong Java_org_terarkdb_Options_statistics(JNIEnv* /*env*/, jobject /*jobj*/,
                                           jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
   std::shared_ptr<TERARKDB_NAMESPACE::Statistics> sptr = opt->statistics;
@@ -332,11 +332,11 @@ jlong Java_org_rocksdb_Options_statistics(JNIEnv* /*env*/, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    maxWriteBufferNumber
  * Signature: (J)I
  */
-jint Java_org_rocksdb_Options_maxWriteBufferNumber(JNIEnv* /*env*/,
+jint Java_org_terarkdb_Options_maxWriteBufferNumber(JNIEnv* /*env*/,
                                                    jobject /*jobj*/,
                                                    jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -344,11 +344,11 @@ jint Java_org_rocksdb_Options_maxWriteBufferNumber(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    errorIfExists
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_Options_errorIfExists(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_Options_errorIfExists(JNIEnv* /*env*/,
                                                 jobject /*jobj*/,
                                                 jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -356,11 +356,11 @@ jboolean Java_org_rocksdb_Options_errorIfExists(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setErrorIfExists
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_Options_setErrorIfExists(JNIEnv* /*env*/,
+void Java_org_terarkdb_Options_setErrorIfExists(JNIEnv* /*env*/,
                                                jobject /*jobj*/, jlong jhandle,
                                                jboolean error_if_exists) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)->error_if_exists =
@@ -368,11 +368,11 @@ void Java_org_rocksdb_Options_setErrorIfExists(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    paranoidChecks
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_Options_paranoidChecks(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_Options_paranoidChecks(JNIEnv* /*env*/,
                                                  jobject /*jobj*/,
                                                  jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -380,11 +380,11 @@ jboolean Java_org_rocksdb_Options_paranoidChecks(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setParanoidChecks
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_Options_setParanoidChecks(JNIEnv* /*env*/,
+void Java_org_terarkdb_Options_setParanoidChecks(JNIEnv* /*env*/,
                                                 jobject /*jobj*/, jlong jhandle,
                                                 jboolean paranoid_checks) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)->paranoid_checks =
@@ -392,22 +392,22 @@ void Java_org_rocksdb_Options_setParanoidChecks(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setEnv
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_setEnv(JNIEnv* /*env*/, jobject /*jobj*/,
+void Java_org_terarkdb_Options_setEnv(JNIEnv* /*env*/, jobject /*jobj*/,
                                      jlong jhandle, jlong jenv) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)->env =
       reinterpret_cast<TERARKDB_NAMESPACE::Env*>(jenv);
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setMaxTotalWalSize
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_setMaxTotalWalSize(JNIEnv* /*env*/,
+void Java_org_terarkdb_Options_setMaxTotalWalSize(JNIEnv* /*env*/,
                                                  jobject /*jobj*/,
                                                  jlong jhandle,
                                                  jlong jmax_total_wal_size) {
@@ -416,11 +416,11 @@ void Java_org_rocksdb_Options_setMaxTotalWalSize(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    maxTotalWalSize
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Options_maxTotalWalSize(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_Options_maxTotalWalSize(JNIEnv* /*env*/,
                                                jobject /*jobj*/,
                                                jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -428,22 +428,22 @@ jlong Java_org_rocksdb_Options_maxTotalWalSize(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    maxOpenFiles
  * Signature: (J)I
  */
-jint Java_org_rocksdb_Options_maxOpenFiles(JNIEnv* /*env*/, jobject /*jobj*/,
+jint Java_org_terarkdb_Options_maxOpenFiles(JNIEnv* /*env*/, jobject /*jobj*/,
                                            jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
       ->max_open_files;
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setMaxOpenFiles
  * Signature: (JI)V
  */
-void Java_org_rocksdb_Options_setMaxOpenFiles(JNIEnv* /*env*/, jobject /*jobj*/,
+void Java_org_terarkdb_Options_setMaxOpenFiles(JNIEnv* /*env*/, jobject /*jobj*/,
                                               jlong jhandle,
                                               jint max_open_files) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)->max_open_files =
@@ -451,11 +451,11 @@ void Java_org_rocksdb_Options_setMaxOpenFiles(JNIEnv* /*env*/, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setMaxFileOpeningThreads
  * Signature: (JI)V
  */
-void Java_org_rocksdb_Options_setMaxFileOpeningThreads(
+void Java_org_terarkdb_Options_setMaxFileOpeningThreads(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jint jmax_file_opening_threads) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -463,11 +463,11 @@ void Java_org_rocksdb_Options_setMaxFileOpeningThreads(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    maxFileOpeningThreads
  * Signature: (J)I
  */
-jint Java_org_rocksdb_Options_maxFileOpeningThreads(JNIEnv* /*env*/,
+jint Java_org_terarkdb_Options_maxFileOpeningThreads(JNIEnv* /*env*/,
                                                     jobject /*jobj*/,
                                                     jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -475,32 +475,32 @@ jint Java_org_rocksdb_Options_maxFileOpeningThreads(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    useFsync
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_Options_useFsync(JNIEnv* /*env*/, jobject /*jobj*/,
+jboolean Java_org_terarkdb_Options_useFsync(JNIEnv* /*env*/, jobject /*jobj*/,
                                            jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)->use_fsync;
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setUseFsync
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_Options_setUseFsync(JNIEnv* /*env*/, jobject /*jobj*/,
+void Java_org_terarkdb_Options_setUseFsync(JNIEnv* /*env*/, jobject /*jobj*/,
                                           jlong jhandle, jboolean use_fsync) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)->use_fsync =
       static_cast<bool>(use_fsync);
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setDbPaths
  * Signature: (J[Ljava/lang/String;[J)V
  */
-void Java_org_rocksdb_Options_setDbPaths(JNIEnv* env, jobject /*jobj*/,
+void Java_org_terarkdb_Options_setDbPaths(JNIEnv* env, jobject /*jobj*/,
                                          jlong jhandle, jobjectArray jpaths,
                                          jlongArray jtarget_sizes) {
   std::vector<TERARKDB_NAMESPACE::DbPath> db_paths;
@@ -542,22 +542,22 @@ void Java_org_rocksdb_Options_setDbPaths(JNIEnv* env, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    dbPathsLen
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Options_dbPathsLen(JNIEnv* /*env*/, jobject /*jobj*/,
+jlong Java_org_terarkdb_Options_dbPathsLen(JNIEnv* /*env*/, jobject /*jobj*/,
                                           jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
   return static_cast<jlong>(opt->db_paths.size());
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    dbPaths
  * Signature: (J[Ljava/lang/String;[J)V
  */
-void Java_org_rocksdb_Options_dbPaths(JNIEnv* env, jobject /*jobj*/,
+void Java_org_terarkdb_Options_dbPaths(JNIEnv* env, jobject /*jobj*/,
                                       jlong jhandle, jobjectArray jpaths,
                                       jlongArray jtarget_sizes) {
   jlong* ptr_jtarget_size = env->GetLongArrayElements(jtarget_sizes, nullptr);
@@ -592,11 +592,11 @@ void Java_org_rocksdb_Options_dbPaths(JNIEnv* env, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    dbLogDir
  * Signature: (J)Ljava/lang/String
  */
-jstring Java_org_rocksdb_Options_dbLogDir(JNIEnv* env, jobject /*jobj*/,
+jstring Java_org_terarkdb_Options_dbLogDir(JNIEnv* env, jobject /*jobj*/,
                                           jlong jhandle) {
   return env->NewStringUTF(
       reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -604,11 +604,11 @@ jstring Java_org_rocksdb_Options_dbLogDir(JNIEnv* env, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setDbLogDir
  * Signature: (JLjava/lang/String)V
  */
-void Java_org_rocksdb_Options_setDbLogDir(JNIEnv* env, jobject /*jobj*/,
+void Java_org_terarkdb_Options_setDbLogDir(JNIEnv* env, jobject /*jobj*/,
                                           jlong jhandle, jstring jdb_log_dir) {
   const char* log_dir = env->GetStringUTFChars(jdb_log_dir, nullptr);
   if (log_dir == nullptr) {
@@ -621,22 +621,22 @@ void Java_org_rocksdb_Options_setDbLogDir(JNIEnv* env, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    walDir
  * Signature: (J)Ljava/lang/String
  */
-jstring Java_org_rocksdb_Options_walDir(JNIEnv* env, jobject /*jobj*/,
+jstring Java_org_terarkdb_Options_walDir(JNIEnv* env, jobject /*jobj*/,
                                         jlong jhandle) {
   return env->NewStringUTF(
       reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)->wal_dir.c_str());
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setWalDir
  * Signature: (JLjava/lang/String)V
  */
-void Java_org_rocksdb_Options_setWalDir(JNIEnv* env, jobject /*jobj*/,
+void Java_org_terarkdb_Options_setWalDir(JNIEnv* env, jobject /*jobj*/,
                                         jlong jhandle, jstring jwal_dir) {
   const char* wal_dir = env->GetStringUTFChars(jwal_dir, nullptr);
   if (wal_dir == nullptr) {
@@ -649,11 +649,11 @@ void Java_org_rocksdb_Options_setWalDir(JNIEnv* env, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    deleteObsoleteFilesPeriodMicros
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Options_deleteObsoleteFilesPeriodMicros(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_Options_deleteObsoleteFilesPeriodMicros(JNIEnv* /*env*/,
                                                                jobject /*jobj*/,
                                                                jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -661,22 +661,22 @@ jlong Java_org_rocksdb_Options_deleteObsoleteFilesPeriodMicros(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setDeleteObsoleteFilesPeriodMicros
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_setDeleteObsoleteFilesPeriodMicros(
+void Java_org_terarkdb_Options_setDeleteObsoleteFilesPeriodMicros(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle, jlong micros) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
       ->delete_obsolete_files_period_micros = static_cast<int64_t>(micros);
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setBaseBackgroundCompactions
  * Signature: (JI)V
  */
-void Java_org_rocksdb_Options_setBaseBackgroundCompactions(JNIEnv* /*env*/,
+void Java_org_terarkdb_Options_setBaseBackgroundCompactions(JNIEnv* /*env*/,
                                                            jobject /*jobj*/,
                                                            jlong jhandle,
                                                            jint max) {
@@ -685,11 +685,11 @@ void Java_org_rocksdb_Options_setBaseBackgroundCompactions(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    baseBackgroundCompactions
  * Signature: (J)I
  */
-jint Java_org_rocksdb_Options_baseBackgroundCompactions(JNIEnv* /*env*/,
+jint Java_org_terarkdb_Options_baseBackgroundCompactions(JNIEnv* /*env*/,
                                                         jobject /*jobj*/,
                                                         jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -697,11 +697,11 @@ jint Java_org_rocksdb_Options_baseBackgroundCompactions(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    maxBackgroundCompactions
  * Signature: (J)I
  */
-jint Java_org_rocksdb_Options_maxBackgroundCompactions(JNIEnv* /*env*/,
+jint Java_org_terarkdb_Options_maxBackgroundCompactions(JNIEnv* /*env*/,
                                                        jobject /*jobj*/,
                                                        jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -709,11 +709,11 @@ jint Java_org_rocksdb_Options_maxBackgroundCompactions(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setMaxBackgroundCompactions
  * Signature: (JI)V
  */
-void Java_org_rocksdb_Options_setMaxBackgroundCompactions(JNIEnv* /*env*/,
+void Java_org_terarkdb_Options_setMaxBackgroundCompactions(JNIEnv* /*env*/,
                                                           jobject /*jobj*/,
                                                           jlong jhandle,
                                                           jint max) {
@@ -722,11 +722,11 @@ void Java_org_rocksdb_Options_setMaxBackgroundCompactions(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setMaxSubcompactions
  * Signature: (JI)V
  */
-void Java_org_rocksdb_Options_setMaxSubcompactions(JNIEnv* /*env*/,
+void Java_org_terarkdb_Options_setMaxSubcompactions(JNIEnv* /*env*/,
                                                    jobject /*jobj*/,
                                                    jlong jhandle, jint max) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)->max_subcompactions
@@ -735,22 +735,22 @@ void Java_org_rocksdb_Options_setMaxSubcompactions(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    maxSubcompactions
  * Signature: (J)I
  */
-jint Java_org_rocksdb_Options_maxSubcompactions(JNIEnv* /*env*/,
+jint Java_org_terarkdb_Options_maxSubcompactions(JNIEnv* /*env*/,
                                                 jobject /*jobj*/,
                                                 jlong jhandle) {
   return 0;
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    maxBackgroundFlushes
  * Signature: (J)I
  */
-jint Java_org_rocksdb_Options_maxBackgroundFlushes(JNIEnv* /*env*/,
+jint Java_org_terarkdb_Options_maxBackgroundFlushes(JNIEnv* /*env*/,
                                                    jobject /*jobj*/,
                                                    jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -758,11 +758,11 @@ jint Java_org_rocksdb_Options_maxBackgroundFlushes(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setMaxBackgroundFlushes
  * Signature: (JI)V
  */
-void Java_org_rocksdb_Options_setMaxBackgroundFlushes(
+void Java_org_terarkdb_Options_setMaxBackgroundFlushes(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jint max_background_flushes) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -770,11 +770,11 @@ void Java_org_rocksdb_Options_setMaxBackgroundFlushes(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    maxBackgroundJobs
  * Signature: (J)I
  */
-jint Java_org_rocksdb_Options_maxBackgroundJobs(JNIEnv* /*env*/,
+jint Java_org_terarkdb_Options_maxBackgroundJobs(JNIEnv* /*env*/,
                                                 jobject /*jobj*/,
                                                 jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -782,11 +782,11 @@ jint Java_org_rocksdb_Options_maxBackgroundJobs(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setMaxBackgroundJobs
  * Signature: (JI)V
  */
-void Java_org_rocksdb_Options_setMaxBackgroundJobs(JNIEnv* /*env*/,
+void Java_org_terarkdb_Options_setMaxBackgroundJobs(JNIEnv* /*env*/,
                                                    jobject /*jobj*/,
                                                    jlong jhandle,
                                                    jint max_background_jobs) {
@@ -795,22 +795,22 @@ void Java_org_rocksdb_Options_setMaxBackgroundJobs(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    maxLogFileSize
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Options_maxLogFileSize(JNIEnv* /*env*/, jobject /*jobj*/,
+jlong Java_org_terarkdb_Options_maxLogFileSize(JNIEnv* /*env*/, jobject /*jobj*/,
                                               jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
       ->max_log_file_size;
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setMaxLogFileSize
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_setMaxLogFileSize(JNIEnv* env, jobject /*jobj*/,
+void Java_org_terarkdb_Options_setMaxLogFileSize(JNIEnv* env, jobject /*jobj*/,
                                                 jlong jhandle,
                                                 jlong max_log_file_size) {
   TERARKDB_NAMESPACE::Status s =
@@ -824,11 +824,11 @@ void Java_org_rocksdb_Options_setMaxLogFileSize(JNIEnv* env, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    logFileTimeToRoll
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Options_logFileTimeToRoll(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_Options_logFileTimeToRoll(JNIEnv* /*env*/,
                                                  jobject /*jobj*/,
                                                  jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -836,11 +836,11 @@ jlong Java_org_rocksdb_Options_logFileTimeToRoll(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setLogFileTimeToRoll
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_setLogFileTimeToRoll(
+void Java_org_terarkdb_Options_setLogFileTimeToRoll(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle, jlong log_file_time_to_roll) {
   TERARKDB_NAMESPACE::Status s =
       TERARKDB_NAMESPACE::check_if_jlong_fits_size_t(log_file_time_to_roll);
@@ -853,22 +853,22 @@ void Java_org_rocksdb_Options_setLogFileTimeToRoll(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    keepLogFileNum
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Options_keepLogFileNum(JNIEnv* /*env*/, jobject /*jobj*/,
+jlong Java_org_terarkdb_Options_keepLogFileNum(JNIEnv* /*env*/, jobject /*jobj*/,
                                               jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
       ->keep_log_file_num;
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setKeepLogFileNum
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_setKeepLogFileNum(JNIEnv* env, jobject /*jobj*/,
+void Java_org_terarkdb_Options_setKeepLogFileNum(JNIEnv* env, jobject /*jobj*/,
                                                 jlong jhandle,
                                                 jlong keep_log_file_num) {
   TERARKDB_NAMESPACE::Status s =
@@ -882,11 +882,11 @@ void Java_org_rocksdb_Options_setKeepLogFileNum(JNIEnv* env, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    recycleLogFileNum
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Options_recycleLogFileNum(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_Options_recycleLogFileNum(JNIEnv* /*env*/,
                                                  jobject /*jobj*/,
                                                  jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -894,11 +894,11 @@ jlong Java_org_rocksdb_Options_recycleLogFileNum(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setRecycleLogFileNum
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_setRecycleLogFileNum(JNIEnv* env,
+void Java_org_terarkdb_Options_setRecycleLogFileNum(JNIEnv* env,
                                                    jobject /*jobj*/,
                                                    jlong jhandle,
                                                    jlong recycle_log_file_num) {
@@ -913,11 +913,11 @@ void Java_org_rocksdb_Options_setRecycleLogFileNum(JNIEnv* env,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    maxManifestFileSize
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Options_maxManifestFileSize(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_Options_maxManifestFileSize(JNIEnv* /*env*/,
                                                    jobject /*jobj*/,
                                                    jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -928,7 +928,7 @@ jlong Java_org_rocksdb_Options_maxManifestFileSize(JNIEnv* /*env*/,
  * Method:    memTableFactoryName
  * Signature: (J)Ljava/lang/String
  */
-jstring Java_org_rocksdb_Options_memTableFactoryName(JNIEnv* env,
+jstring Java_org_terarkdb_Options_memTableFactoryName(JNIEnv* env,
                                                      jobject /*jobj*/,
                                                      jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -947,11 +947,11 @@ jstring Java_org_rocksdb_Options_memTableFactoryName(JNIEnv* env,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setMaxManifestFileSize
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_setMaxManifestFileSize(
+void Java_org_terarkdb_Options_setMaxManifestFileSize(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong max_manifest_file_size) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -962,7 +962,7 @@ void Java_org_rocksdb_Options_setMaxManifestFileSize(
  * Method:    setMemTableFactory
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_setMemTableFactory(JNIEnv* /*env*/,
+void Java_org_terarkdb_Options_setMemTableFactory(JNIEnv* /*env*/,
                                                  jobject /*jobj*/,
                                                  jlong jhandle,
                                                  jlong jfactory_handle) {
@@ -973,11 +973,11 @@ void Java_org_rocksdb_Options_setMemTableFactory(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setRateLimiter
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_setRateLimiter(JNIEnv* /*env*/, jobject /*jobj*/,
+void Java_org_terarkdb_Options_setRateLimiter(JNIEnv* /*env*/, jobject /*jobj*/,
                                              jlong jhandle,
                                              jlong jrate_limiter_handle) {
   std::shared_ptr<TERARKDB_NAMESPACE::RateLimiter>* pRateLimiter =
@@ -988,11 +988,11 @@ void Java_org_rocksdb_Options_setRateLimiter(JNIEnv* /*env*/, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setSstFileManager
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_setSstFileManager(
+void Java_org_terarkdb_Options_setSstFileManager(
     JNIEnv* /*env*/, jobject /*job*/, jlong jhandle,
     jlong jsst_file_manager_handle) {
   auto* sptr_sst_file_manager =
@@ -1003,11 +1003,11 @@ void Java_org_rocksdb_Options_setSstFileManager(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setLogger
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_setLogger(JNIEnv* /*env*/, jobject /*jobj*/,
+void Java_org_terarkdb_Options_setLogger(JNIEnv* /*env*/, jobject /*jobj*/,
                                         jlong jhandle, jlong jlogger_handle) {
   std::shared_ptr<TERARKDB_NAMESPACE::LoggerJniCallback>* pLogger =
       reinterpret_cast<std::shared_ptr<TERARKDB_NAMESPACE::LoggerJniCallback>*>(
@@ -1016,33 +1016,33 @@ void Java_org_rocksdb_Options_setLogger(JNIEnv* /*env*/, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setInfoLogLevel
  * Signature: (JB)V
  */
-void Java_org_rocksdb_Options_setInfoLogLevel(JNIEnv* /*env*/, jobject /*jobj*/,
+void Java_org_terarkdb_Options_setInfoLogLevel(JNIEnv* /*env*/, jobject /*jobj*/,
                                               jlong jhandle, jbyte jlog_level) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)->info_log_level =
       static_cast<TERARKDB_NAMESPACE::InfoLogLevel>(jlog_level);
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    infoLogLevel
  * Signature: (J)B
  */
-jbyte Java_org_rocksdb_Options_infoLogLevel(JNIEnv* /*env*/, jobject /*jobj*/,
+jbyte Java_org_terarkdb_Options_infoLogLevel(JNIEnv* /*env*/, jobject /*jobj*/,
                                             jlong jhandle) {
   return static_cast<jbyte>(
       reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)->info_log_level);
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    tableCacheNumshardbits
  * Signature: (J)I
  */
-jint Java_org_rocksdb_Options_tableCacheNumshardbits(JNIEnv* /*env*/,
+jint Java_org_terarkdb_Options_tableCacheNumshardbits(JNIEnv* /*env*/,
                                                      jobject /*jobj*/,
                                                      jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -1050,11 +1050,11 @@ jint Java_org_rocksdb_Options_tableCacheNumshardbits(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setTableCacheNumshardbits
  * Signature: (JI)V
  */
-void Java_org_rocksdb_Options_setTableCacheNumshardbits(
+void Java_org_terarkdb_Options_setTableCacheNumshardbits(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jint table_cache_numshardbits) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -1065,7 +1065,7 @@ void Java_org_rocksdb_Options_setTableCacheNumshardbits(
  * Method:    useFixedLengthPrefixExtractor
  * Signature: (JI)V
  */
-void Java_org_rocksdb_Options_useFixedLengthPrefixExtractor(
+void Java_org_terarkdb_Options_useFixedLengthPrefixExtractor(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle, jint jprefix_length) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
       ->prefix_extractor.reset(TERARKDB_NAMESPACE::NewFixedPrefixTransform(
@@ -1076,7 +1076,7 @@ void Java_org_rocksdb_Options_useFixedLengthPrefixExtractor(
  * Method:    useCappedPrefixExtractor
  * Signature: (JI)V
  */
-void Java_org_rocksdb_Options_useCappedPrefixExtractor(JNIEnv* /*env*/,
+void Java_org_terarkdb_Options_useCappedPrefixExtractor(JNIEnv* /*env*/,
                                                        jobject /*jobj*/,
                                                        jlong jhandle,
                                                        jint jprefix_length) {
@@ -1086,22 +1086,22 @@ void Java_org_rocksdb_Options_useCappedPrefixExtractor(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    walTtlSeconds
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Options_walTtlSeconds(JNIEnv* /*env*/, jobject /*jobj*/,
+jlong Java_org_terarkdb_Options_walTtlSeconds(JNIEnv* /*env*/, jobject /*jobj*/,
                                              jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
       ->WAL_ttl_seconds;
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setWalTtlSeconds
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_setWalTtlSeconds(JNIEnv* /*env*/,
+void Java_org_terarkdb_Options_setWalTtlSeconds(JNIEnv* /*env*/,
                                                jobject /*jobj*/, jlong jhandle,
                                                jlong WAL_ttl_seconds) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)->WAL_ttl_seconds =
@@ -1109,22 +1109,22 @@ void Java_org_rocksdb_Options_setWalTtlSeconds(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    walTtlSeconds
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Options_walSizeLimitMB(JNIEnv* /*env*/, jobject /*jobj*/,
+jlong Java_org_terarkdb_Options_walSizeLimitMB(JNIEnv* /*env*/, jobject /*jobj*/,
                                               jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
       ->WAL_size_limit_MB;
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setWalSizeLimitMB
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_setWalSizeLimitMB(JNIEnv* /*env*/,
+void Java_org_terarkdb_Options_setWalSizeLimitMB(JNIEnv* /*env*/,
                                                 jobject /*jobj*/, jlong jhandle,
                                                 jlong WAL_size_limit_MB) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)->WAL_size_limit_MB =
@@ -1132,11 +1132,11 @@ void Java_org_rocksdb_Options_setWalSizeLimitMB(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    manifestPreallocationSize
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Options_manifestPreallocationSize(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_Options_manifestPreallocationSize(JNIEnv* /*env*/,
                                                          jobject /*jobj*/,
                                                          jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -1144,11 +1144,11 @@ jlong Java_org_rocksdb_Options_manifestPreallocationSize(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setManifestPreallocationSize
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_setManifestPreallocationSize(
+void Java_org_terarkdb_Options_setManifestPreallocationSize(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle, jlong preallocation_size) {
   TERARKDB_NAMESPACE::Status s =
       TERARKDB_NAMESPACE::check_if_jlong_fits_size_t(preallocation_size);
@@ -1164,7 +1164,7 @@ void Java_org_rocksdb_Options_setManifestPreallocationSize(
  * Method:    setTableFactory
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_setTableFactory(JNIEnv* /*env*/, jobject /*jobj*/,
+void Java_org_terarkdb_Options_setTableFactory(JNIEnv* /*env*/, jobject /*jobj*/,
                                               jlong jhandle,
                                               jlong jfactory_handle) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)->table_factory.reset(
@@ -1172,11 +1172,11 @@ void Java_org_rocksdb_Options_setTableFactory(JNIEnv* /*env*/, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    allowMmapReads
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_Options_allowMmapReads(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_Options_allowMmapReads(JNIEnv* /*env*/,
                                                  jobject /*jobj*/,
                                                  jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -1184,11 +1184,11 @@ jboolean Java_org_rocksdb_Options_allowMmapReads(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setAllowMmapReads
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_Options_setAllowMmapReads(JNIEnv* /*env*/,
+void Java_org_terarkdb_Options_setAllowMmapReads(JNIEnv* /*env*/,
                                                 jobject /*jobj*/, jlong jhandle,
                                                 jboolean allow_mmap_reads) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)->allow_mmap_reads =
@@ -1196,11 +1196,11 @@ void Java_org_rocksdb_Options_setAllowMmapReads(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    allowMmapWrites
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_Options_allowMmapWrites(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_Options_allowMmapWrites(JNIEnv* /*env*/,
                                                   jobject /*jobj*/,
                                                   jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -1208,11 +1208,11 @@ jboolean Java_org_rocksdb_Options_allowMmapWrites(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setAllowMmapWrites
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_Options_setAllowMmapWrites(JNIEnv* /*env*/,
+void Java_org_terarkdb_Options_setAllowMmapWrites(JNIEnv* /*env*/,
                                                  jobject /*jobj*/,
                                                  jlong jhandle,
                                                  jboolean allow_mmap_writes) {
@@ -1221,11 +1221,11 @@ void Java_org_rocksdb_Options_setAllowMmapWrites(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    useDirectReads
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_Options_useDirectReads(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_Options_useDirectReads(JNIEnv* /*env*/,
                                                  jobject /*jobj*/,
                                                  jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -1233,11 +1233,11 @@ jboolean Java_org_rocksdb_Options_useDirectReads(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setUseDirectReads
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_Options_setUseDirectReads(JNIEnv* /*env*/,
+void Java_org_terarkdb_Options_setUseDirectReads(JNIEnv* /*env*/,
                                                 jobject /*jobj*/, jlong jhandle,
                                                 jboolean use_direct_reads) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)->use_direct_reads =
@@ -1245,22 +1245,22 @@ void Java_org_rocksdb_Options_setUseDirectReads(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    useDirectIoForFlushAndCompaction
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_Options_useDirectIoForFlushAndCompaction(
+jboolean Java_org_terarkdb_Options_useDirectIoForFlushAndCompaction(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
       ->use_direct_io_for_flush_and_compaction;
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setUseDirectIoForFlushAndCompaction
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_Options_setUseDirectIoForFlushAndCompaction(
+void Java_org_terarkdb_Options_setUseDirectIoForFlushAndCompaction(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean use_direct_io_for_flush_and_compaction) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -1269,11 +1269,11 @@ void Java_org_rocksdb_Options_setUseDirectIoForFlushAndCompaction(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setAllowFAllocate
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_Options_setAllowFAllocate(JNIEnv* /*env*/,
+void Java_org_terarkdb_Options_setAllowFAllocate(JNIEnv* /*env*/,
                                                 jobject /*jobj*/, jlong jhandle,
                                                 jboolean jallow_fallocate) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)->allow_fallocate =
@@ -1281,11 +1281,11 @@ void Java_org_rocksdb_Options_setAllowFAllocate(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    allowFAllocate
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_Options_allowFAllocate(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_Options_allowFAllocate(JNIEnv* /*env*/,
                                                  jobject /*jobj*/,
                                                  jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -1293,11 +1293,11 @@ jboolean Java_org_rocksdb_Options_allowFAllocate(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    isFdCloseOnExec
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_Options_isFdCloseOnExec(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_Options_isFdCloseOnExec(JNIEnv* /*env*/,
                                                   jobject /*jobj*/,
                                                   jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -1305,11 +1305,11 @@ jboolean Java_org_rocksdb_Options_isFdCloseOnExec(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setIsFdCloseOnExec
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_Options_setIsFdCloseOnExec(JNIEnv* /*env*/,
+void Java_org_terarkdb_Options_setIsFdCloseOnExec(JNIEnv* /*env*/,
                                                  jobject /*jobj*/,
                                                  jlong jhandle,
                                                  jboolean is_fd_close_on_exec) {
@@ -1318,11 +1318,11 @@ void Java_org_rocksdb_Options_setIsFdCloseOnExec(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    statsDumpPeriodSec
  * Signature: (J)I
  */
-jint Java_org_rocksdb_Options_statsDumpPeriodSec(JNIEnv* /*env*/,
+jint Java_org_terarkdb_Options_statsDumpPeriodSec(JNIEnv* /*env*/,
                                                  jobject /*jobj*/,
                                                  jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -1330,11 +1330,11 @@ jint Java_org_rocksdb_Options_statsDumpPeriodSec(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setStatsDumpPeriodSec
  * Signature: (JI)V
  */
-void Java_org_rocksdb_Options_setStatsDumpPeriodSec(
+void Java_org_terarkdb_Options_setStatsDumpPeriodSec(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jint stats_dump_period_sec) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -1342,11 +1342,11 @@ void Java_org_rocksdb_Options_setStatsDumpPeriodSec(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    adviseRandomOnOpen
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_Options_adviseRandomOnOpen(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_Options_adviseRandomOnOpen(JNIEnv* /*env*/,
                                                      jobject /*jobj*/,
                                                      jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -1354,11 +1354,11 @@ jboolean Java_org_rocksdb_Options_adviseRandomOnOpen(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setAdviseRandomOnOpen
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_Options_setAdviseRandomOnOpen(
+void Java_org_terarkdb_Options_setAdviseRandomOnOpen(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean advise_random_on_open) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -1366,11 +1366,11 @@ void Java_org_rocksdb_Options_setAdviseRandomOnOpen(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setDbWriteBufferSize
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_setDbWriteBufferSize(
+void Java_org_terarkdb_Options_setDbWriteBufferSize(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jdb_write_buffer_size) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -1378,11 +1378,11 @@ void Java_org_rocksdb_Options_setDbWriteBufferSize(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    dbWriteBufferSize
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Options_dbWriteBufferSize(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_Options_dbWriteBufferSize(JNIEnv* /*env*/,
                                                  jobject /*jobj*/,
                                                  jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -1390,11 +1390,11 @@ jlong Java_org_rocksdb_Options_dbWriteBufferSize(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setAccessHintOnCompactionStart
  * Signature: (JB)V
  */
-void Java_org_rocksdb_Options_setAccessHintOnCompactionStart(
+void Java_org_terarkdb_Options_setAccessHintOnCompactionStart(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jbyte jaccess_hint_value) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -1403,11 +1403,11 @@ void Java_org_rocksdb_Options_setAccessHintOnCompactionStart(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    accessHintOnCompactionStart
  * Signature: (J)B
  */
-jbyte Java_org_rocksdb_Options_accessHintOnCompactionStart(JNIEnv* /*env*/,
+jbyte Java_org_terarkdb_Options_accessHintOnCompactionStart(JNIEnv* /*env*/,
                                                            jobject /*jobj*/,
                                                            jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -1416,11 +1416,11 @@ jbyte Java_org_rocksdb_Options_accessHintOnCompactionStart(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setNewTableReaderForCompactionInputs
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_Options_setNewTableReaderForCompactionInputs(
+void Java_org_terarkdb_Options_setNewTableReaderForCompactionInputs(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean jnew_table_reader_for_compaction_inputs) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -1429,22 +1429,22 @@ void Java_org_rocksdb_Options_setNewTableReaderForCompactionInputs(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    newTableReaderForCompactionInputs
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_Options_newTableReaderForCompactionInputs(
+jboolean Java_org_terarkdb_Options_newTableReaderForCompactionInputs(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
   return static_cast<bool>(opt->new_table_reader_for_compaction_inputs);
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setCompactionReadaheadSize
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_setCompactionReadaheadSize(
+void Java_org_terarkdb_Options_setCompactionReadaheadSize(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jcompaction_readahead_size) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -1453,11 +1453,11 @@ void Java_org_rocksdb_Options_setCompactionReadaheadSize(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    compactionReadaheadSize
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Options_compactionReadaheadSize(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_Options_compactionReadaheadSize(JNIEnv* /*env*/,
                                                        jobject /*jobj*/,
                                                        jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -1465,11 +1465,11 @@ jlong Java_org_rocksdb_Options_compactionReadaheadSize(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setRandomAccessMaxBufferSize
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_setRandomAccessMaxBufferSize(
+void Java_org_terarkdb_Options_setRandomAccessMaxBufferSize(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jrandom_access_max_buffer_size) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -1478,11 +1478,11 @@ void Java_org_rocksdb_Options_setRandomAccessMaxBufferSize(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    randomAccessMaxBufferSize
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Options_randomAccessMaxBufferSize(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_Options_randomAccessMaxBufferSize(JNIEnv* /*env*/,
                                                          jobject /*jobj*/,
                                                          jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -1490,11 +1490,11 @@ jlong Java_org_rocksdb_Options_randomAccessMaxBufferSize(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setWritableFileMaxBufferSize
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_setWritableFileMaxBufferSize(
+void Java_org_terarkdb_Options_setWritableFileMaxBufferSize(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jwritable_file_max_buffer_size) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -1503,11 +1503,11 @@ void Java_org_rocksdb_Options_setWritableFileMaxBufferSize(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    writableFileMaxBufferSize
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Options_writableFileMaxBufferSize(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_Options_writableFileMaxBufferSize(JNIEnv* /*env*/,
                                                          jobject /*jobj*/,
                                                          jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -1515,11 +1515,11 @@ jlong Java_org_rocksdb_Options_writableFileMaxBufferSize(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    useAdaptiveMutex
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_Options_useAdaptiveMutex(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_Options_useAdaptiveMutex(JNIEnv* /*env*/,
                                                    jobject /*jobj*/,
                                                    jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -1527,11 +1527,11 @@ jboolean Java_org_rocksdb_Options_useAdaptiveMutex(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setUseAdaptiveMutex
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_Options_setUseAdaptiveMutex(JNIEnv* /*env*/,
+void Java_org_terarkdb_Options_setUseAdaptiveMutex(JNIEnv* /*env*/,
                                                   jobject /*jobj*/,
                                                   jlong jhandle,
                                                   jboolean use_adaptive_mutex) {
@@ -1540,22 +1540,22 @@ void Java_org_rocksdb_Options_setUseAdaptiveMutex(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    bytesPerSync
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Options_bytesPerSync(JNIEnv* /*env*/, jobject /*jobj*/,
+jlong Java_org_terarkdb_Options_bytesPerSync(JNIEnv* /*env*/, jobject /*jobj*/,
                                             jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
       ->bytes_per_sync;
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setBytesPerSync
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_setBytesPerSync(JNIEnv* /*env*/, jobject /*jobj*/,
+void Java_org_terarkdb_Options_setBytesPerSync(JNIEnv* /*env*/, jobject /*jobj*/,
                                               jlong jhandle,
                                               jlong bytes_per_sync) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)->bytes_per_sync =
@@ -1563,11 +1563,11 @@ void Java_org_rocksdb_Options_setBytesPerSync(JNIEnv* /*env*/, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setWalBytesPerSync
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_setWalBytesPerSync(JNIEnv* /*env*/,
+void Java_org_terarkdb_Options_setWalBytesPerSync(JNIEnv* /*env*/,
                                                  jobject /*jobj*/,
                                                  jlong jhandle,
                                                  jlong jwal_bytes_per_sync) {
@@ -1576,11 +1576,11 @@ void Java_org_rocksdb_Options_setWalBytesPerSync(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    walBytesPerSync
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Options_walBytesPerSync(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_Options_walBytesPerSync(JNIEnv* /*env*/,
                                                jobject /*jobj*/,
                                                jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -1588,11 +1588,11 @@ jlong Java_org_rocksdb_Options_walBytesPerSync(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setEnableThreadTracking
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_Options_setEnableThreadTracking(
+void Java_org_terarkdb_Options_setEnableThreadTracking(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean jenable_thread_tracking) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -1600,11 +1600,11 @@ void Java_org_rocksdb_Options_setEnableThreadTracking(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    enableThreadTracking
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_Options_enableThreadTracking(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_Options_enableThreadTracking(JNIEnv* /*env*/,
                                                        jobject /*jobj*/,
                                                        jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -1612,11 +1612,11 @@ jboolean Java_org_rocksdb_Options_enableThreadTracking(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setDelayedWriteRate
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_setDelayedWriteRate(JNIEnv* /*env*/,
+void Java_org_terarkdb_Options_setDelayedWriteRate(JNIEnv* /*env*/,
                                                   jobject /*jobj*/,
                                                   jlong jhandle,
                                                   jlong jdelayed_write_rate) {
@@ -1625,11 +1625,11 @@ void Java_org_rocksdb_Options_setDelayedWriteRate(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    delayedWriteRate
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Options_delayedWriteRate(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_Options_delayedWriteRate(JNIEnv* /*env*/,
                                                 jobject /*jobj*/,
                                                 jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -1637,11 +1637,11 @@ jlong Java_org_rocksdb_Options_delayedWriteRate(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setAllowConcurrentMemtableWrite
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_Options_setAllowConcurrentMemtableWrite(JNIEnv* /*env*/,
+void Java_org_terarkdb_Options_setAllowConcurrentMemtableWrite(JNIEnv* /*env*/,
                                                               jobject /*jobj*/,
                                                               jlong jhandle,
                                                               jboolean allow) {
@@ -1650,11 +1650,11 @@ void Java_org_rocksdb_Options_setAllowConcurrentMemtableWrite(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    allowConcurrentMemtableWrite
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_Options_allowConcurrentMemtableWrite(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_Options_allowConcurrentMemtableWrite(JNIEnv* /*env*/,
                                                                jobject /*jobj*/,
                                                                jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -1662,33 +1662,33 @@ jboolean Java_org_rocksdb_Options_allowConcurrentMemtableWrite(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setEnableWriteThreadAdaptiveYield
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_Options_setEnableWriteThreadAdaptiveYield(
+void Java_org_terarkdb_Options_setEnableWriteThreadAdaptiveYield(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle, jboolean yield) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
       ->enable_write_thread_adaptive_yield = static_cast<bool>(yield);
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    enableWriteThreadAdaptiveYield
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_Options_enableWriteThreadAdaptiveYield(
+jboolean Java_org_terarkdb_Options_enableWriteThreadAdaptiveYield(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
       ->enable_write_thread_adaptive_yield;
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setWriteThreadMaxYieldUsec
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_setWriteThreadMaxYieldUsec(JNIEnv* /*env*/,
+void Java_org_terarkdb_Options_setWriteThreadMaxYieldUsec(JNIEnv* /*env*/,
                                                          jobject /*jobj*/,
                                                          jlong jhandle,
                                                          jlong max) {
@@ -1697,11 +1697,11 @@ void Java_org_rocksdb_Options_setWriteThreadMaxYieldUsec(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    writeThreadMaxYieldUsec
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Options_writeThreadMaxYieldUsec(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_Options_writeThreadMaxYieldUsec(JNIEnv* /*env*/,
                                                        jobject /*jobj*/,
                                                        jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -1709,11 +1709,11 @@ jlong Java_org_rocksdb_Options_writeThreadMaxYieldUsec(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setWriteThreadSlowYieldUsec
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_setWriteThreadSlowYieldUsec(JNIEnv* /*env*/,
+void Java_org_terarkdb_Options_setWriteThreadSlowYieldUsec(JNIEnv* /*env*/,
                                                           jobject /*jobj*/,
                                                           jlong jhandle,
                                                           jlong slow) {
@@ -1722,11 +1722,11 @@ void Java_org_rocksdb_Options_setWriteThreadSlowYieldUsec(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    writeThreadSlowYieldUsec
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Options_writeThreadSlowYieldUsec(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_Options_writeThreadSlowYieldUsec(JNIEnv* /*env*/,
                                                         jobject /*jobj*/,
                                                         jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -1734,11 +1734,11 @@ jlong Java_org_rocksdb_Options_writeThreadSlowYieldUsec(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setSkipStatsUpdateOnDbOpen
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_Options_setSkipStatsUpdateOnDbOpen(
+void Java_org_terarkdb_Options_setSkipStatsUpdateOnDbOpen(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean jskip_stats_update_on_db_open) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -1747,11 +1747,11 @@ void Java_org_rocksdb_Options_setSkipStatsUpdateOnDbOpen(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    skipStatsUpdateOnDbOpen
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_Options_skipStatsUpdateOnDbOpen(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_Options_skipStatsUpdateOnDbOpen(JNIEnv* /*env*/,
                                                           jobject /*jobj*/,
                                                           jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -1759,11 +1759,11 @@ jboolean Java_org_rocksdb_Options_skipStatsUpdateOnDbOpen(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setWalRecoveryMode
  * Signature: (JB)V
  */
-void Java_org_rocksdb_Options_setWalRecoveryMode(
+void Java_org_terarkdb_Options_setWalRecoveryMode(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jbyte jwal_recovery_mode_value) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -1773,11 +1773,11 @@ void Java_org_rocksdb_Options_setWalRecoveryMode(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    walRecoveryMode
  * Signature: (J)B
  */
-jbyte Java_org_rocksdb_Options_walRecoveryMode(JNIEnv* /*env*/,
+jbyte Java_org_terarkdb_Options_walRecoveryMode(JNIEnv* /*env*/,
                                                jobject /*jobj*/,
                                                jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -1786,33 +1786,57 @@ jbyte Java_org_rocksdb_Options_walRecoveryMode(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setAllow2pc
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_Options_setAllow2pc(JNIEnv* /*env*/, jobject /*jobj*/,
+void Java_org_terarkdb_Options_setAllow2pc(JNIEnv* /*env*/, jobject /*jobj*/,
                                           jlong jhandle, jboolean jallow_2pc) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
   opt->allow_2pc = static_cast<bool>(jallow_2pc);
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    allow2pc
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_Options_allow2pc(JNIEnv* /*env*/, jobject /*jobj*/,
+jboolean Java_org_terarkdb_Options_allow2pc(JNIEnv* /*env*/, jobject /*jobj*/,
                                            jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
   return static_cast<jboolean>(opt->allow_2pc);
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
+ * Method:    setCheckPointFakeFlush
+ * Signature: (JZ)V
+ */
+void Java_org_terarkdb_Options_setCheckPointFakeFlush(
+    JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
+    jboolean jcheck_point_fake_flush) {
+  auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
+  opt->check_point_fake_flush = static_cast<bool>(jcheck_point_fake_flush);
+}
+
+/*
+ * Class:     org_terarkdb_Options
+ * Method:    checkPointFakeFlush
+ * Signature: (J)Z
+ */
+jboolean Java_org_terarkdb_Options_checkPointFakeFlush(JNIEnv* /*env*/,
+                                                  jobject /*jobj*/,
+                                                  jlong jhandle) {
+  auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
+  return static_cast<jboolean>(opt->check_point_fake_flush);
+}
+
+/*
+ * Class:     org_terarkdb_Options
  * Method:    setRowCache
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_setRowCache(JNIEnv* /*env*/, jobject /*jobj*/,
+void Java_org_terarkdb_Options_setRowCache(JNIEnv* /*env*/, jobject /*jobj*/,
                                           jlong jhandle,
                                           jlong jrow_cache_handle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -1823,11 +1847,11 @@ void Java_org_rocksdb_Options_setRowCache(JNIEnv* /*env*/, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setFailIfOptionsFileError
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_Options_setFailIfOptionsFileError(
+void Java_org_terarkdb_Options_setFailIfOptionsFileError(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean jfail_if_options_file_error) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -1836,11 +1860,11 @@ void Java_org_rocksdb_Options_setFailIfOptionsFileError(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    failIfOptionsFileError
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_Options_failIfOptionsFileError(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_Options_failIfOptionsFileError(JNIEnv* /*env*/,
                                                          jobject /*jobj*/,
                                                          jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -1848,11 +1872,11 @@ jboolean Java_org_rocksdb_Options_failIfOptionsFileError(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setDumpMallocStats
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_Options_setDumpMallocStats(JNIEnv* /*env*/,
+void Java_org_terarkdb_Options_setDumpMallocStats(JNIEnv* /*env*/,
                                                  jobject /*jobj*/,
                                                  jlong jhandle,
                                                  jboolean jdump_malloc_stats) {
@@ -1861,11 +1885,11 @@ void Java_org_rocksdb_Options_setDumpMallocStats(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    dumpMallocStats
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_Options_dumpMallocStats(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_Options_dumpMallocStats(JNIEnv* /*env*/,
                                                   jobject /*jobj*/,
                                                   jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -1873,11 +1897,11 @@ jboolean Java_org_rocksdb_Options_dumpMallocStats(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setAvoidFlushDuringRecovery
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_Options_setAvoidFlushDuringRecovery(
+void Java_org_terarkdb_Options_setAvoidFlushDuringRecovery(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean javoid_flush_during_recovery) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -1886,11 +1910,11 @@ void Java_org_rocksdb_Options_setAvoidFlushDuringRecovery(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    avoidFlushDuringRecovery
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_Options_avoidFlushDuringRecovery(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_Options_avoidFlushDuringRecovery(JNIEnv* /*env*/,
                                                            jobject /*jobj*/,
                                                            jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -1898,11 +1922,11 @@ jboolean Java_org_rocksdb_Options_avoidFlushDuringRecovery(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setAvoidFlushDuringShutdown
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_Options_setAvoidFlushDuringShutdown(
+void Java_org_terarkdb_Options_setAvoidFlushDuringShutdown(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean javoid_flush_during_shutdown) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -1911,11 +1935,11 @@ void Java_org_rocksdb_Options_setAvoidFlushDuringShutdown(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    avoidFlushDuringShutdown
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_Options_avoidFlushDuringShutdown(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_Options_avoidFlushDuringShutdown(JNIEnv* /*env*/,
                                                            jobject /*jobj*/,
                                                            jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -1926,7 +1950,7 @@ jboolean Java_org_rocksdb_Options_avoidFlushDuringShutdown(JNIEnv* /*env*/,
  * Method:    tableFactoryName
  * Signature: (J)Ljava/lang/String
  */
-jstring Java_org_rocksdb_Options_tableFactoryName(JNIEnv* env, jobject /*jobj*/,
+jstring Java_org_terarkdb_Options_tableFactoryName(JNIEnv* env, jobject /*jobj*/,
                                                   jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
   TERARKDB_NAMESPACE::TableFactory* tf = opt->table_factory.get();
@@ -1939,11 +1963,11 @@ jstring Java_org_rocksdb_Options_tableFactoryName(JNIEnv* env, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    minWriteBufferNumberToMerge
  * Signature: (J)I
  */
-jint Java_org_rocksdb_Options_minWriteBufferNumberToMerge(JNIEnv* /*env*/,
+jint Java_org_terarkdb_Options_minWriteBufferNumberToMerge(JNIEnv* /*env*/,
                                                           jobject /*jobj*/,
                                                           jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -1951,11 +1975,11 @@ jint Java_org_rocksdb_Options_minWriteBufferNumberToMerge(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setMinWriteBufferNumberToMerge
  * Signature: (JI)V
  */
-void Java_org_rocksdb_Options_setMinWriteBufferNumberToMerge(
+void Java_org_terarkdb_Options_setMinWriteBufferNumberToMerge(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jint jmin_write_buffer_number_to_merge) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -1963,11 +1987,11 @@ void Java_org_rocksdb_Options_setMinWriteBufferNumberToMerge(
       static_cast<int>(jmin_write_buffer_number_to_merge);
 }
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    maxWriteBufferNumberToMaintain
  * Signature: (J)I
  */
-jint Java_org_rocksdb_Options_maxWriteBufferNumberToMaintain(JNIEnv* /*env*/,
+jint Java_org_terarkdb_Options_maxWriteBufferNumberToMaintain(JNIEnv* /*env*/,
                                                              jobject /*jobj*/,
                                                              jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -1975,11 +1999,11 @@ jint Java_org_rocksdb_Options_maxWriteBufferNumberToMaintain(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setMaxWriteBufferNumberToMaintain
  * Signature: (JI)V
  */
-void Java_org_rocksdb_Options_setMaxWriteBufferNumberToMaintain(
+void Java_org_terarkdb_Options_setMaxWriteBufferNumberToMaintain(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jint jmax_write_buffer_number_to_maintain) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -1988,11 +2012,11 @@ void Java_org_rocksdb_Options_setMaxWriteBufferNumberToMaintain(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setCompressionType
  * Signature: (JB)V
  */
-void Java_org_rocksdb_Options_setCompressionType(
+void Java_org_terarkdb_Options_setCompressionType(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jbyte jcompression_type_value) {
   auto* opts = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -2002,11 +2026,11 @@ void Java_org_rocksdb_Options_setCompressionType(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    compressionType
  * Signature: (J)B
  */
-jbyte Java_org_rocksdb_Options_compressionType(JNIEnv* /*env*/,
+jbyte Java_org_terarkdb_Options_compressionType(JNIEnv* /*env*/,
                                                jobject /*jobj*/,
                                                jlong jhandle) {
   auto* opts = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -2094,11 +2118,11 @@ jbyteArray rocksdb_compression_list_helper(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setCompressionPerLevel
  * Signature: (J[B)V
  */
-void Java_org_rocksdb_Options_setCompressionPerLevel(
+void Java_org_terarkdb_Options_setCompressionPerLevel(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle,
     jbyteArray jcompressionLevels) {
   auto uptr_compression_levels =
@@ -2112,11 +2136,11 @@ void Java_org_rocksdb_Options_setCompressionPerLevel(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    compressionPerLevel
  * Signature: (J)[B
  */
-jbyteArray Java_org_rocksdb_Options_compressionPerLevel(JNIEnv* env,
+jbyteArray Java_org_terarkdb_Options_compressionPerLevel(JNIEnv* env,
                                                         jobject /*jobj*/,
                                                         jlong jhandle) {
   auto* options = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -2124,11 +2148,11 @@ jbyteArray Java_org_rocksdb_Options_compressionPerLevel(JNIEnv* env,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setBottommostCompressionType
  * Signature: (JB)V
  */
-void Java_org_rocksdb_Options_setBottommostCompressionType(
+void Java_org_terarkdb_Options_setBottommostCompressionType(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jbyte jcompression_type_value) {
   auto* options = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -2138,11 +2162,11 @@ void Java_org_rocksdb_Options_setBottommostCompressionType(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    bottommostCompressionType
  * Signature: (J)B
  */
-jbyte Java_org_rocksdb_Options_bottommostCompressionType(JNIEnv* /*env*/,
+jbyte Java_org_terarkdb_Options_bottommostCompressionType(JNIEnv* /*env*/,
                                                          jobject /*jobj*/,
                                                          jlong jhandle) {
   auto* options = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -2151,11 +2175,11 @@ jbyte Java_org_rocksdb_Options_bottommostCompressionType(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setBottommostCompressionOptions
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_setBottommostCompressionOptions(
+void Java_org_terarkdb_Options_setBottommostCompressionOptions(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jbottommost_compression_options_handle) {
   auto* options = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -2166,11 +2190,11 @@ void Java_org_rocksdb_Options_setBottommostCompressionOptions(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setCompressionOptions
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_setCompressionOptions(
+void Java_org_terarkdb_Options_setCompressionOptions(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jcompression_options_handle) {
   auto* options = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -2181,11 +2205,11 @@ void Java_org_rocksdb_Options_setCompressionOptions(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setCompactionStyle
  * Signature: (JB)V
  */
-void Java_org_rocksdb_Options_setCompactionStyle(JNIEnv* /*env*/,
+void Java_org_terarkdb_Options_setCompactionStyle(JNIEnv* /*env*/,
                                                  jobject /*jobj*/,
                                                  jlong jhandle,
                                                  jbyte compaction_style) {
@@ -2194,11 +2218,11 @@ void Java_org_rocksdb_Options_setCompactionStyle(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    compactionStyle
  * Signature: (J)B
  */
-jbyte Java_org_rocksdb_Options_compactionStyle(JNIEnv* /*env*/,
+jbyte Java_org_terarkdb_Options_compactionStyle(JNIEnv* /*env*/,
                                                jobject /*jobj*/,
                                                jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -2206,43 +2230,43 @@ jbyte Java_org_rocksdb_Options_compactionStyle(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    numLevels
  * Signature: (J)I
  */
-jint Java_org_rocksdb_Options_numLevels(JNIEnv* /*env*/, jobject /*jobj*/,
+jint Java_org_terarkdb_Options_numLevels(JNIEnv* /*env*/, jobject /*jobj*/,
                                         jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)->num_levels;
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setNumLevels
  * Signature: (JI)V
  */
-void Java_org_rocksdb_Options_setNumLevels(JNIEnv* /*env*/, jobject /*jobj*/,
+void Java_org_terarkdb_Options_setNumLevels(JNIEnv* /*env*/, jobject /*jobj*/,
                                            jlong jhandle, jint jnum_levels) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)->num_levels =
       static_cast<int>(jnum_levels);
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    levelZeroFileNumCompactionTrigger
  * Signature: (J)I
  */
-jint Java_org_rocksdb_Options_levelZeroFileNumCompactionTrigger(
+jint Java_org_terarkdb_Options_levelZeroFileNumCompactionTrigger(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
       ->level0_file_num_compaction_trigger;
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setLevelZeroFileNumCompactionTrigger
  * Signature: (JI)V
  */
-void Java_org_rocksdb_Options_setLevelZeroFileNumCompactionTrigger(
+void Java_org_terarkdb_Options_setLevelZeroFileNumCompactionTrigger(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jint jlevel0_file_num_compaction_trigger) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -2251,11 +2275,11 @@ void Java_org_rocksdb_Options_setLevelZeroFileNumCompactionTrigger(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    levelZeroSlowdownWritesTrigger
  * Signature: (J)I
  */
-jint Java_org_rocksdb_Options_levelZeroSlowdownWritesTrigger(JNIEnv* /*env*/,
+jint Java_org_terarkdb_Options_levelZeroSlowdownWritesTrigger(JNIEnv* /*env*/,
                                                              jobject /*jobj*/,
                                                              jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -2263,11 +2287,11 @@ jint Java_org_rocksdb_Options_levelZeroSlowdownWritesTrigger(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setLevelSlowdownWritesTrigger
  * Signature: (JI)V
  */
-void Java_org_rocksdb_Options_setLevelZeroSlowdownWritesTrigger(
+void Java_org_terarkdb_Options_setLevelZeroSlowdownWritesTrigger(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jint jlevel0_slowdown_writes_trigger) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -2276,11 +2300,11 @@ void Java_org_rocksdb_Options_setLevelZeroSlowdownWritesTrigger(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    levelZeroStopWritesTrigger
  * Signature: (J)I
  */
-jint Java_org_rocksdb_Options_levelZeroStopWritesTrigger(JNIEnv* /*env*/,
+jint Java_org_terarkdb_Options_levelZeroStopWritesTrigger(JNIEnv* /*env*/,
                                                          jobject /*jobj*/,
                                                          jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -2288,11 +2312,11 @@ jint Java_org_rocksdb_Options_levelZeroStopWritesTrigger(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setLevelStopWritesTrigger
  * Signature: (JI)V
  */
-void Java_org_rocksdb_Options_setLevelZeroStopWritesTrigger(
+void Java_org_terarkdb_Options_setLevelZeroStopWritesTrigger(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jint jlevel0_stop_writes_trigger) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -2301,11 +2325,11 @@ void Java_org_rocksdb_Options_setLevelZeroStopWritesTrigger(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    targetFileSizeBase
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Options_targetFileSizeBase(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_Options_targetFileSizeBase(JNIEnv* /*env*/,
                                                   jobject /*jobj*/,
                                                   jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -2313,11 +2337,11 @@ jlong Java_org_rocksdb_Options_targetFileSizeBase(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setTargetFileSizeBase
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_setTargetFileSizeBase(
+void Java_org_terarkdb_Options_setTargetFileSizeBase(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jtarget_file_size_base) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -2325,11 +2349,11 @@ void Java_org_rocksdb_Options_setTargetFileSizeBase(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    targetFileSizeMultiplier
  * Signature: (J)I
  */
-jint Java_org_rocksdb_Options_targetFileSizeMultiplier(JNIEnv* /*env*/,
+jint Java_org_terarkdb_Options_targetFileSizeMultiplier(JNIEnv* /*env*/,
                                                        jobject /*jobj*/,
                                                        jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -2337,11 +2361,11 @@ jint Java_org_rocksdb_Options_targetFileSizeMultiplier(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setTargetFileSizeMultiplier
  * Signature: (JI)V
  */
-void Java_org_rocksdb_Options_setTargetFileSizeMultiplier(
+void Java_org_terarkdb_Options_setTargetFileSizeMultiplier(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jint jtarget_file_size_multiplier) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -2350,11 +2374,11 @@ void Java_org_rocksdb_Options_setTargetFileSizeMultiplier(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    maxBytesForLevelBase
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Options_maxBytesForLevelBase(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_Options_maxBytesForLevelBase(JNIEnv* /*env*/,
                                                     jobject /*jobj*/,
                                                     jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -2362,11 +2386,11 @@ jlong Java_org_rocksdb_Options_maxBytesForLevelBase(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setMaxBytesForLevelBase
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_setMaxBytesForLevelBase(
+void Java_org_terarkdb_Options_setMaxBytesForLevelBase(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jmax_bytes_for_level_base) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -2375,22 +2399,22 @@ void Java_org_rocksdb_Options_setMaxBytesForLevelBase(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    levelCompactionDynamicLevelBytes
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_Options_levelCompactionDynamicLevelBytes(
+jboolean Java_org_terarkdb_Options_levelCompactionDynamicLevelBytes(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
       ->level_compaction_dynamic_level_bytes;
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setLevelCompactionDynamicLevelBytes
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_Options_setLevelCompactionDynamicLevelBytes(
+void Java_org_terarkdb_Options_setLevelCompactionDynamicLevelBytes(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean jenable_dynamic_level_bytes) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -2398,11 +2422,11 @@ void Java_org_rocksdb_Options_setLevelCompactionDynamicLevelBytes(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    maxBytesForLevelMultiplier
  * Signature: (J)D
  */
-jdouble Java_org_rocksdb_Options_maxBytesForLevelMultiplier(JNIEnv* /*env*/,
+jdouble Java_org_terarkdb_Options_maxBytesForLevelMultiplier(JNIEnv* /*env*/,
                                                             jobject /*jobj*/,
                                                             jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -2410,11 +2434,11 @@ jdouble Java_org_rocksdb_Options_maxBytesForLevelMultiplier(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setMaxBytesForLevelMultiplier
  * Signature: (JD)V
  */
-void Java_org_rocksdb_Options_setMaxBytesForLevelMultiplier(
+void Java_org_terarkdb_Options_setMaxBytesForLevelMultiplier(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jdouble jmax_bytes_for_level_multiplier) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -2423,11 +2447,11 @@ void Java_org_rocksdb_Options_setMaxBytesForLevelMultiplier(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    maxCompactionBytes
  * Signature: (J)I
  */
-jlong Java_org_rocksdb_Options_maxCompactionBytes(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_Options_maxCompactionBytes(JNIEnv* /*env*/,
                                                   jobject /*jobj*/,
                                                   jlong jhandle) {
   return static_cast<jlong>(
@@ -2436,11 +2460,11 @@ jlong Java_org_rocksdb_Options_maxCompactionBytes(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setMaxCompactionBytes
  * Signature: (JI)V
  */
-void Java_org_rocksdb_Options_setMaxCompactionBytes(
+void Java_org_terarkdb_Options_setMaxCompactionBytes(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jmax_compaction_bytes) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -2448,22 +2472,22 @@ void Java_org_rocksdb_Options_setMaxCompactionBytes(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    arenaBlockSize
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Options_arenaBlockSize(JNIEnv* /*env*/, jobject /*jobj*/,
+jlong Java_org_terarkdb_Options_arenaBlockSize(JNIEnv* /*env*/, jobject /*jobj*/,
                                               jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
       ->arena_block_size;
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setArenaBlockSize
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_setArenaBlockSize(JNIEnv* env, jobject /*jobj*/,
+void Java_org_terarkdb_Options_setArenaBlockSize(JNIEnv* env, jobject /*jobj*/,
                                                 jlong jhandle,
                                                 jlong jarena_block_size) {
   TERARKDB_NAMESPACE::Status s =
@@ -2477,11 +2501,11 @@ void Java_org_rocksdb_Options_setArenaBlockSize(JNIEnv* env, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setTargetBlobFileSize
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_setTargetBlobFileSize(JNIEnv* env, jobject /*jobj*/,
+void Java_org_terarkdb_Options_setTargetBlobFileSize(JNIEnv* env, jobject /*jobj*/,
                                                 jlong jhandle,
                                                 jlong jtarget_blob_file_size) {
   TERARKDB_NAMESPACE::Status s =
@@ -2496,22 +2520,22 @@ void Java_org_rocksdb_Options_setTargetBlobFileSize(JNIEnv* env, jobject /*jobj*
 
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    targetBlobFileSize
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Options_targetBlobFileSize(JNIEnv* /*env*/, jobject /*jobj*/,
+jlong Java_org_terarkdb_Options_targetBlobFileSize(JNIEnv* /*env*/, jobject /*jobj*/,
                                               jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
       ->target_blob_file_size;
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setBlobSize
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_setBlobSize(JNIEnv* env, jobject /*jobj*/,
+void Java_org_terarkdb_Options_setBlobSize(JNIEnv* env, jobject /*jobj*/,
                                                 jlong jhandle,
                                                 jlong jblob_size) {
   TERARKDB_NAMESPACE::Status s =
@@ -2526,22 +2550,22 @@ void Java_org_rocksdb_Options_setBlobSize(JNIEnv* env, jobject /*jobj*/,
 
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    blobSize
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Options_blobSize(JNIEnv* /*env*/, jobject /*jobj*/,
+jlong Java_org_terarkdb_Options_blobSize(JNIEnv* /*env*/, jobject /*jobj*/,
                                               jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
       ->blob_size;
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setBlobGcRatio
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_setBlobGcRatio(JNIEnv* env, jobject /*jobj*/,
+void Java_org_terarkdb_Options_setBlobGcRatio(JNIEnv* env, jobject /*jobj*/,
                                              jlong jhandle,
                                              jdouble jblob_gc_ratio) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)->blob_gc_ratio =
@@ -2549,21 +2573,21 @@ void Java_org_rocksdb_Options_setBlobGcRatio(JNIEnv* env, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    blobGcRatio
  * Signature: (J)J
  */
-jdouble Java_org_rocksdb_Options_blobGcRatio(JNIEnv* /*env*/, jobject /*jobj*/,
+jdouble Java_org_terarkdb_Options_blobGcRatio(JNIEnv* /*env*/, jobject /*jobj*/,
                                            jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)->blob_gc_ratio;
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    disableAutoCompactions
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_Options_disableAutoCompactions(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_Options_disableAutoCompactions(JNIEnv* /*env*/,
                                                          jobject /*jobj*/,
                                                          jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -2571,11 +2595,11 @@ jboolean Java_org_rocksdb_Options_disableAutoCompactions(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setDisableAutoCompactions
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_Options_setDisableAutoCompactions(
+void Java_org_terarkdb_Options_setDisableAutoCompactions(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean jdisable_auto_compactions) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -2583,11 +2607,11 @@ void Java_org_rocksdb_Options_setDisableAutoCompactions(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    maxSequentialSkipInIterations
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Options_maxSequentialSkipInIterations(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_Options_maxSequentialSkipInIterations(JNIEnv* /*env*/,
                                                              jobject /*jobj*/,
                                                              jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -2595,11 +2619,11 @@ jlong Java_org_rocksdb_Options_maxSequentialSkipInIterations(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setMaxSequentialSkipInIterations
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_setMaxSequentialSkipInIterations(
+void Java_org_terarkdb_Options_setMaxSequentialSkipInIterations(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jmax_sequential_skip_in_iterations) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -2608,11 +2632,11 @@ void Java_org_rocksdb_Options_setMaxSequentialSkipInIterations(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    inplaceUpdateSupport
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_Options_inplaceUpdateSupport(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_Options_inplaceUpdateSupport(JNIEnv* /*env*/,
                                                        jobject /*jobj*/,
                                                        jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -2620,11 +2644,11 @@ jboolean Java_org_rocksdb_Options_inplaceUpdateSupport(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setInplaceUpdateSupport
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_Options_setInplaceUpdateSupport(
+void Java_org_terarkdb_Options_setInplaceUpdateSupport(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean jinplace_update_support) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -2632,11 +2656,11 @@ void Java_org_rocksdb_Options_setInplaceUpdateSupport(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    inplaceUpdateNumLocks
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Options_inplaceUpdateNumLocks(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_Options_inplaceUpdateNumLocks(JNIEnv* /*env*/,
                                                      jobject /*jobj*/,
                                                      jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -2644,11 +2668,11 @@ jlong Java_org_rocksdb_Options_inplaceUpdateNumLocks(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setInplaceUpdateNumLocks
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_setInplaceUpdateNumLocks(
+void Java_org_terarkdb_Options_setInplaceUpdateNumLocks(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle,
     jlong jinplace_update_num_locks) {
   TERARKDB_NAMESPACE::Status s =
@@ -2662,11 +2686,11 @@ void Java_org_rocksdb_Options_setInplaceUpdateNumLocks(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    memtablePrefixBloomSizeRatio
  * Signature: (J)I
  */
-jdouble Java_org_rocksdb_Options_memtablePrefixBloomSizeRatio(JNIEnv* /*env*/,
+jdouble Java_org_terarkdb_Options_memtablePrefixBloomSizeRatio(JNIEnv* /*env*/,
                                                               jobject /*jobj*/,
                                                               jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -2674,11 +2698,11 @@ jdouble Java_org_rocksdb_Options_memtablePrefixBloomSizeRatio(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setMemtablePrefixBloomSizeRatio
  * Signature: (JI)V
  */
-void Java_org_rocksdb_Options_setMemtablePrefixBloomSizeRatio(
+void Java_org_terarkdb_Options_setMemtablePrefixBloomSizeRatio(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jdouble jmemtable_prefix_bloom_size_ratio) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -2687,22 +2711,22 @@ void Java_org_rocksdb_Options_setMemtablePrefixBloomSizeRatio(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    bloomLocality
  * Signature: (J)I
  */
-jint Java_org_rocksdb_Options_bloomLocality(JNIEnv* /*env*/, jobject /*jobj*/,
+jint Java_org_terarkdb_Options_bloomLocality(JNIEnv* /*env*/, jobject /*jobj*/,
                                             jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
       ->bloom_locality;
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setBloomLocality
  * Signature: (JI)V
  */
-void Java_org_rocksdb_Options_setBloomLocality(JNIEnv* /*env*/,
+void Java_org_terarkdb_Options_setBloomLocality(JNIEnv* /*env*/,
                                                jobject /*jobj*/, jlong jhandle,
                                                jint jbloom_locality) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)->bloom_locality =
@@ -2710,11 +2734,11 @@ void Java_org_rocksdb_Options_setBloomLocality(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    maxSuccessiveMerges
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Options_maxSuccessiveMerges(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_Options_maxSuccessiveMerges(JNIEnv* /*env*/,
                                                    jobject /*jobj*/,
                                                    jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -2722,11 +2746,11 @@ jlong Java_org_rocksdb_Options_maxSuccessiveMerges(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setMaxSuccessiveMerges
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_setMaxSuccessiveMerges(
+void Java_org_terarkdb_Options_setMaxSuccessiveMerges(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle,
     jlong jmax_successive_merges) {
   TERARKDB_NAMESPACE::Status s =
@@ -2740,11 +2764,11 @@ void Java_org_rocksdb_Options_setMaxSuccessiveMerges(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    optimizeFiltersForHits
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_Options_optimizeFiltersForHits(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_Options_optimizeFiltersForHits(JNIEnv* /*env*/,
                                                          jobject /*jobj*/,
                                                          jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -2752,11 +2776,11 @@ jboolean Java_org_rocksdb_Options_optimizeFiltersForHits(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setOptimizeFiltersForHits
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_Options_setOptimizeFiltersForHits(
+void Java_org_terarkdb_Options_setOptimizeFiltersForHits(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean joptimize_filters_for_hits) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -2765,11 +2789,11 @@ void Java_org_rocksdb_Options_setOptimizeFiltersForHits(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    optimizeRangeDeletion
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_Options_optimizeRangeDeletion(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_Options_optimizeRangeDeletion(JNIEnv* /*env*/,
                                                         jobject /*jobj*/,
                                                         jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -2777,11 +2801,11 @@ jboolean Java_org_rocksdb_Options_optimizeRangeDeletion(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setOptimizeRangeDeletion
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_Options_setOptimizeRangeDeletion(
+void Java_org_terarkdb_Options_setOptimizeRangeDeletion(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean joptimize_range_deletion) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -2789,22 +2813,22 @@ void Java_org_rocksdb_Options_setOptimizeRangeDeletion(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    optimizeForSmallDb
  * Signature: (J)V
  */
-void Java_org_rocksdb_Options_optimizeForSmallDb(JNIEnv* /*env*/,
+void Java_org_terarkdb_Options_optimizeForSmallDb(JNIEnv* /*env*/,
                                                  jobject /*jobj*/,
                                                  jlong jhandle) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)->OptimizeForSmallDb();
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    optimizeForPointLookup
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_optimizeForPointLookup(
+void Java_org_terarkdb_Options_optimizeForPointLookup(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong block_cache_size_mb) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -2812,11 +2836,11 @@ void Java_org_rocksdb_Options_optimizeForPointLookup(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    optimizeLevelStyleCompaction
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_optimizeLevelStyleCompaction(
+void Java_org_terarkdb_Options_optimizeLevelStyleCompaction(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong memtable_memory_budget) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -2824,11 +2848,11 @@ void Java_org_rocksdb_Options_optimizeLevelStyleCompaction(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    optimizeUniversalStyleCompaction
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_optimizeUniversalStyleCompaction(
+void Java_org_terarkdb_Options_optimizeUniversalStyleCompaction(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong memtable_memory_budget) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -2836,22 +2860,22 @@ void Java_org_rocksdb_Options_optimizeUniversalStyleCompaction(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    prepareForBulkLoad
  * Signature: (J)V
  */
-void Java_org_rocksdb_Options_prepareForBulkLoad(JNIEnv* /*env*/,
+void Java_org_terarkdb_Options_prepareForBulkLoad(JNIEnv* /*env*/,
                                                  jobject /*jobj*/,
                                                  jlong jhandle) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)->PrepareForBulkLoad();
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    memtableHugePageSize
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Options_memtableHugePageSize(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_Options_memtableHugePageSize(JNIEnv* /*env*/,
                                                     jobject /*jobj*/,
                                                     jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -2859,11 +2883,11 @@ jlong Java_org_rocksdb_Options_memtableHugePageSize(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setMemtableHugePageSize
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_setMemtableHugePageSize(
+void Java_org_terarkdb_Options_setMemtableHugePageSize(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle,
     jlong jmemtable_huge_page_size) {
   TERARKDB_NAMESPACE::Status s =
@@ -2877,11 +2901,11 @@ void Java_org_rocksdb_Options_setMemtableHugePageSize(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    softPendingCompactionBytesLimit
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Options_softPendingCompactionBytesLimit(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_Options_softPendingCompactionBytesLimit(JNIEnv* /*env*/,
                                                                jobject /*jobj*/,
                                                                jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -2889,11 +2913,11 @@ jlong Java_org_rocksdb_Options_softPendingCompactionBytesLimit(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setSoftPendingCompactionBytesLimit
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_setSoftPendingCompactionBytesLimit(
+void Java_org_terarkdb_Options_setSoftPendingCompactionBytesLimit(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jsoft_pending_compaction_bytes_limit) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -2902,11 +2926,11 @@ void Java_org_rocksdb_Options_setSoftPendingCompactionBytesLimit(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    softHardCompactionBytesLimit
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_Options_hardPendingCompactionBytesLimit(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_Options_hardPendingCompactionBytesLimit(JNIEnv* /*env*/,
                                                                jobject /*jobj*/,
                                                                jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -2914,11 +2938,11 @@ jlong Java_org_rocksdb_Options_hardPendingCompactionBytesLimit(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setHardPendingCompactionBytesLimit
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_setHardPendingCompactionBytesLimit(
+void Java_org_terarkdb_Options_setHardPendingCompactionBytesLimit(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jhard_pending_compaction_bytes_limit) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -2927,11 +2951,11 @@ void Java_org_rocksdb_Options_setHardPendingCompactionBytesLimit(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    level0FileNumCompactionTrigger
  * Signature: (J)I
  */
-jint Java_org_rocksdb_Options_level0FileNumCompactionTrigger(JNIEnv* /*env*/,
+jint Java_org_terarkdb_Options_level0FileNumCompactionTrigger(JNIEnv* /*env*/,
                                                              jobject /*jobj*/,
                                                              jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -2939,11 +2963,11 @@ jint Java_org_rocksdb_Options_level0FileNumCompactionTrigger(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setLevel0FileNumCompactionTrigger
  * Signature: (JI)V
  */
-void Java_org_rocksdb_Options_setLevel0FileNumCompactionTrigger(
+void Java_org_terarkdb_Options_setLevel0FileNumCompactionTrigger(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jint jlevel0_file_num_compaction_trigger) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -2952,11 +2976,11 @@ void Java_org_rocksdb_Options_setLevel0FileNumCompactionTrigger(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    level0SlowdownWritesTrigger
  * Signature: (J)I
  */
-jint Java_org_rocksdb_Options_level0SlowdownWritesTrigger(JNIEnv* /*env*/,
+jint Java_org_terarkdb_Options_level0SlowdownWritesTrigger(JNIEnv* /*env*/,
                                                           jobject /*jobj*/,
                                                           jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -2964,11 +2988,11 @@ jint Java_org_rocksdb_Options_level0SlowdownWritesTrigger(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setLevel0SlowdownWritesTrigger
  * Signature: (JI)V
  */
-void Java_org_rocksdb_Options_setLevel0SlowdownWritesTrigger(
+void Java_org_terarkdb_Options_setLevel0SlowdownWritesTrigger(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jint jlevel0_slowdown_writes_trigger) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -2977,11 +3001,11 @@ void Java_org_rocksdb_Options_setLevel0SlowdownWritesTrigger(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    level0StopWritesTrigger
  * Signature: (J)I
  */
-jint Java_org_rocksdb_Options_level0StopWritesTrigger(JNIEnv* /*env*/,
+jint Java_org_terarkdb_Options_level0StopWritesTrigger(JNIEnv* /*env*/,
                                                       jobject /*jobj*/,
                                                       jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -2989,11 +3013,11 @@ jint Java_org_rocksdb_Options_level0StopWritesTrigger(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setLevel0StopWritesTrigger
  * Signature: (JI)V
  */
-void Java_org_rocksdb_Options_setLevel0StopWritesTrigger(
+void Java_org_terarkdb_Options_setLevel0StopWritesTrigger(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jint jlevel0_stop_writes_trigger) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -3002,11 +3026,11 @@ void Java_org_rocksdb_Options_setLevel0StopWritesTrigger(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    maxBytesForLevelMultiplierAdditional
  * Signature: (J)[I
  */
-jintArray Java_org_rocksdb_Options_maxBytesForLevelMultiplierAdditional(
+jintArray Java_org_terarkdb_Options_maxBytesForLevelMultiplierAdditional(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle) {
   auto mbflma = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
                     ->max_bytes_for_level_multiplier_additional;
@@ -3040,11 +3064,11 @@ jintArray Java_org_rocksdb_Options_maxBytesForLevelMultiplierAdditional(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setMaxBytesForLevelMultiplierAdditional
  * Signature: (J[I)V
  */
-void Java_org_rocksdb_Options_setMaxBytesForLevelMultiplierAdditional(
+void Java_org_terarkdb_Options_setMaxBytesForLevelMultiplierAdditional(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle,
     jintArray jmax_bytes_for_level_multiplier_additional) {
   jsize len = env->GetArrayLength(jmax_bytes_for_level_multiplier_additional);
@@ -3067,11 +3091,11 @@ void Java_org_rocksdb_Options_setMaxBytesForLevelMultiplierAdditional(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    paranoidFileChecks
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_Options_paranoidFileChecks(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_Options_paranoidFileChecks(JNIEnv* /*env*/,
                                                      jobject /*jobj*/,
                                                      jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -3079,11 +3103,11 @@ jboolean Java_org_rocksdb_Options_paranoidFileChecks(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setParanoidFileChecks
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_Options_setParanoidFileChecks(
+void Java_org_terarkdb_Options_setParanoidFileChecks(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean jparanoid_file_checks) {
   reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle)
@@ -3091,11 +3115,11 @@ void Java_org_rocksdb_Options_setParanoidFileChecks(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setCompactionPriority
  * Signature: (JB)V
  */
-void Java_org_rocksdb_Options_setCompactionPriority(
+void Java_org_terarkdb_Options_setCompactionPriority(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jbyte jcompaction_priority_value) {
   auto* opts = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -3105,11 +3129,11 @@ void Java_org_rocksdb_Options_setCompactionPriority(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    compactionPriority
  * Signature: (J)B
  */
-jbyte Java_org_rocksdb_Options_compactionPriority(JNIEnv* /*env*/,
+jbyte Java_org_terarkdb_Options_compactionPriority(JNIEnv* /*env*/,
                                                   jobject /*jobj*/,
                                                   jlong jhandle) {
   auto* opts = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -3118,11 +3142,11 @@ jbyte Java_org_rocksdb_Options_compactionPriority(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setReportBgIoStats
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_Options_setReportBgIoStats(JNIEnv* /*env*/,
+void Java_org_terarkdb_Options_setReportBgIoStats(JNIEnv* /*env*/,
                                                  jobject /*jobj*/,
                                                  jlong jhandle,
                                                  jboolean jreport_bg_io_stats) {
@@ -3131,11 +3155,11 @@ void Java_org_rocksdb_Options_setReportBgIoStats(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    reportBgIoStats
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_Options_reportBgIoStats(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_Options_reportBgIoStats(JNIEnv* /*env*/,
                                                   jobject /*jobj*/,
                                                   jlong jhandle) {
   auto* opts = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -3143,11 +3167,11 @@ jboolean Java_org_rocksdb_Options_reportBgIoStats(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setCompactionOptionsUniversal
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_Options_setCompactionOptionsUniversal(
+void Java_org_terarkdb_Options_setCompactionOptionsUniversal(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jcompaction_options_universal_handle) {
   auto* opts = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -3158,11 +3182,11 @@ void Java_org_rocksdb_Options_setCompactionOptionsUniversal(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    setForceConsistencyChecks
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_Options_setForceConsistencyChecks(
+void Java_org_terarkdb_Options_setForceConsistencyChecks(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean jforce_consistency_checks) {
   auto* opts = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -3170,11 +3194,11 @@ void Java_org_rocksdb_Options_setForceConsistencyChecks(
 }
 
 /*
- * Class:     org_rocksdb_Options
+ * Class:     org_terarkdb_Options
  * Method:    forceConsistencyChecks
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_Options_forceConsistencyChecks(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_Options_forceConsistencyChecks(JNIEnv* /*env*/,
                                                          jobject /*jobj*/,
                                                          jlong jhandle) {
   auto* opts = reinterpret_cast<TERARKDB_NAMESPACE::Options*>(jhandle);
@@ -3185,22 +3209,22 @@ jboolean Java_org_rocksdb_Options_forceConsistencyChecks(JNIEnv* /*env*/,
 // TERARKDB_NAMESPACE::ColumnFamilyOptions
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    newColumnFamilyOptions
  * Signature: ()J
  */
-jlong Java_org_rocksdb_ColumnFamilyOptions_newColumnFamilyOptions(
+jlong Java_org_terarkdb_ColumnFamilyOptions_newColumnFamilyOptions(
     JNIEnv* /*env*/, jclass /*jcls*/) {
   auto* op = new TERARKDB_NAMESPACE::ColumnFamilyOptions();
   return reinterpret_cast<jlong>(op);
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    copyColumnFamilyOptions
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_ColumnFamilyOptions_copyColumnFamilyOptions(
+jlong Java_org_terarkdb_ColumnFamilyOptions_copyColumnFamilyOptions(
     JNIEnv* /*env*/, jclass /*jcls*/, jlong jhandle) {
   auto new_opt = new TERARKDB_NAMESPACE::ColumnFamilyOptions(
       *(reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)));
@@ -3208,11 +3232,11 @@ jlong Java_org_rocksdb_ColumnFamilyOptions_copyColumnFamilyOptions(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    getColumnFamilyOptionsFromProps
  * Signature: (Ljava/util/String;)J
  */
-jlong Java_org_rocksdb_ColumnFamilyOptions_getColumnFamilyOptionsFromProps(
+jlong Java_org_terarkdb_ColumnFamilyOptions_getColumnFamilyOptionsFromProps(
     JNIEnv* env, jclass /*jclazz*/, jstring jopt_string) {
   const char* opt_string = env->GetStringUTFChars(jopt_string, nullptr);
   if (opt_string == nullptr) {
@@ -3240,11 +3264,11 @@ jlong Java_org_rocksdb_ColumnFamilyOptions_getColumnFamilyOptionsFromProps(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    disposeInternal
  * Signature: (J)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_disposeInternal(JNIEnv* /*env*/,
+void Java_org_terarkdb_ColumnFamilyOptions_disposeInternal(JNIEnv* /*env*/,
                                                           jobject /*jobj*/,
                                                           jlong handle) {
   auto* cfo =
@@ -3254,11 +3278,11 @@ void Java_org_rocksdb_ColumnFamilyOptions_disposeInternal(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    optimizeForSmallDb
  * Signature: (J)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_optimizeForSmallDb(JNIEnv* /*env*/,
+void Java_org_terarkdb_ColumnFamilyOptions_optimizeForSmallDb(JNIEnv* /*env*/,
                                                              jobject /*jobj*/,
                                                              jlong jhandle) {
   reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
@@ -3266,11 +3290,11 @@ void Java_org_rocksdb_ColumnFamilyOptions_optimizeForSmallDb(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    optimizeForPointLookup
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_optimizeForPointLookup(
+void Java_org_terarkdb_ColumnFamilyOptions_optimizeForPointLookup(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong block_cache_size_mb) {
   reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
@@ -3278,11 +3302,11 @@ void Java_org_rocksdb_ColumnFamilyOptions_optimizeForPointLookup(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    optimizeLevelStyleCompaction
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_optimizeLevelStyleCompaction(
+void Java_org_terarkdb_ColumnFamilyOptions_optimizeLevelStyleCompaction(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong memtable_memory_budget) {
   reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
@@ -3290,11 +3314,11 @@ void Java_org_rocksdb_ColumnFamilyOptions_optimizeLevelStyleCompaction(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    optimizeUniversalStyleCompaction
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_optimizeUniversalStyleCompaction(
+void Java_org_terarkdb_ColumnFamilyOptions_optimizeUniversalStyleCompaction(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong memtable_memory_budget) {
   reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
@@ -3302,11 +3326,11 @@ void Java_org_rocksdb_ColumnFamilyOptions_optimizeUniversalStyleCompaction(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setComparatorHandle
  * Signature: (JI)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setComparatorHandle__JI(
+void Java_org_terarkdb_ColumnFamilyOptions_setComparatorHandle__JI(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle, jint builtinComparator) {
   switch (builtinComparator) {
     case 1:
@@ -3321,11 +3345,11 @@ void Java_org_rocksdb_ColumnFamilyOptions_setComparatorHandle__JI(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setComparatorHandle
  * Signature: (JJB)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setComparatorHandle__JJB(
+void Java_org_terarkdb_ColumnFamilyOptions_setComparatorHandle__JJB(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jopt_handle,
     jlong jcomparator_handle, jbyte jcomparator_type) {
   TERARKDB_NAMESPACE::Comparator* comparator = nullptr;
@@ -3356,11 +3380,11 @@ void Java_org_rocksdb_ColumnFamilyOptions_setComparatorHandle__JJB(
 
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setMaxSubcompactions
  * Signature: (JI)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setMaxSubcompactions(JNIEnv* env,
+void Java_org_terarkdb_ColumnFamilyOptions_setMaxSubcompactions(JNIEnv* env,
                                                      jobject /*jobj*/,
                                                      jlong jhandle, jint max) {
   TERARKDB_NAMESPACE::Status s =
@@ -3374,22 +3398,22 @@ void Java_org_rocksdb_ColumnFamilyOptions_setMaxSubcompactions(JNIEnv* env,
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    maxSubcompactions
  * Signature: (J)I
  */
-jint Java_org_rocksdb_ColumnFamilyOptions_maxSubcompactions(JNIEnv* /*env*/,
+jint Java_org_terarkdb_ColumnFamilyOptions_maxSubcompactions(JNIEnv* /*env*/,
                                                   jobject /*jobj*/,
                                                   jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
       ->max_subcompactions;
 }
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setTargetBlobFileSize
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setTargetBlobFileSize(JNIEnv* env, jobject /*jobj*/,
+void Java_org_terarkdb_ColumnFamilyOptions_setTargetBlobFileSize(JNIEnv* env, jobject /*jobj*/,
                                                 jlong jhandle,
                                                 jlong jtarget_blob_file_size) {
   TERARKDB_NAMESPACE::Status s =
@@ -3403,21 +3427,21 @@ void Java_org_rocksdb_ColumnFamilyOptions_setTargetBlobFileSize(JNIEnv* env, job
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    targetBlobFileSize
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_ColumnFamilyOptions_targetBlobFileSize(JNIEnv* /*env*/, jobject /*jobj*/,
+jlong Java_org_terarkdb_ColumnFamilyOptions_targetBlobFileSize(JNIEnv* /*env*/, jobject /*jobj*/,
                                               jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
       ->target_blob_file_size;
 }
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setBlobSize
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setBlobSize(JNIEnv* env, jobject /*jobj*/,
+void Java_org_terarkdb_ColumnFamilyOptions_setBlobSize(JNIEnv* env, jobject /*jobj*/,
                                                 jlong jhandle,
                                                 jlong jblob_size) {
   TERARKDB_NAMESPACE::Status s =
@@ -3431,33 +3455,33 @@ void Java_org_rocksdb_ColumnFamilyOptions_setBlobSize(JNIEnv* env, jobject /*job
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    blobGcRatio
  * Signature: (J)J
  */
-jdouble Java_org_rocksdb_ColumnFamilyOptions_blobGcRatio(JNIEnv* /*env*/,
+jdouble Java_org_terarkdb_ColumnFamilyOptions_blobGcRatio(JNIEnv* /*env*/,
                                                          jobject /*jobj*/,
                                                          jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
       ->blob_gc_ratio;
 }
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setBlobGcRatio
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setBlobGcRatio(
+void Java_org_terarkdb_ColumnFamilyOptions_setBlobGcRatio(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle, jdouble jblob_gc_ratio) {
   reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
       ->blob_gc_ratio = static_cast<double>(jblob_gc_ratio);
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    blobSize
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_ColumnFamilyOptions_blobSize(JNIEnv* /*env*/, jobject /*jobj*/,
+jlong Java_org_terarkdb_ColumnFamilyOptions_blobSize(JNIEnv* /*env*/, jobject /*jobj*/,
                                               jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
       ->blob_size;
@@ -3465,11 +3489,11 @@ jlong Java_org_rocksdb_ColumnFamilyOptions_blobSize(JNIEnv* /*env*/, jobject /*j
 
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setMergeOperatorName
  * Signature: (JJjava/lang/String)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setMergeOperatorName(
+void Java_org_terarkdb_ColumnFamilyOptions_setMergeOperatorName(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle, jstring jop_name) {
   auto* options =
       reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle);
@@ -3485,11 +3509,11 @@ void Java_org_rocksdb_ColumnFamilyOptions_setMergeOperatorName(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setMergeOperator
  * Signature: (JJjava/lang/String)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setMergeOperator(
+void Java_org_terarkdb_ColumnFamilyOptions_setMergeOperator(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong mergeOperatorHandle) {
   reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
@@ -3499,11 +3523,11 @@ void Java_org_rocksdb_ColumnFamilyOptions_setMergeOperator(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setCompactionFilterHandle
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setCompactionFilterHandle(
+void Java_org_terarkdb_ColumnFamilyOptions_setCompactionFilterHandle(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jopt_handle,
     jlong jcompactionfilter_handle) {
   reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jopt_handle)
@@ -3514,12 +3538,12 @@ void Java_org_rocksdb_ColumnFamilyOptions_setCompactionFilterHandle(
 
 #define FLINK
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setCompactionFilterFactoryHandle
  * Signature: (JJ)V
  */
 void JNICALL
-Java_org_rocksdb_ColumnFamilyOptions_setCompactionFilterFactoryHandle(
+Java_org_terarkdb_ColumnFamilyOptions_setCompactionFilterFactoryHandle(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jopt_handle,
     jlong jcompactionfilterfactory_handle) {
   auto* cff_factory = reinterpret_cast<
@@ -3539,11 +3563,11 @@ Java_org_rocksdb_ColumnFamilyOptions_setCompactionFilterFactoryHandle(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setWriteBufferSize
  * Signature: (JJ)I
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setWriteBufferSize(
+void Java_org_terarkdb_ColumnFamilyOptions_setWriteBufferSize(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle, jlong jwrite_buffer_size) {
   TERARKDB_NAMESPACE::Status s =
       TERARKDB_NAMESPACE::check_if_jlong_fits_size_t(jwrite_buffer_size);
@@ -3556,11 +3580,11 @@ void Java_org_rocksdb_ColumnFamilyOptions_setWriteBufferSize(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    writeBufferSize
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_ColumnFamilyOptions_writeBufferSize(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_ColumnFamilyOptions_writeBufferSize(JNIEnv* /*env*/,
                                                            jobject /*jobj*/,
                                                            jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
@@ -3568,11 +3592,11 @@ jlong Java_org_rocksdb_ColumnFamilyOptions_writeBufferSize(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setMaxWriteBufferNumber
  * Signature: (JI)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setMaxWriteBufferNumber(
+void Java_org_terarkdb_ColumnFamilyOptions_setMaxWriteBufferNumber(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jint jmax_write_buffer_number) {
   reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
@@ -3580,11 +3604,11 @@ void Java_org_rocksdb_ColumnFamilyOptions_setMaxWriteBufferNumber(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    maxWriteBufferNumber
  * Signature: (J)I
  */
-jint Java_org_rocksdb_ColumnFamilyOptions_maxWriteBufferNumber(JNIEnv* /*env*/,
+jint Java_org_terarkdb_ColumnFamilyOptions_maxWriteBufferNumber(JNIEnv* /*env*/,
                                                                jobject /*jobj*/,
                                                                jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
@@ -3595,7 +3619,7 @@ jint Java_org_rocksdb_ColumnFamilyOptions_maxWriteBufferNumber(JNIEnv* /*env*/,
  * Method:    setMemTableFactory
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setMemTableFactory(
+void Java_org_terarkdb_ColumnFamilyOptions_setMemTableFactory(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle, jlong jfactory_handle) {
   reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
       ->memtable_factory.reset(
@@ -3604,11 +3628,11 @@ void Java_org_rocksdb_ColumnFamilyOptions_setMemTableFactory(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    memTableFactoryName
  * Signature: (J)Ljava/lang/String
  */
-jstring Java_org_rocksdb_ColumnFamilyOptions_memTableFactoryName(
+jstring Java_org_terarkdb_ColumnFamilyOptions_memTableFactoryName(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle) {
   auto* opt =
       reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle);
@@ -3630,7 +3654,7 @@ jstring Java_org_rocksdb_ColumnFamilyOptions_memTableFactoryName(
  * Method:    useFixedLengthPrefixExtractor
  * Signature: (JI)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_useFixedLengthPrefixExtractor(
+void Java_org_terarkdb_ColumnFamilyOptions_useFixedLengthPrefixExtractor(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle, jint jprefix_length) {
   reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
       ->prefix_extractor.reset(TERARKDB_NAMESPACE::NewFixedPrefixTransform(
@@ -3641,7 +3665,7 @@ void Java_org_rocksdb_ColumnFamilyOptions_useFixedLengthPrefixExtractor(
  * Method:    useCappedPrefixExtractor
  * Signature: (JI)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_useCappedPrefixExtractor(
+void Java_org_terarkdb_ColumnFamilyOptions_useCappedPrefixExtractor(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle, jint jprefix_length) {
   reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
       ->prefix_extractor.reset(TERARKDB_NAMESPACE::NewCappedPrefixTransform(
@@ -3652,7 +3676,7 @@ void Java_org_rocksdb_ColumnFamilyOptions_useCappedPrefixExtractor(
  * Method:    setTableFactory
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setTableFactory(
+void Java_org_terarkdb_ColumnFamilyOptions_setTableFactory(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle, jlong jfactory_handle) {
   reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
       ->table_factory.reset(
@@ -3663,7 +3687,7 @@ void Java_org_rocksdb_ColumnFamilyOptions_setTableFactory(
  * Method:    tableFactoryName
  * Signature: (J)Ljava/lang/String
  */
-jstring Java_org_rocksdb_ColumnFamilyOptions_tableFactoryName(JNIEnv* env,
+jstring Java_org_terarkdb_ColumnFamilyOptions_tableFactoryName(JNIEnv* env,
                                                               jobject /*jobj*/,
                                                               jlong jhandle) {
   auto* opt =
@@ -3678,22 +3702,22 @@ jstring Java_org_rocksdb_ColumnFamilyOptions_tableFactoryName(JNIEnv* env,
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    minWriteBufferNumberToMerge
  * Signature: (J)I
  */
-jint Java_org_rocksdb_ColumnFamilyOptions_minWriteBufferNumberToMerge(
+jint Java_org_terarkdb_ColumnFamilyOptions_minWriteBufferNumberToMerge(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
       ->min_write_buffer_number_to_merge;
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setMinWriteBufferNumberToMerge
  * Signature: (JI)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setMinWriteBufferNumberToMerge(
+void Java_org_terarkdb_ColumnFamilyOptions_setMinWriteBufferNumberToMerge(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jint jmin_write_buffer_number_to_merge) {
   reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
@@ -3702,22 +3726,22 @@ void Java_org_rocksdb_ColumnFamilyOptions_setMinWriteBufferNumberToMerge(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    maxWriteBufferNumberToMaintain
  * Signature: (J)I
  */
-jint Java_org_rocksdb_ColumnFamilyOptions_maxWriteBufferNumberToMaintain(
+jint Java_org_terarkdb_ColumnFamilyOptions_maxWriteBufferNumberToMaintain(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
       ->max_write_buffer_number_to_maintain;
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setMaxWriteBufferNumberToMaintain
  * Signature: (JI)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setMaxWriteBufferNumberToMaintain(
+void Java_org_terarkdb_ColumnFamilyOptions_setMaxWriteBufferNumberToMaintain(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jint jmax_write_buffer_number_to_maintain) {
   reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
@@ -3726,11 +3750,11 @@ void Java_org_rocksdb_ColumnFamilyOptions_setMaxWriteBufferNumberToMaintain(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setCompressionType
  * Signature: (JB)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setCompressionType(
+void Java_org_terarkdb_ColumnFamilyOptions_setCompressionType(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jbyte jcompression_type_value) {
   auto* cf_opts =
@@ -3741,11 +3765,11 @@ void Java_org_rocksdb_ColumnFamilyOptions_setCompressionType(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    compressionType
  * Signature: (J)B
  */
-jbyte Java_org_rocksdb_ColumnFamilyOptions_compressionType(JNIEnv* /*env*/,
+jbyte Java_org_terarkdb_ColumnFamilyOptions_compressionType(JNIEnv* /*env*/,
                                                            jobject /*jobj*/,
                                                            jlong jhandle) {
   auto* cf_opts =
@@ -3755,11 +3779,11 @@ jbyte Java_org_rocksdb_ColumnFamilyOptions_compressionType(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setCompressionPerLevel
  * Signature: (J[B)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setCompressionPerLevel(
+void Java_org_terarkdb_ColumnFamilyOptions_setCompressionPerLevel(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle,
     jbyteArray jcompressionLevels) {
   auto* options =
@@ -3774,11 +3798,11 @@ void Java_org_rocksdb_ColumnFamilyOptions_setCompressionPerLevel(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    compressionPerLevel
  * Signature: (J)[B
  */
-jbyteArray Java_org_rocksdb_ColumnFamilyOptions_compressionPerLevel(
+jbyteArray Java_org_terarkdb_ColumnFamilyOptions_compressionPerLevel(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle) {
   auto* cf_options =
       reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle);
@@ -3787,11 +3811,11 @@ jbyteArray Java_org_rocksdb_ColumnFamilyOptions_compressionPerLevel(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setBottommostCompressionType
  * Signature: (JB)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setBottommostCompressionType(
+void Java_org_terarkdb_ColumnFamilyOptions_setBottommostCompressionType(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jbyte jcompression_type_value) {
   auto* cf_options =
@@ -3802,11 +3826,11 @@ void Java_org_rocksdb_ColumnFamilyOptions_setBottommostCompressionType(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    bottommostCompressionType
  * Signature: (J)B
  */
-jbyte Java_org_rocksdb_ColumnFamilyOptions_bottommostCompressionType(
+jbyte Java_org_terarkdb_ColumnFamilyOptions_bottommostCompressionType(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   auto* cf_options =
       reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle);
@@ -3814,11 +3838,11 @@ jbyte Java_org_rocksdb_ColumnFamilyOptions_bottommostCompressionType(
       cf_options->bottommost_compression);
 }
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setBottommostCompressionOptions
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setBottommostCompressionOptions(
+void Java_org_terarkdb_ColumnFamilyOptions_setBottommostCompressionOptions(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jbottommost_compression_options_handle) {
   auto* cf_options =
@@ -3830,11 +3854,11 @@ void Java_org_rocksdb_ColumnFamilyOptions_setBottommostCompressionOptions(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setCompressionOptions
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setCompressionOptions(
+void Java_org_terarkdb_ColumnFamilyOptions_setCompressionOptions(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jcompression_options_handle) {
   auto* cf_options =
@@ -3846,11 +3870,11 @@ void Java_org_rocksdb_ColumnFamilyOptions_setCompressionOptions(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setCompactionStyle
  * Signature: (JB)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setCompactionStyle(
+void Java_org_terarkdb_ColumnFamilyOptions_setCompactionStyle(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle, jbyte compaction_style) {
   reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
       ->compaction_style =
@@ -3858,11 +3882,11 @@ void Java_org_rocksdb_ColumnFamilyOptions_setCompactionStyle(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    compactionStyle
  * Signature: (J)B
  */
-jbyte Java_org_rocksdb_ColumnFamilyOptions_compactionStyle(JNIEnv* /*env*/,
+jbyte Java_org_terarkdb_ColumnFamilyOptions_compactionStyle(JNIEnv* /*env*/,
                                                            jobject /*jobj*/,
                                                            jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
@@ -3870,11 +3894,11 @@ jbyte Java_org_rocksdb_ColumnFamilyOptions_compactionStyle(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    numLevels
  * Signature: (J)I
  */
-jint Java_org_rocksdb_ColumnFamilyOptions_numLevels(JNIEnv* /*env*/,
+jint Java_org_terarkdb_ColumnFamilyOptions_numLevels(JNIEnv* /*env*/,
                                                     jobject /*jobj*/,
                                                     jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
@@ -3882,11 +3906,11 @@ jint Java_org_rocksdb_ColumnFamilyOptions_numLevels(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setNumLevels
  * Signature: (JI)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setNumLevels(JNIEnv* /*env*/,
+void Java_org_terarkdb_ColumnFamilyOptions_setNumLevels(JNIEnv* /*env*/,
                                                        jobject /*jobj*/,
                                                        jlong jhandle,
                                                        jint jnum_levels) {
@@ -3895,22 +3919,22 @@ void Java_org_rocksdb_ColumnFamilyOptions_setNumLevels(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    levelZeroFileNumCompactionTrigger
  * Signature: (J)I
  */
-jint Java_org_rocksdb_ColumnFamilyOptions_levelZeroFileNumCompactionTrigger(
+jint Java_org_terarkdb_ColumnFamilyOptions_levelZeroFileNumCompactionTrigger(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
       ->level0_file_num_compaction_trigger;
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setLevelZeroFileNumCompactionTrigger
  * Signature: (JI)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setLevelZeroFileNumCompactionTrigger(
+void Java_org_terarkdb_ColumnFamilyOptions_setLevelZeroFileNumCompactionTrigger(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jint jlevel0_file_num_compaction_trigger) {
   reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
@@ -3919,22 +3943,22 @@ void Java_org_rocksdb_ColumnFamilyOptions_setLevelZeroFileNumCompactionTrigger(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    levelZeroSlowdownWritesTrigger
  * Signature: (J)I
  */
-jint Java_org_rocksdb_ColumnFamilyOptions_levelZeroSlowdownWritesTrigger(
+jint Java_org_terarkdb_ColumnFamilyOptions_levelZeroSlowdownWritesTrigger(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
       ->level0_slowdown_writes_trigger;
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setLevelSlowdownWritesTrigger
  * Signature: (JI)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setLevelZeroSlowdownWritesTrigger(
+void Java_org_terarkdb_ColumnFamilyOptions_setLevelZeroSlowdownWritesTrigger(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jint jlevel0_slowdown_writes_trigger) {
   reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
@@ -3943,22 +3967,22 @@ void Java_org_rocksdb_ColumnFamilyOptions_setLevelZeroSlowdownWritesTrigger(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    levelZeroStopWritesTrigger
  * Signature: (J)I
  */
-jint Java_org_rocksdb_ColumnFamilyOptions_levelZeroStopWritesTrigger(
+jint Java_org_terarkdb_ColumnFamilyOptions_levelZeroStopWritesTrigger(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
       ->level0_stop_writes_trigger;
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setLevelStopWritesTrigger
  * Signature: (JI)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setLevelZeroStopWritesTrigger(
+void Java_org_terarkdb_ColumnFamilyOptions_setLevelZeroStopWritesTrigger(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jint jlevel0_stop_writes_trigger) {
   reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
@@ -3967,11 +3991,11 @@ void Java_org_rocksdb_ColumnFamilyOptions_setLevelZeroStopWritesTrigger(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    targetFileSizeBase
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_ColumnFamilyOptions_targetFileSizeBase(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_ColumnFamilyOptions_targetFileSizeBase(JNIEnv* /*env*/,
                                                               jobject /*jobj*/,
                                                               jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
@@ -3979,11 +4003,11 @@ jlong Java_org_rocksdb_ColumnFamilyOptions_targetFileSizeBase(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setTargetFileSizeBase
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setTargetFileSizeBase(
+void Java_org_terarkdb_ColumnFamilyOptions_setTargetFileSizeBase(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jtarget_file_size_base) {
   reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
@@ -3991,22 +4015,22 @@ void Java_org_rocksdb_ColumnFamilyOptions_setTargetFileSizeBase(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    targetFileSizeMultiplier
  * Signature: (J)I
  */
-jint Java_org_rocksdb_ColumnFamilyOptions_targetFileSizeMultiplier(
+jint Java_org_terarkdb_ColumnFamilyOptions_targetFileSizeMultiplier(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
       ->target_file_size_multiplier;
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setTargetFileSizeMultiplier
  * Signature: (JI)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setTargetFileSizeMultiplier(
+void Java_org_terarkdb_ColumnFamilyOptions_setTargetFileSizeMultiplier(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jint jtarget_file_size_multiplier) {
   reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
@@ -4015,22 +4039,22 @@ void Java_org_rocksdb_ColumnFamilyOptions_setTargetFileSizeMultiplier(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    maxBytesForLevelBase
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_ColumnFamilyOptions_maxBytesForLevelBase(
+jlong Java_org_terarkdb_ColumnFamilyOptions_maxBytesForLevelBase(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
       ->max_bytes_for_level_base;
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setMaxBytesForLevelBase
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setMaxBytesForLevelBase(
+void Java_org_terarkdb_ColumnFamilyOptions_setMaxBytesForLevelBase(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jmax_bytes_for_level_base) {
   reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
@@ -4039,22 +4063,22 @@ void Java_org_rocksdb_ColumnFamilyOptions_setMaxBytesForLevelBase(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    levelCompactionDynamicLevelBytes
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_ColumnFamilyOptions_levelCompactionDynamicLevelBytes(
+jboolean Java_org_terarkdb_ColumnFamilyOptions_levelCompactionDynamicLevelBytes(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
       ->level_compaction_dynamic_level_bytes;
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setLevelCompactionDynamicLevelBytes
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setLevelCompactionDynamicLevelBytes(
+void Java_org_terarkdb_ColumnFamilyOptions_setLevelCompactionDynamicLevelBytes(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean jenable_dynamic_level_bytes) {
   reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
@@ -4062,22 +4086,22 @@ void Java_org_rocksdb_ColumnFamilyOptions_setLevelCompactionDynamicLevelBytes(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    maxBytesForLevelMultiplier
  * Signature: (J)D
  */
-jdouble Java_org_rocksdb_ColumnFamilyOptions_maxBytesForLevelMultiplier(
+jdouble Java_org_terarkdb_ColumnFamilyOptions_maxBytesForLevelMultiplier(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
       ->max_bytes_for_level_multiplier;
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setMaxBytesForLevelMultiplier
  * Signature: (JD)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setMaxBytesForLevelMultiplier(
+void Java_org_terarkdb_ColumnFamilyOptions_setMaxBytesForLevelMultiplier(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jdouble jmax_bytes_for_level_multiplier) {
   reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
@@ -4086,11 +4110,11 @@ void Java_org_rocksdb_ColumnFamilyOptions_setMaxBytesForLevelMultiplier(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    maxCompactionBytes
  * Signature: (J)I
  */
-jlong Java_org_rocksdb_ColumnFamilyOptions_maxCompactionBytes(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_ColumnFamilyOptions_maxCompactionBytes(JNIEnv* /*env*/,
                                                               jobject /*jobj*/,
                                                               jlong jhandle) {
   return static_cast<jlong>(
@@ -4099,11 +4123,11 @@ jlong Java_org_rocksdb_ColumnFamilyOptions_maxCompactionBytes(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setMaxCompactionBytes
  * Signature: (JI)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setMaxCompactionBytes(
+void Java_org_terarkdb_ColumnFamilyOptions_setMaxCompactionBytes(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jmax_compaction_bytes) {
   reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
@@ -4111,11 +4135,11 @@ void Java_org_rocksdb_ColumnFamilyOptions_setMaxCompactionBytes(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    arenaBlockSize
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_ColumnFamilyOptions_arenaBlockSize(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_ColumnFamilyOptions_arenaBlockSize(JNIEnv* /*env*/,
                                                           jobject /*jobj*/,
                                                           jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
@@ -4123,11 +4147,11 @@ jlong Java_org_rocksdb_ColumnFamilyOptions_arenaBlockSize(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setArenaBlockSize
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setArenaBlockSize(
+void Java_org_terarkdb_ColumnFamilyOptions_setArenaBlockSize(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle, jlong jarena_block_size) {
   TERARKDB_NAMESPACE::Status s =
       TERARKDB_NAMESPACE::check_if_jlong_fits_size_t(jarena_block_size);
@@ -4140,22 +4164,22 @@ void Java_org_rocksdb_ColumnFamilyOptions_setArenaBlockSize(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    disableAutoCompactions
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_ColumnFamilyOptions_disableAutoCompactions(
+jboolean Java_org_terarkdb_ColumnFamilyOptions_disableAutoCompactions(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
       ->disable_auto_compactions;
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setDisableAutoCompactions
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setDisableAutoCompactions(
+void Java_org_terarkdb_ColumnFamilyOptions_setDisableAutoCompactions(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean jdisable_auto_compactions) {
   reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
@@ -4163,22 +4187,22 @@ void Java_org_rocksdb_ColumnFamilyOptions_setDisableAutoCompactions(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    maxSequentialSkipInIterations
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_ColumnFamilyOptions_maxSequentialSkipInIterations(
+jlong Java_org_terarkdb_ColumnFamilyOptions_maxSequentialSkipInIterations(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
       ->max_sequential_skip_in_iterations;
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setMaxSequentialSkipInIterations
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setMaxSequentialSkipInIterations(
+void Java_org_terarkdb_ColumnFamilyOptions_setMaxSequentialSkipInIterations(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jmax_sequential_skip_in_iterations) {
   reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
@@ -4187,22 +4211,22 @@ void Java_org_rocksdb_ColumnFamilyOptions_setMaxSequentialSkipInIterations(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    inplaceUpdateSupport
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_ColumnFamilyOptions_inplaceUpdateSupport(
+jboolean Java_org_terarkdb_ColumnFamilyOptions_inplaceUpdateSupport(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
       ->inplace_update_support;
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setInplaceUpdateSupport
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setInplaceUpdateSupport(
+void Java_org_terarkdb_ColumnFamilyOptions_setInplaceUpdateSupport(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean jinplace_update_support) {
   reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
@@ -4210,22 +4234,22 @@ void Java_org_rocksdb_ColumnFamilyOptions_setInplaceUpdateSupport(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    inplaceUpdateNumLocks
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_ColumnFamilyOptions_inplaceUpdateNumLocks(
+jlong Java_org_terarkdb_ColumnFamilyOptions_inplaceUpdateNumLocks(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
       ->inplace_update_num_locks;
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setInplaceUpdateNumLocks
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setInplaceUpdateNumLocks(
+void Java_org_terarkdb_ColumnFamilyOptions_setInplaceUpdateNumLocks(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle,
     jlong jinplace_update_num_locks) {
   TERARKDB_NAMESPACE::Status s =
@@ -4239,22 +4263,22 @@ void Java_org_rocksdb_ColumnFamilyOptions_setInplaceUpdateNumLocks(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    memtablePrefixBloomSizeRatio
  * Signature: (J)I
  */
-jdouble Java_org_rocksdb_ColumnFamilyOptions_memtablePrefixBloomSizeRatio(
+jdouble Java_org_terarkdb_ColumnFamilyOptions_memtablePrefixBloomSizeRatio(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
       ->memtable_prefix_bloom_size_ratio;
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setMemtablePrefixBloomSizeRatio
  * Signature: (JI)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setMemtablePrefixBloomSizeRatio(
+void Java_org_terarkdb_ColumnFamilyOptions_setMemtablePrefixBloomSizeRatio(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jdouble jmemtable_prefix_bloom_size_ratio) {
   reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
@@ -4263,11 +4287,11 @@ void Java_org_rocksdb_ColumnFamilyOptions_setMemtablePrefixBloomSizeRatio(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    bloomLocality
  * Signature: (J)I
  */
-jint Java_org_rocksdb_ColumnFamilyOptions_bloomLocality(JNIEnv* /*env*/,
+jint Java_org_terarkdb_ColumnFamilyOptions_bloomLocality(JNIEnv* /*env*/,
                                                         jobject /*jobj*/,
                                                         jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
@@ -4275,22 +4299,22 @@ jint Java_org_rocksdb_ColumnFamilyOptions_bloomLocality(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setBloomLocality
  * Signature: (JI)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setBloomLocality(
+void Java_org_terarkdb_ColumnFamilyOptions_setBloomLocality(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle, jint jbloom_locality) {
   reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
       ->bloom_locality = static_cast<int32_t>(jbloom_locality);
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    maxSuccessiveMerges
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_ColumnFamilyOptions_maxSuccessiveMerges(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_ColumnFamilyOptions_maxSuccessiveMerges(JNIEnv* /*env*/,
                                                                jobject /*jobj*/,
                                                                jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
@@ -4298,11 +4322,11 @@ jlong Java_org_rocksdb_ColumnFamilyOptions_maxSuccessiveMerges(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setMaxSuccessiveMerges
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setMaxSuccessiveMerges(
+void Java_org_terarkdb_ColumnFamilyOptions_setMaxSuccessiveMerges(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle,
     jlong jmax_successive_merges) {
   TERARKDB_NAMESPACE::Status s =
@@ -4316,22 +4340,22 @@ void Java_org_rocksdb_ColumnFamilyOptions_setMaxSuccessiveMerges(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    optimizeFiltersForHits
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_ColumnFamilyOptions_optimizeFiltersForHits(
+jboolean Java_org_terarkdb_ColumnFamilyOptions_optimizeFiltersForHits(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
       ->optimize_filters_for_hits;
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setOptimizeFiltersForHits
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setOptimizeFiltersForHits(
+void Java_org_terarkdb_ColumnFamilyOptions_setOptimizeFiltersForHits(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean joptimize_filters_for_hits) {
   reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
@@ -4340,22 +4364,22 @@ void Java_org_rocksdb_ColumnFamilyOptions_setOptimizeFiltersForHits(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    optimizeRangeDeletion
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_ColumnFamilyOptions_optimizeRangeDeletion(
+jboolean Java_org_terarkdb_ColumnFamilyOptions_optimizeRangeDeletion(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
       ->optimize_range_deletion;
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setOptimizeRangeDeletion
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setOptimizeRangeDeletion(
+void Java_org_terarkdb_ColumnFamilyOptions_setOptimizeRangeDeletion(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean joptimize_range_deletion) {
   reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
@@ -4363,22 +4387,22 @@ void Java_org_rocksdb_ColumnFamilyOptions_setOptimizeRangeDeletion(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    memtableHugePageSize
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_ColumnFamilyOptions_memtableHugePageSize(
+jlong Java_org_terarkdb_ColumnFamilyOptions_memtableHugePageSize(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
       ->memtable_huge_page_size;
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setMemtableHugePageSize
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setMemtableHugePageSize(
+void Java_org_terarkdb_ColumnFamilyOptions_setMemtableHugePageSize(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle,
     jlong jmemtable_huge_page_size) {
   TERARKDB_NAMESPACE::Status s =
@@ -4392,22 +4416,22 @@ void Java_org_rocksdb_ColumnFamilyOptions_setMemtableHugePageSize(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    softPendingCompactionBytesLimit
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_ColumnFamilyOptions_softPendingCompactionBytesLimit(
+jlong Java_org_terarkdb_ColumnFamilyOptions_softPendingCompactionBytesLimit(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
       ->soft_pending_compaction_bytes_limit;
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setSoftPendingCompactionBytesLimit
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setSoftPendingCompactionBytesLimit(
+void Java_org_terarkdb_ColumnFamilyOptions_setSoftPendingCompactionBytesLimit(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jsoft_pending_compaction_bytes_limit) {
   reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
@@ -4416,22 +4440,22 @@ void Java_org_rocksdb_ColumnFamilyOptions_setSoftPendingCompactionBytesLimit(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    softHardCompactionBytesLimit
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_ColumnFamilyOptions_hardPendingCompactionBytesLimit(
+jlong Java_org_terarkdb_ColumnFamilyOptions_hardPendingCompactionBytesLimit(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
       ->hard_pending_compaction_bytes_limit;
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setHardPendingCompactionBytesLimit
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setHardPendingCompactionBytesLimit(
+void Java_org_terarkdb_ColumnFamilyOptions_setHardPendingCompactionBytesLimit(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jhard_pending_compaction_bytes_limit) {
   reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
@@ -4440,22 +4464,22 @@ void Java_org_rocksdb_ColumnFamilyOptions_setHardPendingCompactionBytesLimit(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    level0FileNumCompactionTrigger
  * Signature: (J)I
  */
-jint Java_org_rocksdb_ColumnFamilyOptions_level0FileNumCompactionTrigger(
+jint Java_org_terarkdb_ColumnFamilyOptions_level0FileNumCompactionTrigger(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
       ->level0_file_num_compaction_trigger;
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setLevel0FileNumCompactionTrigger
  * Signature: (JI)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setLevel0FileNumCompactionTrigger(
+void Java_org_terarkdb_ColumnFamilyOptions_setLevel0FileNumCompactionTrigger(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jint jlevel0_file_num_compaction_trigger) {
   reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
@@ -4464,22 +4488,22 @@ void Java_org_rocksdb_ColumnFamilyOptions_setLevel0FileNumCompactionTrigger(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    level0SlowdownWritesTrigger
  * Signature: (J)I
  */
-jint Java_org_rocksdb_ColumnFamilyOptions_level0SlowdownWritesTrigger(
+jint Java_org_terarkdb_ColumnFamilyOptions_level0SlowdownWritesTrigger(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
       ->level0_slowdown_writes_trigger;
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setLevel0SlowdownWritesTrigger
  * Signature: (JI)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setLevel0SlowdownWritesTrigger(
+void Java_org_terarkdb_ColumnFamilyOptions_setLevel0SlowdownWritesTrigger(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jint jlevel0_slowdown_writes_trigger) {
   reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
@@ -4488,22 +4512,22 @@ void Java_org_rocksdb_ColumnFamilyOptions_setLevel0SlowdownWritesTrigger(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    level0StopWritesTrigger
  * Signature: (J)I
  */
-jint Java_org_rocksdb_ColumnFamilyOptions_level0StopWritesTrigger(
+jint Java_org_terarkdb_ColumnFamilyOptions_level0StopWritesTrigger(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
       ->level0_stop_writes_trigger;
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setLevel0StopWritesTrigger
  * Signature: (JI)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setLevel0StopWritesTrigger(
+void Java_org_terarkdb_ColumnFamilyOptions_setLevel0StopWritesTrigger(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jint jlevel0_stop_writes_trigger) {
   reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
@@ -4512,12 +4536,12 @@ void Java_org_rocksdb_ColumnFamilyOptions_setLevel0StopWritesTrigger(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    maxBytesForLevelMultiplierAdditional
  * Signature: (J)[I
  */
 jintArray
-Java_org_rocksdb_ColumnFamilyOptions_maxBytesForLevelMultiplierAdditional(
+Java_org_terarkdb_ColumnFamilyOptions_maxBytesForLevelMultiplierAdditional(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle) {
   auto mbflma =
       reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
@@ -4551,11 +4575,11 @@ Java_org_rocksdb_ColumnFamilyOptions_maxBytesForLevelMultiplierAdditional(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setMaxBytesForLevelMultiplierAdditional
  * Signature: (J[I)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setMaxBytesForLevelMultiplierAdditional(
+void Java_org_terarkdb_ColumnFamilyOptions_setMaxBytesForLevelMultiplierAdditional(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle,
     jintArray jmax_bytes_for_level_multiplier_additional) {
   jsize len = env->GetArrayLength(jmax_bytes_for_level_multiplier_additional);
@@ -4579,22 +4603,22 @@ void Java_org_rocksdb_ColumnFamilyOptions_setMaxBytesForLevelMultiplierAdditiona
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    paranoidFileChecks
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_ColumnFamilyOptions_paranoidFileChecks(
+jboolean Java_org_terarkdb_ColumnFamilyOptions_paranoidFileChecks(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
       ->paranoid_file_checks;
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setParanoidFileChecks
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setParanoidFileChecks(
+void Java_org_terarkdb_ColumnFamilyOptions_setParanoidFileChecks(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean jparanoid_file_checks) {
   reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle)
@@ -4602,11 +4626,11 @@ void Java_org_rocksdb_ColumnFamilyOptions_setParanoidFileChecks(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setCompactionPriority
  * Signature: (JB)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setCompactionPriority(
+void Java_org_terarkdb_ColumnFamilyOptions_setCompactionPriority(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jbyte jcompaction_priority_value) {
   auto* cf_opts =
@@ -4617,11 +4641,11 @@ void Java_org_rocksdb_ColumnFamilyOptions_setCompactionPriority(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    compactionPriority
  * Signature: (J)B
  */
-jbyte Java_org_rocksdb_ColumnFamilyOptions_compactionPriority(JNIEnv* /*env*/,
+jbyte Java_org_terarkdb_ColumnFamilyOptions_compactionPriority(JNIEnv* /*env*/,
                                                               jobject /*jobj*/,
                                                               jlong jhandle) {
   auto* cf_opts =
@@ -4631,11 +4655,11 @@ jbyte Java_org_rocksdb_ColumnFamilyOptions_compactionPriority(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setReportBgIoStats
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setReportBgIoStats(
+void Java_org_terarkdb_ColumnFamilyOptions_setReportBgIoStats(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean jreport_bg_io_stats) {
   auto* cf_opts =
@@ -4644,11 +4668,11 @@ void Java_org_rocksdb_ColumnFamilyOptions_setReportBgIoStats(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    reportBgIoStats
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_ColumnFamilyOptions_reportBgIoStats(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_ColumnFamilyOptions_reportBgIoStats(JNIEnv* /*env*/,
                                                               jobject /*jobj*/,
                                                               jlong jhandle) {
   auto* cf_opts =
@@ -4657,11 +4681,11 @@ jboolean Java_org_rocksdb_ColumnFamilyOptions_reportBgIoStats(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setCompactionOptionsUniversal
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setCompactionOptionsUniversal(
+void Java_org_terarkdb_ColumnFamilyOptions_setCompactionOptionsUniversal(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jcompaction_options_universal_handle) {
   auto* cf_opts =
@@ -4673,11 +4697,11 @@ void Java_org_rocksdb_ColumnFamilyOptions_setCompactionOptionsUniversal(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    setForceConsistencyChecks
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_ColumnFamilyOptions_setForceConsistencyChecks(
+void Java_org_terarkdb_ColumnFamilyOptions_setForceConsistencyChecks(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean jforce_consistency_checks) {
   auto* cf_opts =
@@ -4687,11 +4711,11 @@ void Java_org_rocksdb_ColumnFamilyOptions_setForceConsistencyChecks(
 }
 
 /*
- * Class:     org_rocksdb_ColumnFamilyOptions
+ * Class:     org_terarkdb_ColumnFamilyOptions
  * Method:    forceConsistencyChecks
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_ColumnFamilyOptions_forceConsistencyChecks(
+jboolean Java_org_terarkdb_ColumnFamilyOptions_forceConsistencyChecks(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   auto* cf_opts =
       reinterpret_cast<TERARKDB_NAMESPACE::ColumnFamilyOptions*>(jhandle);
@@ -4700,24 +4724,47 @@ jboolean Java_org_rocksdb_ColumnFamilyOptions_forceConsistencyChecks(
 
 /////////////////////////////////////////////////////////////////////
 // TERARKDB_NAMESPACE::DBOptions
+/*
+ * Class:     org_terarkdb_DBOptions
+ * Method:    setCheckPointFakeFlush
+ * Signature: (JZ)V
+ */
+void Java_org_terarkdb_DBOptions_setCheckPointFakeFlush(
+    JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
+    jboolean jcheck_point_fake_flush) {
+  auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle);
+  opt->check_point_fake_flush = static_cast<bool>(jcheck_point_fake_flush);
+}
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
+ * Method:    checkPointFakeFlush
+ * Signature: (J)Z
+ */
+jboolean Java_org_terarkdb_DBOptions_checkPointFakeFlush(JNIEnv* /*env*/,
+                                                      jobject /*jobj*/,
+                                                      jlong jhandle) {
+  auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle);
+  return static_cast<jboolean>(opt->check_point_fake_flush);
+}
+
+/*
+ * Class:     org_terarkdb_DBOptions
  * Method:    newDBOptions
  * Signature: ()J
  */
-jlong Java_org_rocksdb_DBOptions_newDBOptions(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_DBOptions_newDBOptions(JNIEnv* /*env*/,
                                               jclass /*jcls*/) {
   auto* dbop = new TERARKDB_NAMESPACE::DBOptions();
   return reinterpret_cast<jlong>(dbop);
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    copyDBOptions
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_DBOptions_copyDBOptions(JNIEnv* /*env*/, jclass /*jcls*/,
+jlong Java_org_terarkdb_DBOptions_copyDBOptions(JNIEnv* /*env*/, jclass /*jcls*/,
                                                jlong jhandle) {
   auto new_opt = new TERARKDB_NAMESPACE::DBOptions(
       *(reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)));
@@ -4725,11 +4772,11 @@ jlong Java_org_rocksdb_DBOptions_copyDBOptions(JNIEnv* /*env*/, jclass /*jcls*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    getDBOptionsFromProps
  * Signature: (Ljava/util/String;)J
  */
-jlong Java_org_rocksdb_DBOptions_getDBOptionsFromProps(JNIEnv* env,
+jlong Java_org_terarkdb_DBOptions_getDBOptionsFromProps(JNIEnv* env,
                                                        jclass /*jclazz*/,
                                                        jstring jopt_string) {
   const char* opt_string = env->GetStringUTFChars(jopt_string, nullptr);
@@ -4758,11 +4805,11 @@ jlong Java_org_rocksdb_DBOptions_getDBOptionsFromProps(JNIEnv* env,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    disposeInternal
  * Signature: (J)V
  */
-void Java_org_rocksdb_DBOptions_disposeInternal(JNIEnv* /*env*/,
+void Java_org_terarkdb_DBOptions_disposeInternal(JNIEnv* /*env*/,
                                                 jobject /*jobj*/,
                                                 jlong handle) {
   auto* dbo = reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(handle);
@@ -4771,11 +4818,11 @@ void Java_org_rocksdb_DBOptions_disposeInternal(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    optimizeForSmallDb
  * Signature: (J)V
  */
-void Java_org_rocksdb_DBOptions_optimizeForSmallDb(JNIEnv* /*env*/,
+void Java_org_terarkdb_DBOptions_optimizeForSmallDb(JNIEnv* /*env*/,
                                                    jobject /*jobj*/,
                                                    jlong jhandle) {
   reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
@@ -4783,22 +4830,22 @@ void Java_org_rocksdb_DBOptions_optimizeForSmallDb(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setEnv
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_DBOptions_setEnv(JNIEnv* /*env*/, jobject /*jobj*/,
+void Java_org_terarkdb_DBOptions_setEnv(JNIEnv* /*env*/, jobject /*jobj*/,
                                        jlong jhandle, jlong jenv_handle) {
   reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)->env =
       reinterpret_cast<TERARKDB_NAMESPACE::Env*>(jenv_handle);
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setIncreaseParallelism
  * Signature: (JI)V
  */
-void Java_org_rocksdb_DBOptions_setIncreaseParallelism(JNIEnv* /*env*/,
+void Java_org_terarkdb_DBOptions_setIncreaseParallelism(JNIEnv* /*env*/,
                                                        jobject /*jobj*/,
                                                        jlong jhandle,
                                                        jint totalThreads) {
@@ -4807,11 +4854,11 @@ void Java_org_rocksdb_DBOptions_setIncreaseParallelism(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setCreateIfMissing
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_DBOptions_setCreateIfMissing(JNIEnv* /*env*/,
+void Java_org_terarkdb_DBOptions_setCreateIfMissing(JNIEnv* /*env*/,
                                                    jobject /*jobj*/,
                                                    jlong jhandle,
                                                    jboolean flag) {
@@ -4820,11 +4867,11 @@ void Java_org_rocksdb_DBOptions_setCreateIfMissing(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    createIfMissing
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_DBOptions_createIfMissing(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_DBOptions_createIfMissing(JNIEnv* /*env*/,
                                                     jobject /*jobj*/,
                                                     jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
@@ -4832,11 +4879,11 @@ jboolean Java_org_rocksdb_DBOptions_createIfMissing(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setCreateMissingColumnFamilies
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_DBOptions_setCreateMissingColumnFamilies(JNIEnv* /*env*/,
+void Java_org_terarkdb_DBOptions_setCreateMissingColumnFamilies(JNIEnv* /*env*/,
                                                                jobject /*jobj*/,
                                                                jlong jhandle,
                                                                jboolean flag) {
@@ -4845,22 +4892,22 @@ void Java_org_rocksdb_DBOptions_setCreateMissingColumnFamilies(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    createMissingColumnFamilies
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_DBOptions_createMissingColumnFamilies(
+jboolean Java_org_terarkdb_DBOptions_createMissingColumnFamilies(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
       ->create_missing_column_families;
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setErrorIfExists
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_DBOptions_setErrorIfExists(JNIEnv* /*env*/,
+void Java_org_terarkdb_DBOptions_setErrorIfExists(JNIEnv* /*env*/,
                                                  jobject /*jobj*/,
                                                  jlong jhandle,
                                                  jboolean error_if_exists) {
@@ -4869,11 +4916,11 @@ void Java_org_rocksdb_DBOptions_setErrorIfExists(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    errorIfExists
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_DBOptions_errorIfExists(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_DBOptions_errorIfExists(JNIEnv* /*env*/,
                                                   jobject /*jobj*/,
                                                   jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
@@ -4881,11 +4928,11 @@ jboolean Java_org_rocksdb_DBOptions_errorIfExists(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setParanoidChecks
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_DBOptions_setParanoidChecks(JNIEnv* /*env*/,
+void Java_org_terarkdb_DBOptions_setParanoidChecks(JNIEnv* /*env*/,
                                                   jobject /*jobj*/,
                                                   jlong jhandle,
                                                   jboolean paranoid_checks) {
@@ -4894,11 +4941,11 @@ void Java_org_rocksdb_DBOptions_setParanoidChecks(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    paranoidChecks
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_DBOptions_paranoidChecks(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_DBOptions_paranoidChecks(JNIEnv* /*env*/,
                                                    jobject /*jobj*/,
                                                    jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
@@ -4906,11 +4953,11 @@ jboolean Java_org_rocksdb_DBOptions_paranoidChecks(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setRateLimiter
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_DBOptions_setRateLimiter(JNIEnv* /*env*/,
+void Java_org_terarkdb_DBOptions_setRateLimiter(JNIEnv* /*env*/,
                                                jobject /*jobj*/, jlong jhandle,
                                                jlong jrate_limiter_handle) {
   std::shared_ptr<TERARKDB_NAMESPACE::RateLimiter>* pRateLimiter =
@@ -4921,11 +4968,11 @@ void Java_org_rocksdb_DBOptions_setRateLimiter(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setSstFileManager
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_DBOptions_setSstFileManager(
+void Java_org_terarkdb_DBOptions_setSstFileManager(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jsst_file_manager_handle) {
   auto* sptr_sst_file_manager =
@@ -4936,11 +4983,11 @@ void Java_org_rocksdb_DBOptions_setSstFileManager(
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setLogger
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_DBOptions_setLogger(JNIEnv* /*env*/, jobject /*jobj*/,
+void Java_org_terarkdb_DBOptions_setLogger(JNIEnv* /*env*/, jobject /*jobj*/,
                                           jlong jhandle, jlong jlogger_handle) {
   std::shared_ptr<TERARKDB_NAMESPACE::LoggerJniCallback>* pLogger =
       reinterpret_cast<std::shared_ptr<TERARKDB_NAMESPACE::LoggerJniCallback>*>(
@@ -4950,11 +4997,11 @@ void Java_org_rocksdb_DBOptions_setLogger(JNIEnv* /*env*/, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setInfoLogLevel
  * Signature: (JB)V
  */
-void Java_org_rocksdb_DBOptions_setInfoLogLevel(JNIEnv* /*env*/,
+void Java_org_terarkdb_DBOptions_setInfoLogLevel(JNIEnv* /*env*/,
                                                 jobject /*jobj*/, jlong jhandle,
                                                 jbyte jlog_level) {
   reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)->info_log_level =
@@ -4962,11 +5009,11 @@ void Java_org_rocksdb_DBOptions_setInfoLogLevel(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    infoLogLevel
  * Signature: (J)B
  */
-jbyte Java_org_rocksdb_DBOptions_infoLogLevel(JNIEnv* /*env*/, jobject /*jobj*/,
+jbyte Java_org_terarkdb_DBOptions_infoLogLevel(JNIEnv* /*env*/, jobject /*jobj*/,
                                               jlong jhandle) {
   return static_cast<jbyte>(
       reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
@@ -4974,11 +5021,11 @@ jbyte Java_org_rocksdb_DBOptions_infoLogLevel(JNIEnv* /*env*/, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setMaxTotalWalSize
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_DBOptions_setMaxTotalWalSize(JNIEnv* /*env*/,
+void Java_org_terarkdb_DBOptions_setMaxTotalWalSize(JNIEnv* /*env*/,
                                                    jobject /*jobj*/,
                                                    jlong jhandle,
                                                    jlong jmax_total_wal_size) {
@@ -4987,11 +5034,11 @@ void Java_org_rocksdb_DBOptions_setMaxTotalWalSize(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    maxTotalWalSize
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_DBOptions_maxTotalWalSize(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_DBOptions_maxTotalWalSize(JNIEnv* /*env*/,
                                                  jobject /*jobj*/,
                                                  jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
@@ -4999,11 +5046,11 @@ jlong Java_org_rocksdb_DBOptions_maxTotalWalSize(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setMaxOpenFiles
  * Signature: (JI)V
  */
-void Java_org_rocksdb_DBOptions_setMaxOpenFiles(JNIEnv* /*env*/,
+void Java_org_terarkdb_DBOptions_setMaxOpenFiles(JNIEnv* /*env*/,
                                                 jobject /*jobj*/, jlong jhandle,
                                                 jint max_open_files) {
   reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)->max_open_files =
@@ -5011,22 +5058,22 @@ void Java_org_rocksdb_DBOptions_setMaxOpenFiles(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    maxOpenFiles
  * Signature: (J)I
  */
-jint Java_org_rocksdb_DBOptions_maxOpenFiles(JNIEnv* /*env*/, jobject /*jobj*/,
+jint Java_org_terarkdb_DBOptions_maxOpenFiles(JNIEnv* /*env*/, jobject /*jobj*/,
                                              jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
       ->max_open_files;
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setMaxFileOpeningThreads
  * Signature: (JI)V
  */
-void Java_org_rocksdb_DBOptions_setMaxFileOpeningThreads(
+void Java_org_terarkdb_DBOptions_setMaxFileOpeningThreads(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jint jmax_file_opening_threads) {
   reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
@@ -5034,11 +5081,11 @@ void Java_org_rocksdb_DBOptions_setMaxFileOpeningThreads(
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    maxFileOpeningThreads
  * Signature: (J)I
  */
-jint Java_org_rocksdb_DBOptions_maxFileOpeningThreads(JNIEnv* /*env*/,
+jint Java_org_terarkdb_DBOptions_maxFileOpeningThreads(JNIEnv* /*env*/,
                                                       jobject /*jobj*/,
                                                       jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle);
@@ -5046,11 +5093,11 @@ jint Java_org_rocksdb_DBOptions_maxFileOpeningThreads(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setStatistics
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_DBOptions_setStatistics(JNIEnv* /*env*/, jobject /*jobj*/,
+void Java_org_terarkdb_DBOptions_setStatistics(JNIEnv* /*env*/, jobject /*jobj*/,
                                               jlong jhandle,
                                               jlong jstatistics_handle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle);
@@ -5061,11 +5108,11 @@ void Java_org_rocksdb_DBOptions_setStatistics(JNIEnv* /*env*/, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    statistics
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_DBOptions_statistics(JNIEnv* /*env*/, jobject /*jobj*/,
+jlong Java_org_terarkdb_DBOptions_statistics(JNIEnv* /*env*/, jobject /*jobj*/,
                                             jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle);
   std::shared_ptr<TERARKDB_NAMESPACE::Statistics> sptr = opt->statistics;
@@ -5079,32 +5126,32 @@ jlong Java_org_rocksdb_DBOptions_statistics(JNIEnv* /*env*/, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setUseFsync
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_DBOptions_setUseFsync(JNIEnv* /*env*/, jobject /*jobj*/,
+void Java_org_terarkdb_DBOptions_setUseFsync(JNIEnv* /*env*/, jobject /*jobj*/,
                                             jlong jhandle, jboolean use_fsync) {
   reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)->use_fsync =
       static_cast<bool>(use_fsync);
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    useFsync
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_DBOptions_useFsync(JNIEnv* /*env*/, jobject /*jobj*/,
+jboolean Java_org_terarkdb_DBOptions_useFsync(JNIEnv* /*env*/, jobject /*jobj*/,
                                              jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)->use_fsync;
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setDbPaths
  * Signature: (J[Ljava/lang/String;[J)V
  */
-void Java_org_rocksdb_DBOptions_setDbPaths(JNIEnv* env, jobject /*jobj*/,
+void Java_org_terarkdb_DBOptions_setDbPaths(JNIEnv* env, jobject /*jobj*/,
                                            jlong jhandle, jobjectArray jpaths,
                                            jlongArray jtarget_sizes) {
   std::vector<TERARKDB_NAMESPACE::DbPath> db_paths;
@@ -5146,22 +5193,22 @@ void Java_org_rocksdb_DBOptions_setDbPaths(JNIEnv* env, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    dbPathsLen
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_DBOptions_dbPathsLen(JNIEnv* /*env*/, jobject /*jobj*/,
+jlong Java_org_terarkdb_DBOptions_dbPathsLen(JNIEnv* /*env*/, jobject /*jobj*/,
                                             jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle);
   return static_cast<jlong>(opt->db_paths.size());
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    dbPaths
  * Signature: (J[Ljava/lang/String;[J)V
  */
-void Java_org_rocksdb_DBOptions_dbPaths(JNIEnv* env, jobject /*jobj*/,
+void Java_org_terarkdb_DBOptions_dbPaths(JNIEnv* env, jobject /*jobj*/,
                                         jlong jhandle, jobjectArray jpaths,
                                         jlongArray jtarget_sizes) {
   jlong* ptr_jtarget_size = env->GetLongArrayElements(jtarget_sizes, nullptr);
@@ -5196,11 +5243,11 @@ void Java_org_rocksdb_DBOptions_dbPaths(JNIEnv* env, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setDbLogDir
  * Signature: (JLjava/lang/String)V
  */
-void Java_org_rocksdb_DBOptions_setDbLogDir(JNIEnv* env, jobject /*jobj*/,
+void Java_org_terarkdb_DBOptions_setDbLogDir(JNIEnv* env, jobject /*jobj*/,
                                             jlong jhandle,
                                             jstring jdb_log_dir) {
   const char* log_dir = env->GetStringUTFChars(jdb_log_dir, nullptr);
@@ -5215,11 +5262,11 @@ void Java_org_rocksdb_DBOptions_setDbLogDir(JNIEnv* env, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    dbLogDir
  * Signature: (J)Ljava/lang/String
  */
-jstring Java_org_rocksdb_DBOptions_dbLogDir(JNIEnv* env, jobject /*jobj*/,
+jstring Java_org_terarkdb_DBOptions_dbLogDir(JNIEnv* env, jobject /*jobj*/,
                                             jlong jhandle) {
   return env->NewStringUTF(
       reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
@@ -5227,11 +5274,11 @@ jstring Java_org_rocksdb_DBOptions_dbLogDir(JNIEnv* env, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setWalDir
  * Signature: (JLjava/lang/String)V
  */
-void Java_org_rocksdb_DBOptions_setWalDir(JNIEnv* env, jobject /*jobj*/,
+void Java_org_terarkdb_DBOptions_setWalDir(JNIEnv* env, jobject /*jobj*/,
                                           jlong jhandle, jstring jwal_dir) {
   const char* wal_dir = env->GetStringUTFChars(jwal_dir, 0);
   reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)->wal_dir.assign(
@@ -5240,11 +5287,11 @@ void Java_org_rocksdb_DBOptions_setWalDir(JNIEnv* env, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    walDir
  * Signature: (J)Ljava/lang/String
  */
-jstring Java_org_rocksdb_DBOptions_walDir(JNIEnv* env, jobject /*jobj*/,
+jstring Java_org_terarkdb_DBOptions_walDir(JNIEnv* env, jobject /*jobj*/,
                                           jlong jhandle) {
   return env->NewStringUTF(
       reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
@@ -5252,33 +5299,33 @@ jstring Java_org_rocksdb_DBOptions_walDir(JNIEnv* env, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setDeleteObsoleteFilesPeriodMicros
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_DBOptions_setDeleteObsoleteFilesPeriodMicros(
+void Java_org_terarkdb_DBOptions_setDeleteObsoleteFilesPeriodMicros(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle, jlong micros) {
   reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
       ->delete_obsolete_files_period_micros = static_cast<int64_t>(micros);
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    deleteObsoleteFilesPeriodMicros
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_DBOptions_deleteObsoleteFilesPeriodMicros(
+jlong Java_org_terarkdb_DBOptions_deleteObsoleteFilesPeriodMicros(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
       ->delete_obsolete_files_period_micros;
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setBaseBackgroundCompactions
  * Signature: (JI)V
  */
-void Java_org_rocksdb_DBOptions_setBaseBackgroundCompactions(JNIEnv* /*env*/,
+void Java_org_terarkdb_DBOptions_setBaseBackgroundCompactions(JNIEnv* /*env*/,
                                                              jobject /*jobj*/,
                                                              jlong jhandle,
                                                              jint max) {
@@ -5287,11 +5334,11 @@ void Java_org_rocksdb_DBOptions_setBaseBackgroundCompactions(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    baseBackgroundCompactions
  * Signature: (J)I
  */
-jint Java_org_rocksdb_DBOptions_baseBackgroundCompactions(JNIEnv* /*env*/,
+jint Java_org_terarkdb_DBOptions_baseBackgroundCompactions(JNIEnv* /*env*/,
                                                           jobject /*jobj*/,
                                                           jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
@@ -5299,11 +5346,11 @@ jint Java_org_rocksdb_DBOptions_baseBackgroundCompactions(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setMaxBackgroundCompactions
  * Signature: (JI)V
  */
-void Java_org_rocksdb_DBOptions_setMaxBackgroundCompactions(JNIEnv* /*env*/,
+void Java_org_terarkdb_DBOptions_setMaxBackgroundCompactions(JNIEnv* /*env*/,
                                                             jobject /*jobj*/,
                                                             jlong jhandle,
                                                             jint max) {
@@ -5312,11 +5359,11 @@ void Java_org_rocksdb_DBOptions_setMaxBackgroundCompactions(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    maxBackgroundCompactions
  * Signature: (J)I
  */
-jint Java_org_rocksdb_DBOptions_maxBackgroundCompactions(JNIEnv* /*env*/,
+jint Java_org_terarkdb_DBOptions_maxBackgroundCompactions(JNIEnv* /*env*/,
                                                          jobject /*jobj*/,
                                                          jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
@@ -5324,11 +5371,11 @@ jint Java_org_rocksdb_DBOptions_maxBackgroundCompactions(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setMaxBackgroundFlushes
  * Signature: (JI)V
  */
-void Java_org_rocksdb_DBOptions_setMaxBackgroundFlushes(
+void Java_org_terarkdb_DBOptions_setMaxBackgroundFlushes(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jint max_background_flushes) {
   reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
@@ -5336,11 +5383,11 @@ void Java_org_rocksdb_DBOptions_setMaxBackgroundFlushes(
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    maxBackgroundFlushes
  * Signature: (J)I
  */
-jint Java_org_rocksdb_DBOptions_maxBackgroundFlushes(JNIEnv* /*env*/,
+jint Java_org_terarkdb_DBOptions_maxBackgroundFlushes(JNIEnv* /*env*/,
                                                      jobject /*jobj*/,
                                                      jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
@@ -5348,11 +5395,11 @@ jint Java_org_rocksdb_DBOptions_maxBackgroundFlushes(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setMaxBackgroundJobs
  * Signature: (JI)V
  */
-void Java_org_rocksdb_DBOptions_setMaxBackgroundJobs(JNIEnv* /*env*/,
+void Java_org_terarkdb_DBOptions_setMaxBackgroundJobs(JNIEnv* /*env*/,
                                                      jobject /*jobj*/,
                                                      jlong jhandle,
                                                      jint max_background_jobs) {
@@ -5361,11 +5408,11 @@ void Java_org_rocksdb_DBOptions_setMaxBackgroundJobs(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    maxBackgroundJobs
  * Signature: (J)I
  */
-jint Java_org_rocksdb_DBOptions_maxBackgroundJobs(JNIEnv* /*env*/,
+jint Java_org_terarkdb_DBOptions_maxBackgroundJobs(JNIEnv* /*env*/,
                                                   jobject /*jobj*/,
                                                   jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
@@ -5373,11 +5420,11 @@ jint Java_org_rocksdb_DBOptions_maxBackgroundJobs(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setMaxLogFileSize
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_DBOptions_setMaxLogFileSize(JNIEnv* env, jobject /*jobj*/,
+void Java_org_terarkdb_DBOptions_setMaxLogFileSize(JNIEnv* env, jobject /*jobj*/,
                                                   jlong jhandle,
                                                   jlong max_log_file_size) {
   TERARKDB_NAMESPACE::Status s =
@@ -5391,11 +5438,11 @@ void Java_org_rocksdb_DBOptions_setMaxLogFileSize(JNIEnv* env, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    maxLogFileSize
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_DBOptions_maxLogFileSize(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_DBOptions_maxLogFileSize(JNIEnv* /*env*/,
                                                 jobject /*jobj*/,
                                                 jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
@@ -5403,11 +5450,11 @@ jlong Java_org_rocksdb_DBOptions_maxLogFileSize(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setLogFileTimeToRoll
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_DBOptions_setLogFileTimeToRoll(
+void Java_org_terarkdb_DBOptions_setLogFileTimeToRoll(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle, jlong log_file_time_to_roll) {
   TERARKDB_NAMESPACE::Status s =
       TERARKDB_NAMESPACE::check_if_jlong_fits_size_t(log_file_time_to_roll);
@@ -5420,11 +5467,11 @@ void Java_org_rocksdb_DBOptions_setLogFileTimeToRoll(
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    logFileTimeToRoll
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_DBOptions_logFileTimeToRoll(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_DBOptions_logFileTimeToRoll(JNIEnv* /*env*/,
                                                    jobject /*jobj*/,
                                                    jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
@@ -5432,11 +5479,11 @@ jlong Java_org_rocksdb_DBOptions_logFileTimeToRoll(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setKeepLogFileNum
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_DBOptions_setKeepLogFileNum(JNIEnv* env, jobject /*jobj*/,
+void Java_org_terarkdb_DBOptions_setKeepLogFileNum(JNIEnv* env, jobject /*jobj*/,
                                                   jlong jhandle,
                                                   jlong keep_log_file_num) {
   TERARKDB_NAMESPACE::Status s =
@@ -5450,11 +5497,11 @@ void Java_org_rocksdb_DBOptions_setKeepLogFileNum(JNIEnv* env, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    keepLogFileNum
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_DBOptions_keepLogFileNum(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_DBOptions_keepLogFileNum(JNIEnv* /*env*/,
                                                 jobject /*jobj*/,
                                                 jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
@@ -5462,11 +5509,11 @@ jlong Java_org_rocksdb_DBOptions_keepLogFileNum(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setRecycleLogFileNum
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_DBOptions_setRecycleLogFileNum(
+void Java_org_terarkdb_DBOptions_setRecycleLogFileNum(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle, jlong recycle_log_file_num) {
   TERARKDB_NAMESPACE::Status s =
       TERARKDB_NAMESPACE::check_if_jlong_fits_size_t(recycle_log_file_num);
@@ -5479,11 +5526,11 @@ void Java_org_rocksdb_DBOptions_setRecycleLogFileNum(
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    recycleLogFileNum
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_DBOptions_recycleLogFileNum(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_DBOptions_recycleLogFileNum(JNIEnv* /*env*/,
                                                    jobject /*jobj*/,
                                                    jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
@@ -5491,11 +5538,11 @@ jlong Java_org_rocksdb_DBOptions_recycleLogFileNum(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setMaxManifestFileSize
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_DBOptions_setMaxManifestFileSize(
+void Java_org_terarkdb_DBOptions_setMaxManifestFileSize(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong max_manifest_file_size) {
   reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
@@ -5503,11 +5550,11 @@ void Java_org_rocksdb_DBOptions_setMaxManifestFileSize(
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    maxManifestFileSize
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_DBOptions_maxManifestFileSize(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_DBOptions_maxManifestFileSize(JNIEnv* /*env*/,
                                                      jobject /*jobj*/,
                                                      jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
@@ -5515,11 +5562,11 @@ jlong Java_org_rocksdb_DBOptions_maxManifestFileSize(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setTableCacheNumshardbits
  * Signature: (JI)V
  */
-void Java_org_rocksdb_DBOptions_setTableCacheNumshardbits(
+void Java_org_terarkdb_DBOptions_setTableCacheNumshardbits(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jint table_cache_numshardbits) {
   reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
@@ -5527,11 +5574,11 @@ void Java_org_rocksdb_DBOptions_setTableCacheNumshardbits(
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    tableCacheNumshardbits
  * Signature: (J)I
  */
-jint Java_org_rocksdb_DBOptions_tableCacheNumshardbits(JNIEnv* /*env*/,
+jint Java_org_terarkdb_DBOptions_tableCacheNumshardbits(JNIEnv* /*env*/,
                                                        jobject /*jobj*/,
                                                        jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
@@ -5539,11 +5586,11 @@ jint Java_org_rocksdb_DBOptions_tableCacheNumshardbits(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setWalTtlSeconds
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_DBOptions_setWalTtlSeconds(JNIEnv* /*env*/,
+void Java_org_terarkdb_DBOptions_setWalTtlSeconds(JNIEnv* /*env*/,
                                                  jobject /*jobj*/,
                                                  jlong jhandle,
                                                  jlong WAL_ttl_seconds) {
@@ -5552,11 +5599,11 @@ void Java_org_rocksdb_DBOptions_setWalTtlSeconds(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    walTtlSeconds
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_DBOptions_walTtlSeconds(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_DBOptions_walTtlSeconds(JNIEnv* /*env*/,
                                                jobject /*jobj*/,
                                                jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
@@ -5564,11 +5611,11 @@ jlong Java_org_rocksdb_DBOptions_walTtlSeconds(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setWalSizeLimitMB
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_DBOptions_setWalSizeLimitMB(JNIEnv* /*env*/,
+void Java_org_terarkdb_DBOptions_setWalSizeLimitMB(JNIEnv* /*env*/,
                                                   jobject /*jobj*/,
                                                   jlong jhandle,
                                                   jlong WAL_size_limit_MB) {
@@ -5577,11 +5624,11 @@ void Java_org_rocksdb_DBOptions_setWalSizeLimitMB(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    walTtlSeconds
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_DBOptions_walSizeLimitMB(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_DBOptions_walSizeLimitMB(JNIEnv* /*env*/,
                                                 jobject /*jobj*/,
                                                 jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
@@ -5589,11 +5636,11 @@ jlong Java_org_rocksdb_DBOptions_walSizeLimitMB(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setManifestPreallocationSize
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_DBOptions_setManifestPreallocationSize(
+void Java_org_terarkdb_DBOptions_setManifestPreallocationSize(
     JNIEnv* env, jobject /*jobj*/, jlong jhandle, jlong preallocation_size) {
   TERARKDB_NAMESPACE::Status s =
       TERARKDB_NAMESPACE::check_if_jlong_fits_size_t(preallocation_size);
@@ -5606,11 +5653,11 @@ void Java_org_rocksdb_DBOptions_setManifestPreallocationSize(
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    manifestPreallocationSize
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_DBOptions_manifestPreallocationSize(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_DBOptions_manifestPreallocationSize(JNIEnv* /*env*/,
                                                            jobject /*jobj*/,
                                                            jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
@@ -5618,11 +5665,11 @@ jlong Java_org_rocksdb_DBOptions_manifestPreallocationSize(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    useDirectReads
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_DBOptions_useDirectReads(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_DBOptions_useDirectReads(JNIEnv* /*env*/,
                                                    jobject /*jobj*/,
                                                    jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
@@ -5630,11 +5677,11 @@ jboolean Java_org_rocksdb_DBOptions_useDirectReads(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setUseDirectReads
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_DBOptions_setUseDirectReads(JNIEnv* /*env*/,
+void Java_org_terarkdb_DBOptions_setUseDirectReads(JNIEnv* /*env*/,
                                                   jobject /*jobj*/,
                                                   jlong jhandle,
                                                   jboolean use_direct_reads) {
@@ -5643,22 +5690,22 @@ void Java_org_rocksdb_DBOptions_setUseDirectReads(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    useDirectIoForFlushAndCompaction
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_DBOptions_useDirectIoForFlushAndCompaction(
+jboolean Java_org_terarkdb_DBOptions_useDirectIoForFlushAndCompaction(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
       ->use_direct_io_for_flush_and_compaction;
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setUseDirectReads
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_DBOptions_setUseDirectIoForFlushAndCompaction(
+void Java_org_terarkdb_DBOptions_setUseDirectIoForFlushAndCompaction(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean use_direct_io_for_flush_and_compaction) {
   reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
@@ -5667,11 +5714,11 @@ void Java_org_rocksdb_DBOptions_setUseDirectIoForFlushAndCompaction(
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setAllowFAllocate
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_DBOptions_setAllowFAllocate(JNIEnv* /*env*/,
+void Java_org_terarkdb_DBOptions_setAllowFAllocate(JNIEnv* /*env*/,
                                                   jobject /*jobj*/,
                                                   jlong jhandle,
                                                   jboolean jallow_fallocate) {
@@ -5680,11 +5727,11 @@ void Java_org_rocksdb_DBOptions_setAllowFAllocate(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    allowFAllocate
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_DBOptions_allowFAllocate(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_DBOptions_allowFAllocate(JNIEnv* /*env*/,
                                                    jobject /*jobj*/,
                                                    jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle);
@@ -5692,11 +5739,11 @@ jboolean Java_org_rocksdb_DBOptions_allowFAllocate(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setAllowMmapReads
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_DBOptions_setAllowMmapReads(JNIEnv* /*env*/,
+void Java_org_terarkdb_DBOptions_setAllowMmapReads(JNIEnv* /*env*/,
                                                   jobject /*jobj*/,
                                                   jlong jhandle,
                                                   jboolean allow_mmap_reads) {
@@ -5705,11 +5752,11 @@ void Java_org_rocksdb_DBOptions_setAllowMmapReads(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    allowMmapReads
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_DBOptions_allowMmapReads(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_DBOptions_allowMmapReads(JNIEnv* /*env*/,
                                                    jobject /*jobj*/,
                                                    jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
@@ -5717,11 +5764,11 @@ jboolean Java_org_rocksdb_DBOptions_allowMmapReads(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setAllowMmapWrites
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_DBOptions_setAllowMmapWrites(JNIEnv* /*env*/,
+void Java_org_terarkdb_DBOptions_setAllowMmapWrites(JNIEnv* /*env*/,
                                                    jobject /*jobj*/,
                                                    jlong jhandle,
                                                    jboolean allow_mmap_writes) {
@@ -5730,11 +5777,11 @@ void Java_org_rocksdb_DBOptions_setAllowMmapWrites(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    allowMmapWrites
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_DBOptions_allowMmapWrites(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_DBOptions_allowMmapWrites(JNIEnv* /*env*/,
                                                     jobject /*jobj*/,
                                                     jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
@@ -5742,11 +5789,11 @@ jboolean Java_org_rocksdb_DBOptions_allowMmapWrites(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setIsFdCloseOnExec
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_DBOptions_setIsFdCloseOnExec(
+void Java_org_terarkdb_DBOptions_setIsFdCloseOnExec(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean is_fd_close_on_exec) {
   reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
@@ -5754,11 +5801,11 @@ void Java_org_rocksdb_DBOptions_setIsFdCloseOnExec(
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    isFdCloseOnExec
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_DBOptions_isFdCloseOnExec(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_DBOptions_isFdCloseOnExec(JNIEnv* /*env*/,
                                                     jobject /*jobj*/,
                                                     jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
@@ -5766,11 +5813,11 @@ jboolean Java_org_rocksdb_DBOptions_isFdCloseOnExec(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setStatsDumpPeriodSec
  * Signature: (JI)V
  */
-void Java_org_rocksdb_DBOptions_setStatsDumpPeriodSec(
+void Java_org_terarkdb_DBOptions_setStatsDumpPeriodSec(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jint stats_dump_period_sec) {
   reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
@@ -5778,11 +5825,11 @@ void Java_org_rocksdb_DBOptions_setStatsDumpPeriodSec(
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    statsDumpPeriodSec
  * Signature: (J)I
  */
-jint Java_org_rocksdb_DBOptions_statsDumpPeriodSec(JNIEnv* /*env*/,
+jint Java_org_terarkdb_DBOptions_statsDumpPeriodSec(JNIEnv* /*env*/,
                                                    jobject /*jobj*/,
                                                    jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
@@ -5790,11 +5837,11 @@ jint Java_org_rocksdb_DBOptions_statsDumpPeriodSec(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setAdviseRandomOnOpen
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_DBOptions_setAdviseRandomOnOpen(
+void Java_org_terarkdb_DBOptions_setAdviseRandomOnOpen(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean advise_random_on_open) {
   reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
@@ -5802,11 +5849,11 @@ void Java_org_rocksdb_DBOptions_setAdviseRandomOnOpen(
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    adviseRandomOnOpen
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_DBOptions_adviseRandomOnOpen(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_DBOptions_adviseRandomOnOpen(JNIEnv* /*env*/,
                                                        jobject /*jobj*/,
                                                        jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
@@ -5814,11 +5861,11 @@ jboolean Java_org_rocksdb_DBOptions_adviseRandomOnOpen(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setDbWriteBufferSize
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_DBOptions_setDbWriteBufferSize(
+void Java_org_terarkdb_DBOptions_setDbWriteBufferSize(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jdb_write_buffer_size) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle);
@@ -5826,11 +5873,11 @@ void Java_org_rocksdb_DBOptions_setDbWriteBufferSize(
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setWriteBufferManager
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_DBOptions_setWriteBufferManager(
+void Java_org_terarkdb_DBOptions_setWriteBufferManager(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jdb_options_handle,
     jlong jwrite_buffer_manager_handle) {
   auto* write_buffer_manager = reinterpret_cast<
@@ -5841,11 +5888,11 @@ void Java_org_rocksdb_DBOptions_setWriteBufferManager(
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    dbWriteBufferSize
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_DBOptions_dbWriteBufferSize(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_DBOptions_dbWriteBufferSize(JNIEnv* /*env*/,
                                                    jobject /*jobj*/,
                                                    jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle);
@@ -5853,11 +5900,11 @@ jlong Java_org_rocksdb_DBOptions_dbWriteBufferSize(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setAccessHintOnCompactionStart
  * Signature: (JB)V
  */
-void Java_org_rocksdb_DBOptions_setAccessHintOnCompactionStart(
+void Java_org_terarkdb_DBOptions_setAccessHintOnCompactionStart(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jbyte jaccess_hint_value) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle);
@@ -5866,11 +5913,11 @@ void Java_org_rocksdb_DBOptions_setAccessHintOnCompactionStart(
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    accessHintOnCompactionStart
  * Signature: (J)B
  */
-jbyte Java_org_rocksdb_DBOptions_accessHintOnCompactionStart(JNIEnv* /*env*/,
+jbyte Java_org_terarkdb_DBOptions_accessHintOnCompactionStart(JNIEnv* /*env*/,
                                                              jobject /*jobj*/,
                                                              jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle);
@@ -5879,11 +5926,11 @@ jbyte Java_org_rocksdb_DBOptions_accessHintOnCompactionStart(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setNewTableReaderForCompactionInputs
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_DBOptions_setNewTableReaderForCompactionInputs(
+void Java_org_terarkdb_DBOptions_setNewTableReaderForCompactionInputs(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean jnew_table_reader_for_compaction_inputs) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle);
@@ -5892,22 +5939,22 @@ void Java_org_rocksdb_DBOptions_setNewTableReaderForCompactionInputs(
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    newTableReaderForCompactionInputs
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_DBOptions_newTableReaderForCompactionInputs(
+jboolean Java_org_terarkdb_DBOptions_newTableReaderForCompactionInputs(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle);
   return static_cast<bool>(opt->new_table_reader_for_compaction_inputs);
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setCompactionReadaheadSize
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_DBOptions_setCompactionReadaheadSize(
+void Java_org_terarkdb_DBOptions_setCompactionReadaheadSize(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jcompaction_readahead_size) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle);
@@ -5916,11 +5963,11 @@ void Java_org_rocksdb_DBOptions_setCompactionReadaheadSize(
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    compactionReadaheadSize
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_DBOptions_compactionReadaheadSize(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_DBOptions_compactionReadaheadSize(JNIEnv* /*env*/,
                                                          jobject /*jobj*/,
                                                          jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle);
@@ -5928,11 +5975,11 @@ jlong Java_org_rocksdb_DBOptions_compactionReadaheadSize(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setRandomAccessMaxBufferSize
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_DBOptions_setRandomAccessMaxBufferSize(
+void Java_org_terarkdb_DBOptions_setRandomAccessMaxBufferSize(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jrandom_access_max_buffer_size) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle);
@@ -5941,11 +5988,11 @@ void Java_org_rocksdb_DBOptions_setRandomAccessMaxBufferSize(
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    randomAccessMaxBufferSize
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_DBOptions_randomAccessMaxBufferSize(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_DBOptions_randomAccessMaxBufferSize(JNIEnv* /*env*/,
                                                            jobject /*jobj*/,
                                                            jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle);
@@ -5953,11 +6000,11 @@ jlong Java_org_rocksdb_DBOptions_randomAccessMaxBufferSize(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setWritableFileMaxBufferSize
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_DBOptions_setWritableFileMaxBufferSize(
+void Java_org_terarkdb_DBOptions_setWritableFileMaxBufferSize(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jwritable_file_max_buffer_size) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle);
@@ -5966,11 +6013,11 @@ void Java_org_rocksdb_DBOptions_setWritableFileMaxBufferSize(
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    writableFileMaxBufferSize
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_DBOptions_writableFileMaxBufferSize(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_DBOptions_writableFileMaxBufferSize(JNIEnv* /*env*/,
                                                            jobject /*jobj*/,
                                                            jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle);
@@ -5978,11 +6025,11 @@ jlong Java_org_rocksdb_DBOptions_writableFileMaxBufferSize(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setUseAdaptiveMutex
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_DBOptions_setUseAdaptiveMutex(
+void Java_org_terarkdb_DBOptions_setUseAdaptiveMutex(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean use_adaptive_mutex) {
   reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
@@ -5990,11 +6037,11 @@ void Java_org_rocksdb_DBOptions_setUseAdaptiveMutex(
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    useAdaptiveMutex
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_DBOptions_useAdaptiveMutex(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_DBOptions_useAdaptiveMutex(JNIEnv* /*env*/,
                                                      jobject /*jobj*/,
                                                      jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
@@ -6002,11 +6049,11 @@ jboolean Java_org_rocksdb_DBOptions_useAdaptiveMutex(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setBytesPerSync
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_DBOptions_setBytesPerSync(JNIEnv* /*env*/,
+void Java_org_terarkdb_DBOptions_setBytesPerSync(JNIEnv* /*env*/,
                                                 jobject /*jobj*/, jlong jhandle,
                                                 jlong bytes_per_sync) {
   reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)->bytes_per_sync =
@@ -6014,22 +6061,22 @@ void Java_org_rocksdb_DBOptions_setBytesPerSync(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    bytesPerSync
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_DBOptions_bytesPerSync(JNIEnv* /*env*/, jobject /*jobj*/,
+jlong Java_org_terarkdb_DBOptions_bytesPerSync(JNIEnv* /*env*/, jobject /*jobj*/,
                                               jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
       ->bytes_per_sync;
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setWalBytesPerSync
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_DBOptions_setWalBytesPerSync(JNIEnv* /*env*/,
+void Java_org_terarkdb_DBOptions_setWalBytesPerSync(JNIEnv* /*env*/,
                                                    jobject /*jobj*/,
                                                    jlong jhandle,
                                                    jlong jwal_bytes_per_sync) {
@@ -6038,11 +6085,11 @@ void Java_org_rocksdb_DBOptions_setWalBytesPerSync(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    walBytesPerSync
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_DBOptions_walBytesPerSync(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_DBOptions_walBytesPerSync(JNIEnv* /*env*/,
                                                  jobject /*jobj*/,
                                                  jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle);
@@ -6050,11 +6097,11 @@ jlong Java_org_rocksdb_DBOptions_walBytesPerSync(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setEnableThreadTracking
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_DBOptions_setEnableThreadTracking(
+void Java_org_terarkdb_DBOptions_setEnableThreadTracking(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean jenable_thread_tracking) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle);
@@ -6062,11 +6109,11 @@ void Java_org_rocksdb_DBOptions_setEnableThreadTracking(
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    enableThreadTracking
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_DBOptions_enableThreadTracking(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_DBOptions_enableThreadTracking(JNIEnv* /*env*/,
                                                          jobject /*jobj*/,
                                                          jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle);
@@ -6074,11 +6121,11 @@ jboolean Java_org_rocksdb_DBOptions_enableThreadTracking(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setDelayedWriteRate
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_DBOptions_setDelayedWriteRate(JNIEnv* /*env*/,
+void Java_org_terarkdb_DBOptions_setDelayedWriteRate(JNIEnv* /*env*/,
                                                     jobject /*jobj*/,
                                                     jlong jhandle,
                                                     jlong jdelayed_write_rate) {
@@ -6087,11 +6134,11 @@ void Java_org_rocksdb_DBOptions_setDelayedWriteRate(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    delayedWriteRate
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_DBOptions_delayedWriteRate(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_DBOptions_delayedWriteRate(JNIEnv* /*env*/,
                                                   jobject /*jobj*/,
                                                   jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle);
@@ -6099,55 +6146,55 @@ jlong Java_org_rocksdb_DBOptions_delayedWriteRate(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setAllowConcurrentMemtableWrite
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_DBOptions_setAllowConcurrentMemtableWrite(
+void Java_org_terarkdb_DBOptions_setAllowConcurrentMemtableWrite(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle, jboolean allow) {
   reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
       ->allow_concurrent_memtable_write = static_cast<bool>(allow);
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    allowConcurrentMemtableWrite
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_DBOptions_allowConcurrentMemtableWrite(
+jboolean Java_org_terarkdb_DBOptions_allowConcurrentMemtableWrite(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
       ->allow_concurrent_memtable_write;
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setEnableWriteThreadAdaptiveYield
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_DBOptions_setEnableWriteThreadAdaptiveYield(
+void Java_org_terarkdb_DBOptions_setEnableWriteThreadAdaptiveYield(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle, jboolean yield) {
   reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
       ->enable_write_thread_adaptive_yield = static_cast<bool>(yield);
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    enableWriteThreadAdaptiveYield
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_DBOptions_enableWriteThreadAdaptiveYield(
+jboolean Java_org_terarkdb_DBOptions_enableWriteThreadAdaptiveYield(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
       ->enable_write_thread_adaptive_yield;
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setWriteThreadMaxYieldUsec
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_DBOptions_setWriteThreadMaxYieldUsec(JNIEnv* /*env*/,
+void Java_org_terarkdb_DBOptions_setWriteThreadMaxYieldUsec(JNIEnv* /*env*/,
                                                            jobject /*jobj*/,
                                                            jlong jhandle,
                                                            jlong max) {
@@ -6156,11 +6203,11 @@ void Java_org_rocksdb_DBOptions_setWriteThreadMaxYieldUsec(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    writeThreadMaxYieldUsec
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_DBOptions_writeThreadMaxYieldUsec(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_DBOptions_writeThreadMaxYieldUsec(JNIEnv* /*env*/,
                                                          jobject /*jobj*/,
                                                          jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
@@ -6168,11 +6215,11 @@ jlong Java_org_rocksdb_DBOptions_writeThreadMaxYieldUsec(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setWriteThreadSlowYieldUsec
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_DBOptions_setWriteThreadSlowYieldUsec(JNIEnv* /*env*/,
+void Java_org_terarkdb_DBOptions_setWriteThreadSlowYieldUsec(JNIEnv* /*env*/,
                                                             jobject /*jobj*/,
                                                             jlong jhandle,
                                                             jlong slow) {
@@ -6181,11 +6228,11 @@ void Java_org_rocksdb_DBOptions_setWriteThreadSlowYieldUsec(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    writeThreadSlowYieldUsec
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_DBOptions_writeThreadSlowYieldUsec(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_DBOptions_writeThreadSlowYieldUsec(JNIEnv* /*env*/,
                                                           jobject /*jobj*/,
                                                           jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle)
@@ -6193,11 +6240,11 @@ jlong Java_org_rocksdb_DBOptions_writeThreadSlowYieldUsec(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setSkipStatsUpdateOnDbOpen
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_DBOptions_setSkipStatsUpdateOnDbOpen(
+void Java_org_terarkdb_DBOptions_setSkipStatsUpdateOnDbOpen(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean jskip_stats_update_on_db_open) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle);
@@ -6206,11 +6253,11 @@ void Java_org_rocksdb_DBOptions_setSkipStatsUpdateOnDbOpen(
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    skipStatsUpdateOnDbOpen
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_DBOptions_skipStatsUpdateOnDbOpen(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_DBOptions_skipStatsUpdateOnDbOpen(JNIEnv* /*env*/,
                                                             jobject /*jobj*/,
                                                             jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle);
@@ -6218,11 +6265,11 @@ jboolean Java_org_rocksdb_DBOptions_skipStatsUpdateOnDbOpen(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setWalRecoveryMode
  * Signature: (JB)V
  */
-void Java_org_rocksdb_DBOptions_setWalRecoveryMode(
+void Java_org_terarkdb_DBOptions_setWalRecoveryMode(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jbyte jwal_recovery_mode_value) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle);
@@ -6232,11 +6279,11 @@ void Java_org_rocksdb_DBOptions_setWalRecoveryMode(
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    walRecoveryMode
  * Signature: (J)B
  */
-jbyte Java_org_rocksdb_DBOptions_walRecoveryMode(JNIEnv* /*env*/,
+jbyte Java_org_terarkdb_DBOptions_walRecoveryMode(JNIEnv* /*env*/,
                                                  jobject /*jobj*/,
                                                  jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle);
@@ -6245,11 +6292,11 @@ jbyte Java_org_rocksdb_DBOptions_walRecoveryMode(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setAllow2pc
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_DBOptions_setAllow2pc(JNIEnv* /*env*/, jobject /*jobj*/,
+void Java_org_terarkdb_DBOptions_setAllow2pc(JNIEnv* /*env*/, jobject /*jobj*/,
                                             jlong jhandle,
                                             jboolean jallow_2pc) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle);
@@ -6257,22 +6304,22 @@ void Java_org_rocksdb_DBOptions_setAllow2pc(JNIEnv* /*env*/, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    allow2pc
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_DBOptions_allow2pc(JNIEnv* /*env*/, jobject /*jobj*/,
+jboolean Java_org_terarkdb_DBOptions_allow2pc(JNIEnv* /*env*/, jobject /*jobj*/,
                                              jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle);
   return static_cast<jboolean>(opt->allow_2pc);
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setRowCache
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_DBOptions_setRowCache(JNIEnv* /*env*/, jobject /*jobj*/,
+void Java_org_terarkdb_DBOptions_setRowCache(JNIEnv* /*env*/, jobject /*jobj*/,
                                             jlong jhandle,
                                             jlong jrow_cache_handle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle);
@@ -6283,11 +6330,11 @@ void Java_org_rocksdb_DBOptions_setRowCache(JNIEnv* /*env*/, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setFailIfOptionsFileError
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_DBOptions_setFailIfOptionsFileError(
+void Java_org_terarkdb_DBOptions_setFailIfOptionsFileError(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean jfail_if_options_file_error) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle);
@@ -6296,11 +6343,11 @@ void Java_org_rocksdb_DBOptions_setFailIfOptionsFileError(
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    failIfOptionsFileError
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_DBOptions_failIfOptionsFileError(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_DBOptions_failIfOptionsFileError(JNIEnv* /*env*/,
                                                            jobject /*jobj*/,
                                                            jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle);
@@ -6308,11 +6355,11 @@ jboolean Java_org_rocksdb_DBOptions_failIfOptionsFileError(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setDumpMallocStats
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_DBOptions_setDumpMallocStats(
+void Java_org_terarkdb_DBOptions_setDumpMallocStats(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean jdump_malloc_stats) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle);
@@ -6320,11 +6367,11 @@ void Java_org_rocksdb_DBOptions_setDumpMallocStats(
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    dumpMallocStats
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_DBOptions_dumpMallocStats(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_DBOptions_dumpMallocStats(JNIEnv* /*env*/,
                                                     jobject /*jobj*/,
                                                     jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle);
@@ -6332,11 +6379,11 @@ jboolean Java_org_rocksdb_DBOptions_dumpMallocStats(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setAvoidFlushDuringRecovery
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_DBOptions_setAvoidFlushDuringRecovery(
+void Java_org_terarkdb_DBOptions_setAvoidFlushDuringRecovery(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean javoid_flush_during_recovery) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle);
@@ -6345,11 +6392,11 @@ void Java_org_rocksdb_DBOptions_setAvoidFlushDuringRecovery(
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    avoidFlushDuringRecovery
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_DBOptions_avoidFlushDuringRecovery(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_DBOptions_avoidFlushDuringRecovery(JNIEnv* /*env*/,
                                                              jobject /*jobj*/,
                                                              jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle);
@@ -6357,11 +6404,11 @@ jboolean Java_org_rocksdb_DBOptions_avoidFlushDuringRecovery(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    setAvoidFlushDuringShutdown
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_DBOptions_setAvoidFlushDuringShutdown(
+void Java_org_terarkdb_DBOptions_setAvoidFlushDuringShutdown(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean javoid_flush_during_shutdown) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle);
@@ -6370,11 +6417,11 @@ void Java_org_rocksdb_DBOptions_setAvoidFlushDuringShutdown(
 }
 
 /*
- * Class:     org_rocksdb_DBOptions
+ * Class:     org_terarkdb_DBOptions
  * Method:    avoidFlushDuringShutdown
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_DBOptions_avoidFlushDuringShutdown(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_DBOptions_avoidFlushDuringShutdown(JNIEnv* /*env*/,
                                                              jobject /*jobj*/,
                                                              jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::DBOptions*>(jhandle);
@@ -6385,22 +6432,22 @@ jboolean Java_org_rocksdb_DBOptions_avoidFlushDuringShutdown(JNIEnv* /*env*/,
 // TERARKDB_NAMESPACE::WriteOptions
 
 /*
- * Class:     org_rocksdb_WriteOptions
+ * Class:     org_terarkdb_WriteOptions
  * Method:    newWriteOptions
  * Signature: ()J
  */
-jlong Java_org_rocksdb_WriteOptions_newWriteOptions(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_WriteOptions_newWriteOptions(JNIEnv* /*env*/,
                                                     jclass /*jcls*/) {
   auto* op = new TERARKDB_NAMESPACE::WriteOptions();
   return reinterpret_cast<jlong>(op);
 }
 
 /*
- * Class:     org_rocksdb_WriteOptions
+ * Class:     org_terarkdb_WriteOptions
  * Method:    copyWriteOptions
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_WriteOptions_copyWriteOptions(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_WriteOptions_copyWriteOptions(JNIEnv* /*env*/,
                                                      jclass /*jcls*/,
                                                      jlong jhandle) {
   auto new_opt = new TERARKDB_NAMESPACE::WriteOptions(
@@ -6409,11 +6456,11 @@ jlong Java_org_rocksdb_WriteOptions_copyWriteOptions(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_WriteOptions
+ * Class:     org_terarkdb_WriteOptions
  * Method:    disposeInternal
  * Signature: ()V
  */
-void Java_org_rocksdb_WriteOptions_disposeInternal(JNIEnv* /*env*/,
+void Java_org_terarkdb_WriteOptions_disposeInternal(JNIEnv* /*env*/,
                                                    jobject /*jwrite_options*/,
                                                    jlong jhandle) {
   auto* write_options =
@@ -6423,33 +6470,33 @@ void Java_org_rocksdb_WriteOptions_disposeInternal(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_WriteOptions
+ * Class:     org_terarkdb_WriteOptions
  * Method:    setSync
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_WriteOptions_setSync(JNIEnv* /*env*/,
+void Java_org_terarkdb_WriteOptions_setSync(JNIEnv* /*env*/,
                                            jobject /*jwrite_options*/,
                                            jlong jhandle, jboolean jflag) {
   reinterpret_cast<TERARKDB_NAMESPACE::WriteOptions*>(jhandle)->sync = jflag;
 }
 
 /*
- * Class:     org_rocksdb_WriteOptions
+ * Class:     org_terarkdb_WriteOptions
  * Method:    sync
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_WriteOptions_sync(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_WriteOptions_sync(JNIEnv* /*env*/,
                                             jobject /*jwrite_options*/,
                                             jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::WriteOptions*>(jhandle)->sync;
 }
 
 /*
- * Class:     org_rocksdb_WriteOptions
+ * Class:     org_terarkdb_WriteOptions
  * Method:    setDisableWAL
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_WriteOptions_setDisableWAL(JNIEnv* /*env*/,
+void Java_org_terarkdb_WriteOptions_setDisableWAL(JNIEnv* /*env*/,
                                                  jobject /*jwrite_options*/,
                                                  jlong jhandle,
                                                  jboolean jflag) {
@@ -6458,11 +6505,11 @@ void Java_org_rocksdb_WriteOptions_setDisableWAL(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_WriteOptions
+ * Class:     org_terarkdb_WriteOptions
  * Method:    disableWAL
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_WriteOptions_disableWAL(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_WriteOptions_disableWAL(JNIEnv* /*env*/,
                                                   jobject /*jwrite_options*/,
                                                   jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::WriteOptions*>(jhandle)
@@ -6470,11 +6517,11 @@ jboolean Java_org_rocksdb_WriteOptions_disableWAL(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_WriteOptions
+ * Class:     org_terarkdb_WriteOptions
  * Method:    setIgnoreMissingColumnFamilies
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_WriteOptions_setIgnoreMissingColumnFamilies(
+void Java_org_terarkdb_WriteOptions_setIgnoreMissingColumnFamilies(
     JNIEnv* /*env*/, jobject /*jwrite_options*/, jlong jhandle,
     jboolean jignore_missing_column_families) {
   reinterpret_cast<TERARKDB_NAMESPACE::WriteOptions*>(jhandle)
@@ -6483,22 +6530,22 @@ void Java_org_rocksdb_WriteOptions_setIgnoreMissingColumnFamilies(
 }
 
 /*
- * Class:     org_rocksdb_WriteOptions
+ * Class:     org_terarkdb_WriteOptions
  * Method:    ignoreMissingColumnFamilies
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_WriteOptions_ignoreMissingColumnFamilies(
+jboolean Java_org_terarkdb_WriteOptions_ignoreMissingColumnFamilies(
     JNIEnv* /*env*/, jobject /*jwrite_options*/, jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::WriteOptions*>(jhandle)
       ->ignore_missing_column_families;
 }
 
 /*
- * Class:     org_rocksdb_WriteOptions
+ * Class:     org_terarkdb_WriteOptions
  * Method:    setNoSlowdown
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_WriteOptions_setNoSlowdown(JNIEnv* /*env*/,
+void Java_org_terarkdb_WriteOptions_setNoSlowdown(JNIEnv* /*env*/,
                                                  jobject /*jwrite_options*/,
                                                  jlong jhandle,
                                                  jboolean jno_slowdown) {
@@ -6507,11 +6554,11 @@ void Java_org_rocksdb_WriteOptions_setNoSlowdown(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_WriteOptions
+ * Class:     org_terarkdb_WriteOptions
  * Method:    noSlowdown
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_WriteOptions_noSlowdown(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_WriteOptions_noSlowdown(JNIEnv* /*env*/,
                                                   jobject /*jwrite_options*/,
                                                   jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::WriteOptions*>(jhandle)
@@ -6522,22 +6569,22 @@ jboolean Java_org_rocksdb_WriteOptions_noSlowdown(JNIEnv* /*env*/,
 // TERARKDB_NAMESPACE::ReadOptions
 
 /*
- * Class:     org_rocksdb_ReadOptions
+ * Class:     org_terarkdb_ReadOptions
  * Method:    newReadOptions
  * Signature: ()J
  */
-jlong Java_org_rocksdb_ReadOptions_newReadOptions(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_ReadOptions_newReadOptions(JNIEnv* /*env*/,
                                                   jclass /*jcls*/) {
   auto* read_options = new TERARKDB_NAMESPACE::ReadOptions();
   return reinterpret_cast<jlong>(read_options);
 }
 
 /*
- * Class:     org_rocksdb_ReadOptions
+ * Class:     org_terarkdb_ReadOptions
  * Method:    copyReadOptions
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_ReadOptions_copyReadOptions(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_ReadOptions_copyReadOptions(JNIEnv* /*env*/,
                                                    jclass /*jcls*/,
                                                    jlong jhandle) {
   auto new_opt = new TERARKDB_NAMESPACE::ReadOptions(
@@ -6546,11 +6593,11 @@ jlong Java_org_rocksdb_ReadOptions_copyReadOptions(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_ReadOptions
+ * Class:     org_terarkdb_ReadOptions
  * Method:    disposeInternal
  * Signature: (J)V
  */
-void Java_org_rocksdb_ReadOptions_disposeInternal(JNIEnv* /*env*/,
+void Java_org_terarkdb_ReadOptions_disposeInternal(JNIEnv* /*env*/,
                                                   jobject /*jobj*/,
                                                   jlong jhandle) {
   auto* read_options =
@@ -6560,11 +6607,11 @@ void Java_org_rocksdb_ReadOptions_disposeInternal(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_ReadOptions
+ * Class:     org_terarkdb_ReadOptions
  * Method:    setVerifyChecksums
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_ReadOptions_setVerifyChecksums(
+void Java_org_terarkdb_ReadOptions_setVerifyChecksums(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean jverify_checksums) {
   reinterpret_cast<TERARKDB_NAMESPACE::ReadOptions*>(jhandle)
@@ -6572,11 +6619,11 @@ void Java_org_rocksdb_ReadOptions_setVerifyChecksums(
 }
 
 /*
- * Class:     org_rocksdb_ReadOptions
+ * Class:     org_terarkdb_ReadOptions
  * Method:    verifyChecksums
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_ReadOptions_verifyChecksums(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_ReadOptions_verifyChecksums(JNIEnv* /*env*/,
                                                       jobject /*jobj*/,
                                                       jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::ReadOptions*>(jhandle)
@@ -6584,11 +6631,11 @@ jboolean Java_org_rocksdb_ReadOptions_verifyChecksums(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_ReadOptions
+ * Class:     org_terarkdb_ReadOptions
  * Method:    setFillCache
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_ReadOptions_setFillCache(JNIEnv* /*env*/,
+void Java_org_terarkdb_ReadOptions_setFillCache(JNIEnv* /*env*/,
                                                jobject /*jobj*/, jlong jhandle,
                                                jboolean jfill_cache) {
   reinterpret_cast<TERARKDB_NAMESPACE::ReadOptions*>(jhandle)->fill_cache =
@@ -6596,11 +6643,11 @@ void Java_org_rocksdb_ReadOptions_setFillCache(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_ReadOptions
+ * Class:     org_terarkdb_ReadOptions
  * Method:    fillCache
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_ReadOptions_fillCache(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_ReadOptions_fillCache(JNIEnv* /*env*/,
                                                 jobject /*jobj*/,
                                                 jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::ReadOptions*>(jhandle)
@@ -6608,53 +6655,53 @@ jboolean Java_org_rocksdb_ReadOptions_fillCache(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_ReadOptions
+ * Class:     org_terarkdb_ReadOptions
  * Method:    setTailing
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_ReadOptions_setTailing(JNIEnv* /*env*/, jobject /*jobj*/,
+void Java_org_terarkdb_ReadOptions_setTailing(JNIEnv* /*env*/, jobject /*jobj*/,
                                              jlong jhandle, jboolean jtailing) {
   reinterpret_cast<TERARKDB_NAMESPACE::ReadOptions*>(jhandle)->tailing =
       static_cast<bool>(jtailing);
 }
 
 /*
- * Class:     org_rocksdb_ReadOptions
+ * Class:     org_terarkdb_ReadOptions
  * Method:    tailing
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_ReadOptions_tailing(JNIEnv* /*env*/, jobject /*jobj*/,
+jboolean Java_org_terarkdb_ReadOptions_tailing(JNIEnv* /*env*/, jobject /*jobj*/,
                                               jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::ReadOptions*>(jhandle)->tailing;
 }
 
 /*
- * Class:     org_rocksdb_ReadOptions
+ * Class:     org_terarkdb_ReadOptions
  * Method:    managed
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_ReadOptions_managed(JNIEnv* /*env*/, jobject /*jobj*/,
+jboolean Java_org_terarkdb_ReadOptions_managed(JNIEnv* /*env*/, jobject /*jobj*/,
                                               jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::ReadOptions*>(jhandle)->managed;
 }
 
 /*
- * Class:     org_rocksdb_ReadOptions
+ * Class:     org_terarkdb_ReadOptions
  * Method:    setManaged
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_ReadOptions_setManaged(JNIEnv* /*env*/, jobject /*jobj*/,
+void Java_org_terarkdb_ReadOptions_setManaged(JNIEnv* /*env*/, jobject /*jobj*/,
                                              jlong jhandle, jboolean jmanaged) {
   reinterpret_cast<TERARKDB_NAMESPACE::ReadOptions*>(jhandle)->managed =
       static_cast<bool>(jmanaged);
 }
 
 /*
- * Class:     org_rocksdb_ReadOptions
+ * Class:     org_terarkdb_ReadOptions
  * Method:    totalOrderSeek
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_ReadOptions_totalOrderSeek(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_ReadOptions_totalOrderSeek(JNIEnv* /*env*/,
                                                      jobject /*jobj*/,
                                                      jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::ReadOptions*>(jhandle)
@@ -6662,11 +6709,11 @@ jboolean Java_org_rocksdb_ReadOptions_totalOrderSeek(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_ReadOptions
+ * Class:     org_terarkdb_ReadOptions
  * Method:    setTotalOrderSeek
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_ReadOptions_setTotalOrderSeek(
+void Java_org_terarkdb_ReadOptions_setTotalOrderSeek(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean jtotal_order_seek) {
   reinterpret_cast<TERARKDB_NAMESPACE::ReadOptions*>(jhandle)
@@ -6674,11 +6721,11 @@ void Java_org_rocksdb_ReadOptions_setTotalOrderSeek(
 }
 
 /*
- * Class:     org_rocksdb_ReadOptions
+ * Class:     org_terarkdb_ReadOptions
  * Method:    prefixSameAsStart
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_ReadOptions_prefixSameAsStart(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_ReadOptions_prefixSameAsStart(JNIEnv* /*env*/,
                                                         jobject /*jobj*/,
                                                         jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::ReadOptions*>(jhandle)
@@ -6686,11 +6733,11 @@ jboolean Java_org_rocksdb_ReadOptions_prefixSameAsStart(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_ReadOptions
+ * Class:     org_terarkdb_ReadOptions
  * Method:    setPrefixSameAsStart
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_ReadOptions_setPrefixSameAsStart(
+void Java_org_terarkdb_ReadOptions_setPrefixSameAsStart(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean jprefix_same_as_start) {
   reinterpret_cast<TERARKDB_NAMESPACE::ReadOptions*>(jhandle)
@@ -6698,11 +6745,11 @@ void Java_org_rocksdb_ReadOptions_setPrefixSameAsStart(
 }
 
 /*
- * Class:     org_rocksdb_ReadOptions
+ * Class:     org_terarkdb_ReadOptions
  * Method:    pinData
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_ReadOptions_pinData(JNIEnv* /*env*/, jobject /*jobj*/,
+jboolean Java_org_terarkdb_ReadOptions_pinData(JNIEnv* /*env*/, jobject /*jobj*/,
                                               jlong jhandle) {
   // return
   // reinterpret_cast<TERARKDB_NAMESPACE::ReadOptions*>(jhandle)->pin_data;
@@ -6710,11 +6757,11 @@ jboolean Java_org_rocksdb_ReadOptions_pinData(JNIEnv* /*env*/, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_ReadOptions
+ * Class:     org_terarkdb_ReadOptions
  * Method:    setPinData
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_ReadOptions_setPinData(JNIEnv* /*env*/, jobject /*jobj*/,
+void Java_org_terarkdb_ReadOptions_setPinData(JNIEnv* /*env*/, jobject /*jobj*/,
                                              jlong jhandle,
                                              jboolean jpin_data) {
   // reinterpret_cast<TERARKDB_NAMESPACE::ReadOptions*>(jhandle)->pin_data =
@@ -6722,22 +6769,22 @@ void Java_org_rocksdb_ReadOptions_setPinData(JNIEnv* /*env*/, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_ReadOptions
+ * Class:     org_terarkdb_ReadOptions
  * Method:    backgroundPurgeOnIteratorCleanup
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_ReadOptions_backgroundPurgeOnIteratorCleanup(
+jboolean Java_org_terarkdb_ReadOptions_backgroundPurgeOnIteratorCleanup(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::ReadOptions*>(jhandle);
   return static_cast<jboolean>(opt->background_purge_on_iterator_cleanup);
 }
 
 /*
- * Class:     org_rocksdb_ReadOptions
+ * Class:     org_terarkdb_ReadOptions
  * Method:    setBackgroundPurgeOnIteratorCleanup
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_ReadOptions_setBackgroundPurgeOnIteratorCleanup(
+void Java_org_terarkdb_ReadOptions_setBackgroundPurgeOnIteratorCleanup(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean jbackground_purge_on_iterator_cleanup) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::ReadOptions*>(jhandle);
@@ -6746,11 +6793,11 @@ void Java_org_rocksdb_ReadOptions_setBackgroundPurgeOnIteratorCleanup(
 }
 
 /*
- * Class:     org_rocksdb_ReadOptions
+ * Class:     org_terarkdb_ReadOptions
  * Method:    readaheadSize
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_ReadOptions_readaheadSize(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_ReadOptions_readaheadSize(JNIEnv* /*env*/,
                                                  jobject /*jobj*/,
                                                  jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::ReadOptions*>(jhandle);
@@ -6758,11 +6805,11 @@ jlong Java_org_rocksdb_ReadOptions_readaheadSize(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_ReadOptions
+ * Class:     org_terarkdb_ReadOptions
  * Method:    setReadaheadSize
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_ReadOptions_setReadaheadSize(JNIEnv* /*env*/,
+void Java_org_terarkdb_ReadOptions_setReadaheadSize(JNIEnv* /*env*/,
                                                    jobject /*jobj*/,
                                                    jlong jhandle,
                                                    jlong jreadahead_size) {
@@ -6771,11 +6818,11 @@ void Java_org_rocksdb_ReadOptions_setReadaheadSize(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_ReadOptions
+ * Class:     org_terarkdb_ReadOptions
  * Method:    ignoreRangeDeletions
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_ReadOptions_ignoreRangeDeletions(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_ReadOptions_ignoreRangeDeletions(JNIEnv* /*env*/,
                                                            jobject /*jobj*/,
                                                            jlong jhandle) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::ReadOptions*>(jhandle);
@@ -6783,11 +6830,11 @@ jboolean Java_org_rocksdb_ReadOptions_ignoreRangeDeletions(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_ReadOptions
+ * Class:     org_terarkdb_ReadOptions
  * Method:    setIgnoreRangeDeletions
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_ReadOptions_setIgnoreRangeDeletions(
+void Java_org_terarkdb_ReadOptions_setIgnoreRangeDeletions(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean jignore_range_deletions) {
   auto* opt = reinterpret_cast<TERARKDB_NAMESPACE::ReadOptions*>(jhandle);
@@ -6795,22 +6842,22 @@ void Java_org_rocksdb_ReadOptions_setIgnoreRangeDeletions(
 }
 
 /*
- * Class:     org_rocksdb_ReadOptions
+ * Class:     org_terarkdb_ReadOptions
  * Method:    setSnapshot
  * Signature: (JJ)V
  */
-void Java_org_rocksdb_ReadOptions_setSnapshot(JNIEnv* /*env*/, jobject /*jobj*/,
+void Java_org_terarkdb_ReadOptions_setSnapshot(JNIEnv* /*env*/, jobject /*jobj*/,
                                               jlong jhandle, jlong jsnapshot) {
   reinterpret_cast<TERARKDB_NAMESPACE::ReadOptions*>(jhandle)->snapshot =
       reinterpret_cast<TERARKDB_NAMESPACE::Snapshot*>(jsnapshot);
 }
 
 /*
- * Class:     org_rocksdb_ReadOptions
+ * Class:     org_terarkdb_ReadOptions
  * Method:    snapshot
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_ReadOptions_snapshot(JNIEnv* /*env*/, jobject /*jobj*/,
+jlong Java_org_terarkdb_ReadOptions_snapshot(JNIEnv* /*env*/, jobject /*jobj*/,
                                             jlong jhandle) {
   auto& snapshot =
       reinterpret_cast<TERARKDB_NAMESPACE::ReadOptions*>(jhandle)->snapshot;
@@ -6818,33 +6865,33 @@ jlong Java_org_rocksdb_ReadOptions_snapshot(JNIEnv* /*env*/, jobject /*jobj*/,
 }
 
 /*
- * Class:     org_rocksdb_ReadOptions
+ * Class:     org_terarkdb_ReadOptions
  * Method:    readTier
  * Signature: (J)B
  */
-jbyte Java_org_rocksdb_ReadOptions_readTier(JNIEnv* /*env*/, jobject /*jobj*/,
+jbyte Java_org_terarkdb_ReadOptions_readTier(JNIEnv* /*env*/, jobject /*jobj*/,
                                             jlong jhandle) {
   return static_cast<jbyte>(
       reinterpret_cast<TERARKDB_NAMESPACE::ReadOptions*>(jhandle)->read_tier);
 }
 
 /*
- * Class:     org_rocksdb_ReadOptions
+ * Class:     org_terarkdb_ReadOptions
  * Method:    setReadTier
  * Signature: (JB)V
  */
-void Java_org_rocksdb_ReadOptions_setReadTier(JNIEnv* /*env*/, jobject /*jobj*/,
+void Java_org_terarkdb_ReadOptions_setReadTier(JNIEnv* /*env*/, jobject /*jobj*/,
                                               jlong jhandle, jbyte jread_tier) {
   reinterpret_cast<TERARKDB_NAMESPACE::ReadOptions*>(jhandle)->read_tier =
       static_cast<TERARKDB_NAMESPACE::ReadTier>(jread_tier);
 }
 
 /*
- * Class:     org_rocksdb_ReadOptions
+ * Class:     org_terarkdb_ReadOptions
  * Method:    setIterateUpperBound
  * Signature: (JJ)I
  */
-void Java_org_rocksdb_ReadOptions_setIterateUpperBound(
+void Java_org_terarkdb_ReadOptions_setIterateUpperBound(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jupper_bound_slice_handle) {
   reinterpret_cast<TERARKDB_NAMESPACE::ReadOptions*>(jhandle)
@@ -6853,11 +6900,11 @@ void Java_org_rocksdb_ReadOptions_setIterateUpperBound(
 }
 
 /*
- * Class:     org_rocksdb_ReadOptions
+ * Class:     org_terarkdb_ReadOptions
  * Method:    iterateUpperBound
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_ReadOptions_iterateUpperBound(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_ReadOptions_iterateUpperBound(JNIEnv* /*env*/,
                                                      jobject /*jobj*/,
                                                      jlong jhandle) {
   auto& upper_bound_slice_handle =
@@ -6867,11 +6914,11 @@ jlong Java_org_rocksdb_ReadOptions_iterateUpperBound(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_ReadOptions
+ * Class:     org_terarkdb_ReadOptions
  * Method:    setIterateLowerBound
  * Signature: (JJ)I
  */
-void Java_org_rocksdb_ReadOptions_setIterateLowerBound(
+void Java_org_terarkdb_ReadOptions_setIterateLowerBound(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jlower_bound_slice_handle) {
   reinterpret_cast<TERARKDB_NAMESPACE::ReadOptions*>(jhandle)
@@ -6880,11 +6927,11 @@ void Java_org_rocksdb_ReadOptions_setIterateLowerBound(
 }
 
 /*
- * Class:     org_rocksdb_ReadOptions
+ * Class:     org_terarkdb_ReadOptions
  * Method:    iterateLowerBound
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_ReadOptions_iterateLowerBound(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_ReadOptions_iterateLowerBound(JNIEnv* /*env*/,
                                                      jobject /*jobj*/,
                                                      jlong jhandle) {
   auto& lower_bound_slice_handle =
@@ -6897,22 +6944,22 @@ jlong Java_org_rocksdb_ReadOptions_iterateLowerBound(JNIEnv* /*env*/,
 // TERARKDB_NAMESPACE::ComparatorOptions
 
 /*
- * Class:     org_rocksdb_ComparatorOptions
+ * Class:     org_terarkdb_ComparatorOptions
  * Method:    newComparatorOptions
  * Signature: ()J
  */
-jlong Java_org_rocksdb_ComparatorOptions_newComparatorOptions(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_ComparatorOptions_newComparatorOptions(JNIEnv* /*env*/,
                                                               jclass /*jcls*/) {
   auto* comparator_opt = new TERARKDB_NAMESPACE::ComparatorJniCallbackOptions();
   return reinterpret_cast<jlong>(comparator_opt);
 }
 
 /*
- * Class:     org_rocksdb_ComparatorOptions
+ * Class:     org_terarkdb_ComparatorOptions
  * Method:    useAdaptiveMutex
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_ComparatorOptions_useAdaptiveMutex(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_ComparatorOptions_useAdaptiveMutex(JNIEnv* /*env*/,
                                                              jobject /*jobj*/,
                                                              jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::ComparatorJniCallbackOptions*>(
@@ -6921,11 +6968,11 @@ jboolean Java_org_rocksdb_ComparatorOptions_useAdaptiveMutex(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_ComparatorOptions
+ * Class:     org_terarkdb_ComparatorOptions
  * Method:    setUseAdaptiveMutex
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_ComparatorOptions_setUseAdaptiveMutex(
+void Java_org_terarkdb_ComparatorOptions_setUseAdaptiveMutex(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jboolean juse_adaptive_mutex) {
   reinterpret_cast<TERARKDB_NAMESPACE::ComparatorJniCallbackOptions*>(jhandle)
@@ -6933,11 +6980,11 @@ void Java_org_rocksdb_ComparatorOptions_setUseAdaptiveMutex(
 }
 
 /*
- * Class:     org_rocksdb_ComparatorOptions
+ * Class:     org_terarkdb_ComparatorOptions
  * Method:    disposeInternal
  * Signature: (J)V
  */
-void Java_org_rocksdb_ComparatorOptions_disposeInternal(JNIEnv* /*env*/,
+void Java_org_terarkdb_ComparatorOptions_disposeInternal(JNIEnv* /*env*/,
                                                         jobject /*jobj*/,
                                                         jlong jhandle) {
   auto* comparator_opt =
@@ -6951,22 +6998,22 @@ void Java_org_rocksdb_ComparatorOptions_disposeInternal(JNIEnv* /*env*/,
 // TERARKDB_NAMESPACE::FlushOptions
 
 /*
- * Class:     org_rocksdb_FlushOptions
+ * Class:     org_terarkdb_FlushOptions
  * Method:    newFlushOptions
  * Signature: ()J
  */
-jlong Java_org_rocksdb_FlushOptions_newFlushOptions(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_FlushOptions_newFlushOptions(JNIEnv* /*env*/,
                                                     jclass /*jcls*/) {
   auto* flush_opt = new TERARKDB_NAMESPACE::FlushOptions();
   return reinterpret_cast<jlong>(flush_opt);
 }
 
 /*
- * Class:     org_rocksdb_FlushOptions
+ * Class:     org_terarkdb_FlushOptions
  * Method:    setWaitForFlush
  * Signature: (JZ)V
  */
-void Java_org_rocksdb_FlushOptions_setWaitForFlush(JNIEnv* /*env*/,
+void Java_org_terarkdb_FlushOptions_setWaitForFlush(JNIEnv* /*env*/,
                                                    jobject /*jobj*/,
                                                    jlong jhandle,
                                                    jboolean jwait) {
@@ -6975,22 +7022,22 @@ void Java_org_rocksdb_FlushOptions_setWaitForFlush(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_FlushOptions
+ * Class:     org_terarkdb_FlushOptions
  * Method:    waitForFlush
  * Signature: (J)Z
  */
-jboolean Java_org_rocksdb_FlushOptions_waitForFlush(JNIEnv* /*env*/,
+jboolean Java_org_terarkdb_FlushOptions_waitForFlush(JNIEnv* /*env*/,
                                                     jobject /*jobj*/,
                                                     jlong jhandle) {
   return reinterpret_cast<TERARKDB_NAMESPACE::FlushOptions*>(jhandle)->wait;
 }
 
 /*
- * Class:     org_rocksdb_FlushOptions
+ * Class:     org_terarkdb_FlushOptions
  * Method:    disposeInternal
  * Signature: (J)V
  */
-void Java_org_rocksdb_FlushOptions_disposeInternal(JNIEnv* /*env*/,
+void Java_org_terarkdb_FlushOptions_disposeInternal(JNIEnv* /*env*/,
                                                    jobject /*jobj*/,
                                                    jlong jhandle) {
   auto* flush_opt =

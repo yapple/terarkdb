@@ -12,26 +12,26 @@
 #include <stdlib.h>
 #include <string>
 
-#include "include/org_rocksdb_RestoreOptions.h"
+#include "include/org_terarkdb_RestoreOptions.h"
 #include "rocksdb/utilities/backupable_db.h"
 #include "rocksjni/portal.h"
 /*
- * Class:     org_rocksdb_RestoreOptions
+ * Class:     org_terarkdb_RestoreOptions
  * Method:    newRestoreOptions
  * Signature: (Z)J
  */
-jlong Java_org_rocksdb_RestoreOptions_newRestoreOptions(
+jlong Java_org_terarkdb_RestoreOptions_newRestoreOptions(
     JNIEnv* /*env*/, jclass /*jcls*/, jboolean keep_log_files) {
   auto* ropt = new TERARKDB_NAMESPACE::RestoreOptions(keep_log_files);
   return reinterpret_cast<jlong>(ropt);
 }
 
 /*
- * Class:     org_rocksdb_RestoreOptions
+ * Class:     org_terarkdb_RestoreOptions
  * Method:    disposeInternal
  * Signature: (J)V
  */
-void Java_org_rocksdb_RestoreOptions_disposeInternal(JNIEnv* /*env*/,
+void Java_org_terarkdb_RestoreOptions_disposeInternal(JNIEnv* /*env*/,
                                                      jobject /*jobj*/,
                                                      jlong jhandle) {
   auto* ropt = reinterpret_cast<TERARKDB_NAMESPACE::RestoreOptions*>(jhandle);
