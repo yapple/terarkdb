@@ -8,17 +8,17 @@
 
 #include <jni.h>
 
-#include "include/org_rocksdb_AbstractCompactionFilter.h"
+#include "include/org_terarkdb_AbstractCompactionFilter.h"
 #include "rocksdb/compaction_filter.h"
 
-// <editor-fold desc="org.rocksdb.AbstractCompactionFilter">
+// <editor-fold desc="org.terarkdb.AbstractCompactionFilter">
 
 /*
- * Class:     org_rocksdb_AbstractCompactionFilter
+ * Class:     org_terarkdb_AbstractCompactionFilter
  * Method:    disposeInternal
  * Signature: (J)V
  */
-void Java_org_rocksdb_AbstractCompactionFilter_disposeInternal(JNIEnv* /*env*/,
+void Java_org_terarkdb_AbstractCompactionFilter_disposeInternal(JNIEnv* /*env*/,
                                                                jobject /*jobj*/,
                                                                jlong handle) {
   auto* cf = reinterpret_cast<TERARKDB_NAMESPACE::CompactionFilter*>(handle);

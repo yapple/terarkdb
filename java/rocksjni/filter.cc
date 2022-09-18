@@ -11,17 +11,17 @@
 #include <stdlib.h>
 #include <string>
 
-#include "include/org_rocksdb_BloomFilter.h"
-#include "include/org_rocksdb_Filter.h"
+#include "include/org_terarkdb_BloomFilter.h"
+#include "include/org_terarkdb_Filter.h"
 #include "rocksdb/filter_policy.h"
 #include "rocksjni/portal.h"
 
 /*
- * Class:     org_rocksdb_BloomFilter
+ * Class:     org_terarkdb_BloomFilter
  * Method:    createBloomFilter
  * Signature: (IZ)J
  */
-jlong Java_org_rocksdb_BloomFilter_createNewBloomFilter(
+jlong Java_org_terarkdb_BloomFilter_createNewBloomFilter(
     JNIEnv* /*env*/, jclass /*jcls*/, jint bits_per_key,
     jboolean use_block_base_builder) {
   auto* sptr_filter = new std::shared_ptr<const TERARKDB_NAMESPACE::FilterPolicy>(
@@ -30,11 +30,11 @@ jlong Java_org_rocksdb_BloomFilter_createNewBloomFilter(
 }
 
 /*
- * Class:     org_rocksdb_Filter
+ * Class:     org_terarkdb_Filter
  * Method:    disposeInternal
  * Signature: (J)V
  */
-void Java_org_rocksdb_Filter_disposeInternal(JNIEnv* /*env*/, jobject /*jobj*/,
+void Java_org_terarkdb_Filter_disposeInternal(JNIEnv* /*env*/, jobject /*jobj*/,
                                              jlong jhandle) {
   auto* handle =
       reinterpret_cast<std::shared_ptr<const TERARKDB_NAMESPACE::FilterPolicy>*>(jhandle);

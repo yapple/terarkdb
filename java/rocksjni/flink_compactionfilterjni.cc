@@ -6,7 +6,7 @@
 #include <include/rocksdb/env.h>
 #include <jni.h>
 
-#include "include/org_rocksdb_FlinkCompactionFilter.h"
+#include "include/org_terarkdb_FlinkCompactionFilter.h"
 #include "loggerjnicallback.h"
 #include "portal.h"
 #include "rocksjni/jnicallback.h"
@@ -40,7 +40,7 @@ class JavaListElementFilter : public TERARKDB_NAMESPACE::flink::
   JavaListElementFilter(JNIEnv* env, jobject jlist_filter)
       : JniCallbackBase(env, jlist_filter) {
     jclass jclazz = TERARKDB_NAMESPACE::JavaClass::getJClass(
-        env, "org/rocksdb/FlinkCompactionFilter$ListElementFilter");
+        env, "org/terarkdb/FlinkCompactionFilter$ListElementFilter");
     if (jclazz == nullptr) {
       // exception occurred accessing class
       return;
@@ -83,14 +83,14 @@ class JavaListElemenFilterFactory
   JavaListElemenFilterFactory(JNIEnv* env, jobject jlist_filter_factory)
       : JniCallbackBase(env, jlist_filter_factory) {
     jclass jclazz = TERARKDB_NAMESPACE::JavaClass::getJClass(
-        env, "org/rocksdb/FlinkCompactionFilter$ListElementFilterFactory");
+        env, "org/terarkdb/FlinkCompactionFilter$ListElementFilterFactory");
     if (jclazz == nullptr) {
       // exception occurred accessing class
       return;
     }
     m_jcreate_filter_methodid = env->GetMethodID(
         jclazz, "createListElementFilter",
-        "()Lorg/rocksdb/FlinkCompactionFilter$ListElementFilter;");
+        "()Lorg/terarkdb/FlinkCompactionFilter$ListElementFilter;");
     assert(m_jcreate_filter_methodid != nullptr);
   }
 
@@ -117,7 +117,7 @@ class JavaTimeProvider
   JavaTimeProvider(JNIEnv* env, jobject jtime_provider)
       : JniCallbackBase(env, jtime_provider) {
     jclass jclazz = TERARKDB_NAMESPACE::JavaClass::getJClass(
-        env, "org/rocksdb/FlinkCompactionFilter$TimeProvider");
+        env, "org/terarkdb/FlinkCompactionFilter$TimeProvider");
     if (jclazz == nullptr) {
       // exception occurred accessing class
       return;
@@ -159,11 +159,11 @@ createListElementFilterFactory(JNIEnv* env, jint ji_list_elem_len,
 }
 
 /*x
- * Class:     org_rocksdb_FlinkCompactionFilter
+ * Class:     org_terarkdb_FlinkCompactionFilter
  * Method:    createNewFlinkCompactionFilterConfigHolder
  * Signature: ()J
  */
-jlong Java_org_rocksdb_FlinkCompactionFilter_createNewFlinkCompactionFilterConfigHolder(
+jlong Java_org_terarkdb_FlinkCompactionFilter_createNewFlinkCompactionFilterConfigHolder(
     JNIEnv* /* env */, jclass /* jcls */) {
   using namespace TERARKDB_NAMESPACE::flink;
   return reinterpret_cast<jlong>(
@@ -172,11 +172,11 @@ jlong Java_org_rocksdb_FlinkCompactionFilter_createNewFlinkCompactionFilterConfi
 }
 
 /*
- * Class:     org_rocksdb_FlinkCompactionFilter
+ * Class:     org_terarkdb_FlinkCompactionFilter
  * Method:    disposeFlinkCompactionFilterConfigHolder
  * Signature: (J)V
  */
-void Java_org_rocksdb_FlinkCompactionFilter_disposeFlinkCompactionFilterConfigHolder(
+void Java_org_terarkdb_FlinkCompactionFilter_disposeFlinkCompactionFilterConfigHolder(
     JNIEnv* /* env */, jclass /* jcls */, jlong handle) {
   using namespace TERARKDB_NAMESPACE::flink;
   auto* config_holder =
@@ -186,11 +186,11 @@ void Java_org_rocksdb_FlinkCompactionFilter_disposeFlinkCompactionFilterConfigHo
 }
 
 /*
- * Class:     org_rocksdb_FlinkCompactionFilter
+ * Class:     org_terarkdb_FlinkCompactionFilter
  * Method:    createNewFlinkCompactionFilter0
  * Signature: (JJJ)J
  */
-jlong Java_org_rocksdb_FlinkCompactionFilter_createNewFlinkCompactionFilter0(
+jlong Java_org_terarkdb_FlinkCompactionFilter_createNewFlinkCompactionFilter0(
     JNIEnv* env, jclass /* jcls */, jlong config_holder_handle,
     jobject jtime_provider, jlong logger_handle) {
   using namespace TERARKDB_NAMESPACE::flink;
@@ -211,11 +211,11 @@ jlong Java_org_rocksdb_FlinkCompactionFilter_createNewFlinkCompactionFilter0(
 }
 
 /*
- * Class:     org_rocksdb_FlinkCompactionFilter
+ * Class:     org_terarkdb_FlinkCompactionFilter
  * Method:    configureFlinkCompactionFilter
- * Signature: (JIIJJILorg/rocksdb/FlinkCompactionFilter$ListElementFilter;)Z
+ * Signature: (JIIJJILorg/terarkdb/FlinkCompactionFilter$ListElementFilter;)Z
  */
-jboolean Java_org_rocksdb_FlinkCompactionFilter_configureFlinkCompactionFilter(
+jboolean Java_org_terarkdb_FlinkCompactionFilter_configureFlinkCompactionFilter(
     JNIEnv* env, jclass /* jcls */, jlong handle, jint ji_state_type,
     jint ji_timestamp_offset, jlong jl_ttl_milli,
     jlong jquery_time_after_num_entries, jint ji_list_elem_len,

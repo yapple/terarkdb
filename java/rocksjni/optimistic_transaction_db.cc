@@ -8,7 +8,7 @@
 
 #include <jni.h>
 
-#include "include/org_rocksdb_OptimisticTransactionDB.h"
+#include "include/org_terarkdb_OptimisticTransactionDB.h"
 
 #include "rocksdb/options.h"
 #include "rocksdb/utilities/optimistic_transaction_db.h"
@@ -17,11 +17,11 @@
 #include "rocksjni/portal.h"
 
 /*
- * Class:     org_rocksdb_OptimisticTransactionDB
+ * Class:     org_terarkdb_OptimisticTransactionDB
  * Method:    open
  * Signature: (JLjava/lang/String;)J
  */
-jlong Java_org_rocksdb_OptimisticTransactionDB_open__JLjava_lang_String_2(
+jlong Java_org_terarkdb_OptimisticTransactionDB_open__JLjava_lang_String_2(
     JNIEnv* env, jclass /*jcls*/, jlong joptions_handle, jstring jdb_path) {
   const char* db_path = env->GetStringUTFChars(jdb_path, nullptr);
   if (db_path == nullptr) {
@@ -44,12 +44,12 @@ jlong Java_org_rocksdb_OptimisticTransactionDB_open__JLjava_lang_String_2(
 }
 
 /*
- * Class:     org_rocksdb_OptimisticTransactionDB
+ * Class:     org_terarkdb_OptimisticTransactionDB
  * Method:    open
  * Signature: (JLjava/lang/String;[[B[J)[J
  */
 jlongArray
-Java_org_rocksdb_OptimisticTransactionDB_open__JLjava_lang_String_2_3_3B_3J(
+Java_org_terarkdb_OptimisticTransactionDB_open__JLjava_lang_String_2_3_3B_3J(
     JNIEnv* env, jclass /*jcls*/, jlong jdb_options_handle, jstring jdb_path,
     jobjectArray jcolumn_names, jlongArray jcolumn_options_handles) {
   const char* db_path = env->GetStringUTFChars(jdb_path, nullptr);
@@ -151,11 +151,11 @@ Java_org_rocksdb_OptimisticTransactionDB_open__JLjava_lang_String_2_3_3B_3J(
 }
 
 /*
- * Class:     org_rocksdb_OptimisticTransactionDB
+ * Class:     org_terarkdb_OptimisticTransactionDB
  * Method:    beginTransaction
  * Signature: (JJ)J
  */
-jlong Java_org_rocksdb_OptimisticTransactionDB_beginTransaction__JJ(
+jlong Java_org_terarkdb_OptimisticTransactionDB_beginTransaction__JJ(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jwrite_options_handle) {
   auto* optimistic_txn_db =
@@ -168,11 +168,11 @@ jlong Java_org_rocksdb_OptimisticTransactionDB_beginTransaction__JJ(
 }
 
 /*
- * Class:     org_rocksdb_OptimisticTransactionDB
+ * Class:     org_terarkdb_OptimisticTransactionDB
  * Method:    beginTransaction
  * Signature: (JJJ)J
  */
-jlong Java_org_rocksdb_OptimisticTransactionDB_beginTransaction__JJJ(
+jlong Java_org_terarkdb_OptimisticTransactionDB_beginTransaction__JJJ(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jwrite_options_handle, jlong joptimistic_txn_options_handle) {
   auto* optimistic_txn_db =
@@ -188,11 +188,11 @@ jlong Java_org_rocksdb_OptimisticTransactionDB_beginTransaction__JJJ(
 }
 
 /*
- * Class:     org_rocksdb_OptimisticTransactionDB
+ * Class:     org_terarkdb_OptimisticTransactionDB
  * Method:    beginTransaction_withOld
  * Signature: (JJJ)J
  */
-jlong Java_org_rocksdb_OptimisticTransactionDB_beginTransaction_1withOld__JJJ(
+jlong Java_org_terarkdb_OptimisticTransactionDB_beginTransaction_1withOld__JJJ(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jwrite_options_handle, jlong jold_txn_handle) {
   auto* optimistic_txn_db =
@@ -213,11 +213,11 @@ jlong Java_org_rocksdb_OptimisticTransactionDB_beginTransaction_1withOld__JJJ(
 }
 
 /*
- * Class:     org_rocksdb_OptimisticTransactionDB
+ * Class:     org_terarkdb_OptimisticTransactionDB
  * Method:    beginTransaction_withOld
  * Signature: (JJJJ)J
  */
-jlong Java_org_rocksdb_OptimisticTransactionDB_beginTransaction_1withOld__JJJJ(
+jlong Java_org_terarkdb_OptimisticTransactionDB_beginTransaction_1withOld__JJJJ(
     JNIEnv* /*env*/, jobject /*jobj*/, jlong jhandle,
     jlong jwrite_options_handle, jlong joptimistic_txn_options_handle,
     jlong jold_txn_handle) {
@@ -241,11 +241,11 @@ jlong Java_org_rocksdb_OptimisticTransactionDB_beginTransaction_1withOld__JJJJ(
 }
 
 /*
- * Class:     org_rocksdb_OptimisticTransactionDB
+ * Class:     org_terarkdb_OptimisticTransactionDB
  * Method:    getBaseDB
  * Signature: (J)J
  */
-jlong Java_org_rocksdb_OptimisticTransactionDB_getBaseDB(JNIEnv* /*env*/,
+jlong Java_org_terarkdb_OptimisticTransactionDB_getBaseDB(JNIEnv* /*env*/,
                                                          jobject /*jobj*/,
                                                          jlong jhandle) {
   auto* optimistic_txn_db =
@@ -254,11 +254,11 @@ jlong Java_org_rocksdb_OptimisticTransactionDB_getBaseDB(JNIEnv* /*env*/,
 }
 
 /*
- * Class:     org_rocksdb_OptimisticTransactionDB
+ * Class:     org_terarkdb_OptimisticTransactionDB
  * Method:    disposeInternal
  * Signature: (J)V
  */
-void Java_org_rocksdb_OptimisticTransactionDB_disposeInternal(JNIEnv* /*env*/,
+void Java_org_terarkdb_OptimisticTransactionDB_disposeInternal(JNIEnv* /*env*/,
                                                               jobject /*jobj*/,
                                                               jlong jhandle) {
   delete reinterpret_cast<TERARKDB_NAMESPACE::OptimisticTransactionDB*>(jhandle);
