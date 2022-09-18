@@ -46,7 +46,7 @@
 * Added RocksObject --- the base class of all RocksDB classes which holds some RocksDB resources in the C++ side.
 * Use environmental variable JAVA_HOME in Makefile for RocksJava
 ### Public API changes
-* Renamed org.rocksdb.Iterator to org.rocksdb.RocksIterator to avoid potential confliction with Java built-in Iterator.
+* Renamed org.terarkdb.Iterator to org.terarkdb.RocksIterator to avoid potential confliction with Java built-in Iterator.
 
 ## By 04/30/2014
 ### New Features
@@ -79,7 +79,7 @@
 
 ### Internal Framework Improvement
 * Avoid a potential byte-array-copy between c++ and Java in RocksDB.get.
-* Added SizeUnit in org.rocksdb.util to store consts like KB and GB.
+* Added SizeUnit in org.terarkdb.util to store consts like KB and GB.
 
 ### 03/28/2014
 * RocksJava project started.

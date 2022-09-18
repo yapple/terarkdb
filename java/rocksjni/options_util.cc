@@ -8,7 +8,7 @@
 
 #include <jni.h>
 
-#include "include/org_rocksdb_OptionsUtil.h"
+#include "include/org_terarkdb_OptionsUtil.h"
 
 #include "rocksdb/db.h"
 #include "rocksdb/env.h"
@@ -49,11 +49,11 @@ void build_column_family_descriptor_list(
 }
 
 /*
- * Class:     org_rocksdb_OptionsUtil
+ * Class:     org_terarkdb_OptionsUtil
  * Method:    loadLatestOptions
  * Signature: (Ljava/lang/String;JLjava/util/List;Z)V
  */
-void Java_org_rocksdb_OptionsUtil_loadLatestOptions(
+void Java_org_terarkdb_OptionsUtil_loadLatestOptions(
     JNIEnv* env, jclass /*jcls*/, jstring jdbpath, jlong jenv_handle,
     jlong jdb_opts_handle, jobject jcfds, jboolean ignore_unknown_options) {
   const char* db_path = env->GetStringUTFChars(jdbpath, nullptr);
@@ -72,11 +72,11 @@ void Java_org_rocksdb_OptionsUtil_loadLatestOptions(
 }
 
 /*
- * Class:     org_rocksdb_OptionsUtil
+ * Class:     org_terarkdb_OptionsUtil
  * Method:    loadOptionsFromFile
  * Signature: (Ljava/lang/String;JJLjava/util/List;Z)V
  */
-void Java_org_rocksdb_OptionsUtil_loadOptionsFromFile(
+void Java_org_terarkdb_OptionsUtil_loadOptionsFromFile(
     JNIEnv* env, jclass /*jcls*/, jstring jopts_file_name, jlong jenv_handle,
     jlong jdb_opts_handle, jobject jcfds, jboolean ignore_unknown_options) {
   const char* opts_file_name = env->GetStringUTFChars(jopts_file_name, nullptr);
@@ -95,11 +95,11 @@ void Java_org_rocksdb_OptionsUtil_loadOptionsFromFile(
 }
 
 /*
- * Class:     org_rocksdb_OptionsUtil
+ * Class:     org_terarkdb_OptionsUtil
  * Method:    getLatestOptionsFileName
  * Signature: (Ljava/lang/String;J)Ljava/lang/String;
  */
-jstring Java_org_rocksdb_OptionsUtil_getLatestOptionsFileName(
+jstring Java_org_terarkdb_OptionsUtil_getLatestOptionsFileName(
     JNIEnv* env, jclass /*jcls*/, jstring jdbpath, jlong jenv_handle) {
   const char* db_path = env->GetStringUTFChars(jdbpath, nullptr);
   std::string options_file_name;
