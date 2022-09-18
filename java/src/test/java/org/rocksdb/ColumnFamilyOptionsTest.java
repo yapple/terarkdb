@@ -477,35 +477,7 @@ public class ColumnFamilyOptionsTest {
           .isEqualTo(123);
     }
   }
-
-  @Test
-  public void compactionStyles() {
-    try (final ColumnFamilyOptions columnFamilyOptions
-             = new ColumnFamilyOptions()) {
-      for (final CompactionStyle compactionStyle :
-          CompactionStyle.values()) {
-        columnFamilyOptions.setCompactionStyle(compactionStyle);
-        assertThat(columnFamilyOptions.compactionStyle()).
-            isEqualTo(compactionStyle);
-        assertThat(CompactionStyle.valueOf("FIFO")).
-            isEqualTo(CompactionStyle.FIFO);
-      }
-    }
-  }
-
-  @Test
-  public void maxTableFilesSizeFIFO() {
-    try (final ColumnFamilyOptions opt = new ColumnFamilyOptions()) {
-      long longValue = rand.nextLong();
-      // Size has to be positive
-      longValue = (longValue < 0) ? -longValue : longValue;
-      longValue = (longValue == 0) ? longValue + 1 : longValue;
-      opt.setMaxTableFilesSizeFIFO(longValue);
-      assertThat(opt.maxTableFilesSizeFIFO()).
-          isEqualTo(longValue);
-    }
-  }
-
+  
   @Test
   public void maxWriteBufferNumberToMaintain() {
     try (final ColumnFamilyOptions opt = new ColumnFamilyOptions()) {
@@ -555,25 +527,22 @@ public class ColumnFamilyOptionsTest {
   }
 
   @Test
-  public void compactionOptionsFIFO() {
-    try (final ColumnFamilyOptions opt = new ColumnFamilyOptions();
-         final CompactionOptionsFIFO optFifo = new CompactionOptionsFIFO()
-             .setMaxTableFilesSize(2000)) {
-      opt.setCompactionOptionsFIFO(optFifo);
-      assertThat(opt.compactionOptionsFIFO()).
-          isEqualTo(optFifo);
-      assertThat(opt.compactionOptionsFIFO().maxTableFilesSize())
-          .isEqualTo(2000);
-    }
-  }
-
-  @Test
   public void forceConsistencyChecks() {
     try (final ColumnFamilyOptions opt = new ColumnFamilyOptions()) {
       final boolean booleanValue = true;
       opt.setForceConsistencyChecks(booleanValue);
       assertThat(opt.forceConsistencyChecks()).
           isEqualTo(booleanValue);
+    }
+  }
+
+  @Test
+  public void maxSubcompactions() {
+    try (final ColumnFamilyOptions opt = new ColumnFamilyOptions()) {
+      final int intValue = rand.nextInt();
+      opt.setMaxSubcompactions(intValue);
+      assertThat(opt.maxSubcompactions()).
+          isEqualTo(intValue);
     }
   }
 }

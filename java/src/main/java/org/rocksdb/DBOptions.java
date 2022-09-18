@@ -388,18 +388,6 @@ public class DBOptions
   }
 
   @Override
-  public void setMaxSubcompactions(final int maxSubcompactions) {
-    assert(isOwningHandle());
-    setMaxSubcompactions(nativeHandle_, maxSubcompactions);
-  }
-
-  @Override
-  public int maxSubcompactions() {
-    assert(isOwningHandle());
-    return maxSubcompactions(nativeHandle_);
-  }
-
-  @Override
   public DBOptions setMaxBackgroundFlushes(
       final int maxBackgroundFlushes) {
     assert(isOwningHandle());
@@ -988,6 +976,17 @@ public class DBOptions
     super(nativeHandle);
   }
 
+    @Override
+    public DBOptions setCheckPointFakeFlush(final boolean checkPointFakeFlush) {
+      setCheckPointFakeFlush(nativeHandle_, checkPointFakeFlush);
+      return this;
+    }
+
+    @Override
+    public boolean checkPointFakeFlush(){
+      return  checkPointFakeFlush(nativeHandle_);
+    }
+
   private static native long getDBOptionsFromProps(
       String optString);
 
@@ -1046,8 +1045,6 @@ public class DBOptions
   private native void setMaxBackgroundCompactions(
       long handle, int maxBackgroundCompactions);
   private native int maxBackgroundCompactions(long handle);
-  private native void setMaxSubcompactions(long handle, int maxSubcompactions);
-  private native int maxSubcompactions(long handle);
   private native void setMaxBackgroundFlushes(
       long handle, int maxBackgroundFlushes);
   private native int maxBackgroundFlushes(long handle);
@@ -1168,6 +1165,10 @@ public class DBOptions
   private native void setAvoidFlushDuringShutdown(final long handle,
       final boolean avoidFlushDuringShutdown);
   private native boolean avoidFlushDuringShutdown(final long handle);
+
+  private native void setCheckPointFakeFlush(final long handle,
+      final boolean checkPointFakeFlush);
+  private native boolean checkPointFakeFlush(final long handle);
 
   // instance variables
   // NOTE: If you add new member variables, please update the copy constructor above!

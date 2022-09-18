@@ -67,7 +67,6 @@ public class Options extends RocksObject
     this.rateLimiter_ = other.rateLimiter_;
     this.comparator_ = other.comparator_;
     this.compactionOptionsUniversal_ = other.compactionOptionsUniversal_;
-    this.compactionOptionsFIFO_ = other.compactionOptionsFIFO_;
     this.compressionOptions_ = other.compressionOptions_;
     this.rowCache_ = other.rowCache_;
     this.writeBufferManager_ = other.writeBufferManager_;
@@ -1328,6 +1327,39 @@ public class Options extends RocksObject
   }
 
   @Override
+  public Options setBlobSize(final long blobSize){
+    setBlobSize(nativeHandle_,blobSize);
+    return this;
+  }
+
+  @Override
+  public long blobSize(){
+    return blobSize(nativeHandle_);
+  }
+
+  public Options setBlobGcRatio(final double blobGcRatio){
+    setBlobGcRatio(nativeHandle_, blobGcRatio);
+    return this;
+  }
+
+  public double blobGcRatio(){
+    return blobGcRatio(nativeHandle_);
+  }
+
+  @Override
+  public Options setTargetBlobFileSize(final long targetBlobFileSize){
+    setTargetBlobFileSize(nativeHandle_,targetBlobFileSize);
+    return this;
+  }
+
+  @Override
+  public long targetBlobFileSize(){
+    return targetBlobFileSize(nativeHandle_);
+  }
+
+
+
+  @Override
   public long maxSequentialSkipInIterations() {
     return maxSequentialSkipInIterations(nativeHandle_);
   }
@@ -1562,19 +1594,6 @@ public class Options extends RocksObject
   @Override
   public CompactionOptionsUniversal compactionOptionsUniversal() {
     return this.compactionOptionsUniversal_;
-  }
-
-  @Override
-  public Options setCompactionOptionsFIFO(final CompactionOptionsFIFO compactionOptionsFIFO) {
-    setCompactionOptionsFIFO(nativeHandle_,
-        compactionOptionsFIFO.nativeHandle_);
-    this.compactionOptionsFIFO_ = compactionOptionsFIFO;
-    return this;
-  }
-
-  @Override
-  public CompactionOptionsFIFO compactionOptionsFIFO() {
-    return this.compactionOptionsFIFO_;
   }
 
   @Override
@@ -1845,6 +1864,12 @@ public class Options extends RocksObject
   private native void setDisableAutoCompactions(
       long handle, boolean disableAutoCompactions);
   private native boolean disableAutoCompactions(long handle);
+  private native void setBlobSize(long handle, long blobSize);
+  private native long blobSize(long handle);
+  private native void setBlobGcRatio(long handle, double blobGcRatio);
+  private native double blobGcRatio(long handle);
+  private native void setTargetBlobFileSize(long handle, long blobSize);
+  private native long targetBlobFileSize(long handle);
   private native void setCompactionStyle(long handle, byte compactionStyle);
   private native byte compactionStyle(long handle);
   private native void setMaxSequentialSkipInIterations(
@@ -1923,7 +1948,6 @@ public class Options extends RocksObject
   private RateLimiter rateLimiter_;
   private AbstractComparator<? extends AbstractSlice<?>> comparator_;
   private CompactionOptionsUniversal compactionOptionsUniversal_;
-  private CompactionOptionsFIFO compactionOptionsFIFO_;
   private CompressionOptions compressionOptions_;
   private Cache rowCache_;
   private WriteBufferManager writeBufferManager_;

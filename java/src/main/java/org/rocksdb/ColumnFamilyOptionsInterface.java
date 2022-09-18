@@ -363,6 +363,28 @@ public interface ColumnFamilyOptionsInterface
    */
   CompressionOptions compressionOptions();
 
+    /**
+   * This value represents the maximum number of threads that will
+   * concurrently perform a compaction job by breaking it into multiple,
+   * smaller ones that are run simultaneously.
+   * Default: 1 (i.e. no subcompactions)
+   *
+   * @param maxSubcompactions The maximum number of threads that will
+   *     concurrently perform a compaction job
+   */
+  void setMaxSubcompactions(int maxSubcompactions);
+
+  /**
+   * This value represents the maximum number of threads that will
+   * concurrently perform a compaction job by breaking it into multiple,
+   * smaller ones that are run simultaneously.
+   * Default: 1 (i.e. no subcompactions)
+   *
+   * @return The maximum number of threads that will concurrently perform a
+   *     compaction job
+   */
+  int maxSubcompactions();
+
   /**
    * Default memtable memory budget used with the following methods:
    *
