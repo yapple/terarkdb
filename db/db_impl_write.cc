@@ -1407,6 +1407,7 @@ Status DBImpl::ScheduleFlushes(WriteContext* context) {
     SchedulePendingFlush(flush_req_vec, FlushReason::kWriteBufferFull);
     MaybeScheduleFlushOrCompaction();
   }
+  TEST_SYNC_POINT("DBImpl::BufferFull");
   return status;
 }
 

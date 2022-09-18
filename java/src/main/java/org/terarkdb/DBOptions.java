@@ -975,7 +975,16 @@ public class DBOptions
   private DBOptions(final long nativeHandle) {
     super(nativeHandle);
   }
+    @Override
+    public DBOptions setCheckPointFakeFlush(final boolean checkPointFakeFlush) {
+      setCheckPointFakeFlush(nativeHandle_, checkPointFakeFlush);
+      return this;
+    }
 
+    @Override
+    public boolean checkPointFakeFlush(){
+      return  checkPointFakeFlush(nativeHandle_);
+    }
   private static native long getDBOptionsFromProps(
       String optString);
 
@@ -1154,6 +1163,9 @@ public class DBOptions
   private native void setAvoidFlushDuringShutdown(final long handle,
       final boolean avoidFlushDuringShutdown);
   private native boolean avoidFlushDuringShutdown(final long handle);
+  private native void setCheckPointFakeFlush(final long handle,
+      final boolean checkPointFakeFlush);
+  private native boolean checkPointFakeFlush(final long handle);
 
   // instance variables
   // NOTE: If you add new member variables, please update the copy constructor above!

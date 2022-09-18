@@ -993,6 +993,8 @@ struct DBOptions {
   // transaction is encountered in the WAL
   bool allow_2pc = false;
 
+  bool check_point_fake_flush = true;
+
   // A global cache for table-level rows.
   // Default: nullptr (disabled)
   // Not supported in ROCKSDB_LITE mode!

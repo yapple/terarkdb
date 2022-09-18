@@ -3192,9 +3192,7 @@ Status VersionSet::ProcessManifestWrites(std::deque<ManifestWriter>& writers,
   Status s;
 
   assert(pending_manifest_file_number_ == 0);
-  if (!descriptor_log_ ||
-      manifest_file_size_ > db_options_->max_manifest_file_size ||
-      manifest_edit_count_ > db_options_->max_manifest_edit_count) {
+  if (!descriptor_log_) {
     pending_manifest_file_number_ = NewFileNumber();
     batch_edits.back()->SetNextFile(next_file_number_.load());
     new_descriptor_log = true;

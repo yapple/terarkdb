@@ -161,6 +161,10 @@ public interface MutableColumnFamilyOptionsInterface
   
   long blobSize();
 
+//   T setBlobGcRatio(double blobGcRatio);
+//
+//   double blobGcRatio();
+
   T setTargetBlobFileSize(long blobSize);
   
   long targetBlobFileSize();

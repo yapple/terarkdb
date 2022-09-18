@@ -1885,7 +1885,6 @@ fterark:rocksdbjavastatic
 	cd java;jar -cf target/$(ROCKSDB_JAR_ALL) HISTORY*.md
 	cd java/target;jar -uf $(ROCKSDB_JAR_ALL) libterarkdbjni-*
 	cd java/target/classes;jar -uf ../$(ROCKSDB_JAR_ALL) org/terarkdb/*.class org/terarkdb/util/*.class
-
 	# update apache license
 	mkdir -p java/target/META-INF
 	cp LICENSE.Apache java/target/META-INF/LICENSE

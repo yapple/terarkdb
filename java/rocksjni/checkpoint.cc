@@ -66,7 +66,7 @@ void Java_org_terarkdb_Checkpoint_createCheckpoint(JNIEnv* env, jobject /*jobj*/
   }
 }
 
-void Java_org_terarkdb_Checkpoint_createCheckpoint0(JNIEnv* env, jobject /*jobj*/,
+void Java_org_rocksdb_Checkpoint_createCheckpoint0(JNIEnv* env, jobject /*jobj*/,
                                                   jlong jcheckpoint_handle,
                                                   jstring jcheckpoint_path,
                                                   jlong jcheckpoint_log_size) {

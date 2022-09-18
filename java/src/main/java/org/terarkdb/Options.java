@@ -1607,6 +1607,17 @@ public class Options extends RocksObject
     return forceConsistencyChecks(nativeHandle_);
   }
 
+  @Override
+  public Options setCheckPointFakeFlush(final boolean checkPointFakeFlush) {
+    setCheckPointFakeFlush(nativeHandle_, checkPointFakeFlush);
+    return this;
+  }
+
+  @Override
+  public boolean checkPointFakeFlush(){
+    return  checkPointFakeFlush(nativeHandle_);
+  }
+
   private native static long newOptions();
   private native static long newOptions(long dbOptHandle,
       long cfOptHandle);
@@ -1939,6 +1950,10 @@ public class Options extends RocksObject
   private native void setForceConsistencyChecks(final long handle,
       final boolean forceConsistencyChecks);
   private native boolean forceConsistencyChecks(final long handle);
+  private native void setCheckPointFakeFlush(final long handle,
+        final boolean checkPointFakeFlush);
+  private native boolean checkPointFakeFlush(final long handle);
+
 
   // instance variables
   // NOTE: If you add new member variables, please update the copy constructor above!
