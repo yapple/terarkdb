@@ -1062,7 +1062,7 @@ void DBImpl::ScheduleTtlGC() {
           " , %" PRIu64 ") now: %" PRIu64 " deleted key: %" PRIu64,
           meta->fd.GetNumber(), l, max_to_zero(meta->prop.earliest_time_begin_compact),
           max_to_zero(meta->prop.latest_time_end_compact), now, meta->prop.num_deletions);
-        if( meta->prop.num_deletions > meta->prop.num_entries * 0.2 ){
+        if( meta->prop.num_deletions > meta->prop.num_entries * 0.8 ){
           meta->marked_for_compaction = FileMetaData::kMarkedFromRangeDeletion;
           ROCKS_LOG_BUFFER(
             &log_buffer_info,
